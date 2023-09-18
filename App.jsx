@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import codePush from 'react-native-code-push';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -33,7 +34,7 @@ function TabNavigation() {
   );
 }
 
-export default function App() {
+function App() {
   const [first, setFirst] = useState(false);
 
   return (
@@ -48,3 +49,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default codePush(App);
