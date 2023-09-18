@@ -6,8 +6,9 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import React, {useState} from 'react';
+import {primaryColor, descColor, title, subtitle} from '../tools/styles';
 
-export default function Nickname() {
+export default function Nickname({navigation}) {
   const [nickname, setNickname] = useState('');
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
@@ -45,6 +46,7 @@ export default function Nickname() {
 
   const nextPageMove = () => {
     console.log('image + nickname move');
+    navigation.navigate('Targetcost1');
   };
 
   return (
@@ -82,16 +84,6 @@ export default function Nickname() {
   );
 }
 
-const title = {
-  fontWeight: '800',
-  fontSize: 55,
-};
-
-const subtitle = {
-  fontSize: 28,
-  fontWeight: '900',
-};
-
 const styles = StyleSheet.create({
   view: {
     flex: 1,
@@ -113,13 +105,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   headertitle: {
-    color: '#d54183',
+    color: primaryColor,
     ...title,
   },
   circle: {
-    backgroundColor: '#9e9e9e',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: descColor,
     width: 150,
     height: 150,
     borderRadius: 150,
@@ -141,14 +133,14 @@ const styles = StyleSheet.create({
     height: 48,
   },
   desctext: {
-    color: '#9e9e9e',
+    color: descColor,
   },
   nextpress: {
     ...subtitle,
-    color: '#d54183',
+    color: primaryColor,
   },
   disabledpress: {
     ...subtitle,
-    color: '#9e9e9e',
+    color: descColor,
   },
 });

@@ -17,8 +17,8 @@ const Tab = createMaterialBottomTabNavigator();
 function FirstNavigation() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Nickname" component={Nickname} />
       <Stack.Screen name="Targetcost1" component={Targetcost1} />
+      <Stack.Screen name="Nickname" component={Nickname} />
       <Stack.Screen name="Targetcost2" component={Targetcost2} />
     </Stack.Navigator>
   );
@@ -49,5 +49,5 @@ function App() {
     </NavigationContainer>
   );
 }
-
-export default codePush(App);
+export default App;
+//export default codePush(App);
