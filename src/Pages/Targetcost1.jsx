@@ -13,6 +13,7 @@ export default function Targetcost1({navigation}) {
 
   const [disable, setDisable] = useState(false);
   const moneyRange = [
+    {label: '0', value: 0},
     {label: '1', value: 1},
     {label: '2', value: 2},
     {label: '3', value: 3},
@@ -25,7 +26,10 @@ export default function Targetcost1({navigation}) {
   ];
 
   const onChangeMoney = () => {
-    if (million > 0 && thousand > 0) {
+    if (million <= 0 && thousand <= 0) {
+      // 초기값 -1이 아니면서 두가지 모두 0이 들어오면 안될경우
+      setDisable(false);
+    } else {
       setDisable(true);
     }
   };
@@ -45,7 +49,7 @@ export default function Targetcost1({navigation}) {
             placeholder="0"
             open={mOpen}
             value={million}
-            items={[{label: '0', value: 0}, ...moneyRange]}
+            items={moneyRange}
             setOpen={setMOpen}
             setValue={setMillion}
             onChangeValue={onChangeMoney}

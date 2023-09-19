@@ -6,7 +6,13 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import React, {useState} from 'react';
-import {primaryColor, descColor, title, subtitle} from '../tools/styles';
+import {
+  primaryColor,
+  descColor,
+  title,
+  subtitle,
+  grayColor,
+} from '../tools/styles';
 
 export default function Nickname({navigation}) {
   const [nickname, setNickname] = useState('');
@@ -111,7 +117,7 @@ const styles = StyleSheet.create({
   circle: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: descColor,
+    backgroundColor: grayColor,
     width: 150,
     height: 150,
     borderRadius: 150,
