@@ -8,4 +8,5 @@
 #### 사용기술
 
 - React-Native
-- JavaScript
+- TypeScript
+- Recoil
