@@ -1,5 +1,7 @@
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import React, {useMemo, useState, useCallback} from 'react';
+import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import UnderLineText from '../modules/UnderLineText';
+
 import {
   primaryColor,
   grayColor,
@@ -7,13 +9,13 @@ import {
   subtitle,
   descColor,
   defaultFont,
-} from '../tools/styles';
+} from '../utils/styles';
 
 // DropDownPicker.setListMode('SCROLLVIEW');
 
-export default function Targetcost1({navigation}) {
-  const [choice, setChoice] = useState(-1);
-  const [disable, setDisable] = useState(false);
+export default function Targetcost2Less({navigation}) {
+  const [choice, setChoice] = useState<number>(-1);
+  const [disable, setDisable] = useState<boolean>(false);
 
   const discountChoice = () => {
     //전페이지에서 설정한 값에서 3000원 절약된 가격 넘겨주기
@@ -32,14 +34,12 @@ export default function Targetcost1({navigation}) {
   return (
     <View style={styles.view}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          다른 사용자보다{'\n'}
-          <Text style={styles.headerTitleUnderLine}>1만원</Text>
-          {'\t\t'}더 {'\n'}사용중이에요.
-        </Text>
+        <Text style={styles.headerTitle}>다른 사용자보다</Text>
+        <UnderLineText txt="1만원" next="더 적게" color={primaryColor} />
+        <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
-        <Text style={styles.requestFont}>" 절약 " 해보실래요?</Text>
+        <Text style={styles.requestFont}>그대로 유지하실레요?</Text>
         <View style={styles.discountButtonView}>
           <TouchableWithoutFeedback onPress={discountChoice}>
             <View style={styles.discountButton}>
@@ -53,8 +53,8 @@ export default function Targetcost1({navigation}) {
           </TouchableWithoutFeedback>
         </View>
         <Text style={styles.descFont}>
-          * 하루절약 목표를 3000원으로 자동 설정됩니다. {'\n'}* 나중에
-          변경가능합니다.
+          * 하루절약 목표를 3000원으로 자동 설정됩니다.
+          {'\n'}* 나중에 변경가능합니다.
         </Text>
       </View>
       <View style={styles.foot}>
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 40,
     paddingVertical: 70,
+    backgroundColor: 'white',
   },
   header: {
     flex: 3,
@@ -91,12 +92,6 @@ const styles = StyleSheet.create({
     ...title2,
     color: primaryColor,
     textAlign: 'right',
-  },
-  headerTitleUnderLine: {
-    ...title2,
-    color: primaryColor,
-    textDecorationLine: 'underline',
-    textDecorationColor: primaryColor,
   },
   requestFont: {
     ...subtitle,

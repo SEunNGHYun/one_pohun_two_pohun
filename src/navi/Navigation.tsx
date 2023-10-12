@@ -9,7 +9,9 @@ import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
 import {LoginState} from '../recoils/states';
 import Nickname from '../Pages/Nickname';
 import Targetcost1 from '../Pages/Targetcost1';
-import Targetcost2 from '../Pages/Targetcost2';
+import Targetcost2More from '../Pages/Targetcost2More';
+import Targetcost2Less from '../Pages/Targetcost2Less';
+
 import Mains from '../Pages/Main';
 import Pigs from '../Pages/Pig';
 import Settings from '../Pages/Settings';
@@ -19,7 +21,8 @@ const options: NativeStackNavigationOptions = {
 };
 
 export type BeforeLoginStackParamList = {
-  Targetcost2: undefined;
+  Targetcost2More: undefined;
+  Targetcost2Less: undefined;
   Targetcost1: undefined;
   Nickname: undefined;
 };
@@ -46,7 +49,8 @@ function FirstNavigation() {
     <Navigator screenOptions={options}>
       <Screen name="Nickname" component={Nickname} />
       <Screen name="Targetcost1" component={Targetcost1} />
-      <Screen name="Targetcost2" component={Targetcost2} />
+      <Screen name="Targetcost2More" component={Targetcost2More} />
+      <Screen name="Targetcost2Less" component={Targetcost2Less} />
     </Navigator>
   );
 }

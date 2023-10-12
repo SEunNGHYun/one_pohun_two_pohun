@@ -12,12 +12,12 @@ import {
   title,
   subtitle,
   grayColor,
-} from '../tools/styles';
+} from '../utils/styles';
 
 export default function Nickname({navigation}) {
-  const [nickname, setNickname] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [error, setError] = useState(false);
+  const [nickname, setNickname] = useState<string>('');
+  const [visible, setVisible] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const onchangeNickname = text => {
     setNickname(text);
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 40,
     paddingVertical: 70,
+    backgroundColor: 'white',
   },
   header: {
     flex: 3,

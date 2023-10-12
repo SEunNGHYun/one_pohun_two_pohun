@@ -1,47 +1,43 @@
+import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
-import React, {useMemo, useState, useCallback} from 'react';
-import {primaryColor, descColor, title, subtitle} from '../tools/styles';
 import DropDownPicker from 'react-native-dropdown-picker';
-
+import {useRecoilValue} from 'recoil';
+import {AvgDayCostState} from '../recoils/states';
+import {primaryColor, descColor, title, subtitle} from '../utils/styles';
+import {moneyRange} from '../utils/datas';
 // DropDownPicker.setListMode('SCROLLVIEW');
 
 export default function Targetcost1({navigation}) {
-  const [million, setMillion] = useState(-1);
-  const [thousand, setThousand] = useState(-1);
-  const [mOpen, setMOpen] = useState(false);
-  const [tOpen, setTOpen] = useState(false);
+  const [million, setMillion] = useState<number>(-1);
+  const [thousand, setThousand] = useState<number>(-1);
+  const [mOpen, setMOpen] = useState<boolean>(false);
+  const [tOpen, setTOpen] = useState<boolean>(false);
 
-  const [disable, setDisable] = useState(false);
-  const moneyRange = [
-    {label: '0', value: 0},
-    {label: '1', value: 1},
-    {label: '2', value: 2},
-    {label: '3', value: 3},
-    {label: '4', value: 4},
-    {label: '5', value: 5},
-    {label: '6', value: 6},
-    {label: '7', value: 7},
-    {label: '8', value: 8},
-    {label: '9', value: 9},
-  ];
+  const AvgDayCost = useRecoilValue<number>(AvgDayCostState);
+  const [disable, setDisable] = useState<boolean>(false);
 
-  const onChangeMoney = () => {
+  const onChangeMoney = useCallback(() => {
     if (million <= 0 && thousand <= 0) {
       // 초기값 -1이 아니면서 두가지 모두 0이 들어오면 안될경우
       setDisable(false);
     } else {
       setDisable(true);
     }
-  };
+  }, [million, thousand]);
 
-  const nextPageMove = () => {
-    navigation.navigate('Targetcost2', {/*nickname*/ million, thousand});
-  };
+  const nextPageMove = useCallback(() => {
+    const userDayCost: number = million + 0.1 * thousand;
+    if (AvgDayCost < userDayCost) {
+      navigation.navigate('Targetcost2More', {/*nickname*/ million, thousand});
+    } else {
+      navigation.navigate('Targetcost2Less', {/*nickname*/ million, thousand});
+    }
+  }, [AvgDayCost, million, thousand, navigation]);
 
   return (
     <View style={styles.view}>
       <View style={styles.header}>
-        <Text style={styles.headertitle}>하루에 얼마나 쓰시나요?</Text>
+        <Text style={styles.headertitle}>하루 지출액을 알려주세요</Text>
       </View>
       <View style={styles.body}>
         <View style={styles.costView}>
@@ -88,6 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 40,
     paddingVertical: 70,
+    backgroundColor: 'white',
   },
   header: {
     flex: 3,

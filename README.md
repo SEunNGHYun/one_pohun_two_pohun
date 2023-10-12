@@ -10,3 +10,6 @@
 - React-Native
 - TypeScript
 - Recoil
+- Firebase
+
+####
