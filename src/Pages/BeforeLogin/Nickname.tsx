@@ -12,7 +12,7 @@ import {
   title,
   subtitle,
   grayColor,
-} from '../utils/styles';
+} from '../../utils/styles';
 
 export default function Nickname({navigation}) {
   const [nickname, setNickname] = useState<string>('');

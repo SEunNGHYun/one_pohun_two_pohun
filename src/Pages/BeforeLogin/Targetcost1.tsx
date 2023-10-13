@@ -2,9 +2,9 @@ import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {useRecoilValue} from 'recoil';
-import {AvgDayCostState} from '../recoils/states';
-import {primaryColor, descColor, title, subtitle} from '../utils/styles';
-import {moneyRange} from '../utils/datas';
+import {AvgDayCostState} from '../../recoils/states';
+import {primaryColor, descColor, title, subtitle} from '../../utils/styles';
+import {moneyRange} from '../../utils/datas';
 // DropDownPicker.setListMode('SCROLLVIEW');
 
 export default function Targetcost1({navigation}) {

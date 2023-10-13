@@ -10,6 +10,7 @@
 - React-Native
 - TypeScript
 - Recoil
+- React-Navigation
 - Firebase
 
 ####

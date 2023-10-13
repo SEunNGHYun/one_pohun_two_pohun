@@ -1,6 +1,6 @@
 import React, {useMemo, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
-import UnderLineText from '../modules/UnderLineText';
+import UnderLineText from '../../modules/UnderLineText';
 
 import {
   primaryColor,
@@ -9,11 +9,11 @@ import {
   subtitle,
   descColor,
   defaultFont,
-} from '../utils/styles';
+} from '../../utils/styles';
 
 // DropDownPicker.setListMode('SCROLLVIEW');
 
-export default function Targetcost2Less({navigation}) {
+export default function Targetcost2More({navigation}) {
   const [choice, setChoice] = useState<number>(-1);
   const [disable, setDisable] = useState<boolean>(false);
 
@@ -35,11 +35,11 @@ export default function Targetcost2Less({navigation}) {
     <View style={styles.view}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>다른 사용자보다</Text>
-        <UnderLineText txt="1만원" next="더 적게" color={primaryColor} />
+        <UnderLineText txt="1만원" next="더" color={primaryColor} />
         <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
-        <Text style={styles.requestFont}>그대로 유지하실레요?</Text>
+        <Text style={styles.requestFont}>" 절약 " 해보실래요?</Text>
         <View style={styles.discountButtonView}>
           <TouchableWithoutFeedback onPress={discountChoice}>
             <View style={styles.discountButton}>
@@ -53,8 +53,8 @@ export default function Targetcost2Less({navigation}) {
           </TouchableWithoutFeedback>
         </View>
         <Text style={styles.descFont}>
-          * 하루절약 목표를 3000원으로 자동 설정됩니다.
-          {'\n'}* 나중에 변경가능합니다.
+          * 하루절약 목표를 3000원으로 자동 설정됩니다. {'\n'}* 나중에
+          변경가능합니다.
         </Text>
       </View>
       <View style={styles.foot}>

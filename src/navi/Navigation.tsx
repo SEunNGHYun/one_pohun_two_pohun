@@ -7,14 +7,14 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
 
 import {LoginState} from '../recoils/states';
-import Nickname from '../Pages/Nickname';
-import Targetcost1 from '../Pages/Targetcost1';
-import Targetcost2More from '../Pages/Targetcost2More';
-import Targetcost2Less from '../Pages/Targetcost2Less';
+import Nickname from '../Pages/BeforeLogin/Nickname';
+import Targetcost1 from '../Pages/BeforeLogin/Targetcost1';
+import Targetcost2More from '../Pages/BeforeLogin/Targetcost2More';
+import Targetcost2Less from '../Pages/BeforeLogin/Targetcost2Less';
 
-import Mains from '../Pages/Main';
-import Pigs from '../Pages/Pig';
-import Settings from '../Pages/Settings';
+import Mains from '../Pages/AfterLogin/Main';
+import Pigs from '../Pages/AfterLogin/Pig';
+import Settings from '../Pages/AfterLogin/Settings';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
