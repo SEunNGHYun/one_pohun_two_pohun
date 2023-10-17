@@ -1,8 +1,15 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, Pressable} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {primaryColor, grayColor, title, title2} from '../../utils/styles';
-
+import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from 'react-native-chart-kit';
 export default function Main() {
   const [selected, setSelected] = useState('');
   return (
@@ -12,7 +19,7 @@ export default function Main() {
           <Text style={styles.dayTotalCostTextDesc}>오늘 총 지출액</Text>
           <Text style={styles.dayTotalCostText}>20,000원</Text>
         </View>
-        <Pressable>
+        <Pressable onPress={() => console.log('press')}>
           <View style={styles.addButt}>
             <Text>+</Text>
           </View>
@@ -28,6 +35,46 @@ export default function Main() {
             disableTouchEvent: true,
           },
         }}
+      />
+      <Text style={styles.totalCostFont}>10월 총20,000원 사용</Text>
+      <LineChart
+        data={{
+          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+          datasets: [
+            {
+              data: [
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+                Math.random() * 100,
+              ],
+            },
+          ],
+        }}
+        width={300} // from react-native
+        height={220}
+        yAxisLabel="$"
+        yAxisSuffix="k"
+        yAxisInterval={1} // optional, defaults to 1
+        chartConfig={{
+          backgroundColor: '#e26a00',
+          backgroundGradientFrom: '#fb8c00',
+          backgroundGradientTo: '#ffa726',
+          decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          style: {
+            borderRadius: 16,
+          },
+          propsForDots: {
+            r: '6',
+            strokeWidth: '2',
+            stroke: '#ffa726',
+          },
+        }}
+        bezier
       />
     </ScrollView>
   );
@@ -47,18 +94,23 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   dayTotalCostText: {
-    ...title,
+    ...title2,
     color: primaryColor,
   },
   dayTotalCostTextDesc: {
-    ...title2,
+    ...title4,
     color: primaryColor,
   },
   addButt: {
     backgroundColor: grayColor,
     width: 60,
     height: 60,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  totalCostFont: {
+    ...title4,
+    color: primaryColor,
   },
 });

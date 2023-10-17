@@ -13,7 +13,17 @@ export const title: TextStyle = {
 
 export const title2: TextStyle = {
   fontWeight: 'bold',
-  fontSize: 40,
+  fontSize: 48,
+};
+
+export const title3: TextStyle = {
+  fontWeight: 'bold',
+  fontSize: 38,
+};
+
+export const title4: TextStyle = {
+  fontWeight: 'bold',
+  fontSize: 28,
 };
 
 export const subtitle: TextStyle = {
