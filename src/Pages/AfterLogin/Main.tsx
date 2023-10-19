@@ -2,14 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, ScrollView, Pressable} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from 'react-native-chart-kit';
+import {LineChart} from 'react-native-chart-kit';
 export default function Main() {
   const [selected, setSelected] = useState('');
   return (
