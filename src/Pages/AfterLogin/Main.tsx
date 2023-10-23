@@ -1,9 +1,23 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Dimensions,
+} from 'react-native';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
+import {
+  primaryColor,
+  grayColor,
+  title4,
+  title2,
+  primaryColorRGBA,
+} from '../../utils/styles';
 import {LineChart} from 'react-native-chart-kit';
 export default function Main() {
+  const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState('');
   return (
     <ScrollView contentContainerStyle={styles.view}>
@@ -18,57 +32,58 @@ export default function Main() {
           </View>
         </Pressable>
       </View>
-      <Calendar
-        onDayPress={day => {
-          setSelected(day.dateString);
-        }}
-        markedDates={{
-          [selected]: {
-            selected: true,
-            disableTouchEvent: true,
-          },
-        }}
-      />
-      <Text style={styles.totalCostFont}>10월 총20,000원 사용</Text>
-      <LineChart
-        data={{
-          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-          datasets: [
-            {
-              data: [
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-              ],
+      <View>
+        <Calendar
+          onDayPress={day => {
+            setSelected(day.dateString);
+          }}
+          markedDates={{
+            [selected]: {
+              selected: true,
+              disableTouchEvent: true,
             },
-          ],
-        }}
-        width={300} // from react-native
-        height={220}
-        yAxisLabel="$"
-        yAxisSuffix="k"
-        yAxisInterval={1} // optional, defaults to 1
-        chartConfig={{
-          backgroundColor: '#e26a00',
-          backgroundGradientFrom: '#fb8c00',
-          backgroundGradientTo: '#ffa726',
-          decimalPlaces: 2, // optional, defaults to 2dp
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-          propsForDots: {
-            r: '6',
-            strokeWidth: '2',
-            stroke: '#ffa726',
-          },
-        }}
-        bezier
-      />
+          }}
+        />
+        <Text style={styles.totalCostFont}>10월 총20,000원 사용</Text>
+        <LineChart
+          data={{
+            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+            datasets: [
+              {
+                data: [
+                  Math.random() * 1000,
+                  Math.random() * 1000,
+                  Math.random() * 1000,
+                  Math.random() * 1000,
+                  Math.random() * 1000,
+                  Math.random() * 1000,
+                ],
+              },
+            ],
+          }}
+          width={width} // from react-native
+          height={220}
+          yAxisSuffix="원"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundGradientFrom: 'white',
+            backgroundGradientTo: 'white',
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: _ => 'rgba(213, 65, 131, 0.2)',
+            labelColor: _ => 'rgba(80, 97, 109, 1)',
+            style: {
+              borderRadius: 1,
+            },
+            propsForDots: {
+              r: '0',
+              strokeWidth: '2',
+              stroke: primaryColor,
+            },
+          }}
+          withHorizontalLines={false}
+          bezier
+        />
+      </View>
     </ScrollView>
   );
 }
@@ -104,6 +119,7 @@ const styles = StyleSheet.create({
   },
   totalCostFont: {
     ...title4,
+    marginVertical: 18,
     color: primaryColor,
   },
 });
