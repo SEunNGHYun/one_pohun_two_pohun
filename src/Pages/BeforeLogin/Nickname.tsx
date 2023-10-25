@@ -19,7 +19,7 @@ export default function Nickname({navigation}) {
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
-  const onchangeNickname = text => {
+  const onchangeNickname = (text: string) => {
     setNickname(text);
     let check = check_nickname(text);
     if (check) {
@@ -28,7 +28,7 @@ export default function Nickname({navigation}) {
     setError(check);
   };
 
-  const check_nickname = text => {
+  const check_nickname = (text: string) => {
     const trim_nickname = text.trim();
 
     if (trim_nickname.length < 2 || trim_nickname.length > 10) {

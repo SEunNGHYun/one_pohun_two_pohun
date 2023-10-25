@@ -7,16 +7,15 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {
-  primaryColor,
-  grayColor,
-  title4,
-  title2,
-  primaryColorRGBA,
-} from '../../utils/styles';
 import {LineChart} from 'react-native-chart-kit';
-export default function Main() {
+import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
+import type {MainStackParamList} from '../../navi/Navigation';
+
+type Props = NativeStackScreenProps<MainStackParamList, 'AddCost'>;
+
+export default function Main({navigation}: Props) {
   const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState('');
   return (
@@ -26,7 +25,7 @@ export default function Main() {
           <Text style={styles.dayTotalCostTextDesc}>오늘 총 지출액</Text>
           <Text style={styles.dayTotalCostText}>20,000원</Text>
         </View>
-        <Pressable onPress={() => console.log('press')}>
+        <Pressable onPress={() => navigation.navigate('AddCost')}>
           <View style={styles.addButt}>
             <Text>+</Text>
           </View>

@@ -1,12 +1,12 @@
 import type {TextStyle} from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
-export const primaryColor = '#d54183'; // 나중에 context로 관리
+export const primaryColor: string = '#d54183'; // 나중에 context로 관리
 
-export const primaryColorRGBA = 'rgba(213, 65, 131, 1)';
+export const primaryColorRGBA: string = 'rgba(213, 65, 131, 1)';
 
-export const grayColor = '#c6c6c6';
+export const grayColor: string = '#c6c6c6';
 
-export const descColor = '#9e9e9e';
+export const descColor: string = '#9e9e9e';
 
 export const title: TextStyle = {
   fontWeight: '800',

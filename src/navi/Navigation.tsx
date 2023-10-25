@@ -6,15 +6,22 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
 
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {LoginState} from '../recoils/states';
 import Nickname from '../Pages/BeforeLogin/Nickname';
 import Targetcost1 from '../Pages/BeforeLogin/Targetcost1';
 import Targetcost2More from '../Pages/BeforeLogin/Targetcost2More';
 import Targetcost2Less from '../Pages/BeforeLogin/Targetcost2Less';
 
-import Mains from '../Pages/AfterLogin/Main';
+import Main from '../Pages/AfterLogin/Main';
+import AddCost from '../Pages/AfterLogin/AddCost';
+import CostList from '../Pages/AfterLogin/CostList';
+// 메인
 import Pigs from '../Pages/AfterLogin/Pig';
 import Settings from '../Pages/AfterLogin/Settings';
+
+import {primaryColor, descColor} from '../utils/styles';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
@@ -27,8 +34,14 @@ export type BeforeLoginStackParamList = {
   Nickname: undefined;
 };
 
+export type MainStackParamList = {
+  Main: undefined;
+  AddCost: undefined;
+  CostList: undefined;
+};
+
 export type AfterLoginTabParamList = {
-  Mains: undefined;
+  MainStack: MainStackParamList;
   Pigs: undefined;
   Settings: undefined;
 };
@@ -38,12 +51,16 @@ export type RootStackParamList = {
   beforeLogin: undefined;
 };
 
-const RootStack = createNativeStackNavigator<RootStackParamList>();
-const BeforeLoginStack =
-  createNativeStackNavigator<BeforeLoginStackParamList>();
+const MainStack = createNativeStackNavigator<MainStackParamList>();
+
 const MainTab = createMaterialBottomTabNavigator<AfterLoginTabParamList>();
 
-function FirstNavigation() {
+const BeforeLoginStack =
+  createNativeStackNavigator<BeforeLoginStackParamList>();
+
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+
+function BeforeLoginNavigation() {
   const {Navigator, Screen} = BeforeLoginStack;
   return (
     <Navigator screenOptions={options}>
@@ -55,13 +72,54 @@ function FirstNavigation() {
   );
 }
 
-function TabNavigation() {
+function MainNavigation() {
+  const {Navigator, Screen} = MainStack;
+
   return (
-    <MainTab.Navigator>
-      <MainTab.Screen name="Mains" component={Mains} />
-      <MainTab.Screen name="Pigs" component={Pigs} />
-      <MainTab.Screen name="Settings" component={Settings} />
-    </MainTab.Navigator>
+    <Navigator screenOptions={options}>
+      <Screen name="Main" component={Main} />
+      <Screen name="AddCost" component={AddCost} />
+      <Screen name="CostList" component={CostList} />
+    </Navigator>
+  );
+}
+
+function TabNavigation() {
+  const {Navigator, Screen} = MainTab;
+
+  return (
+    <Navigator
+      activeColor={primaryColor}
+      inactiveColor={descColor}
+      labeled={false}>
+      <Screen
+        name="MainStack"
+        component={MainNavigation}
+        options={{
+          tabBarIcon: ({_, color}) => (
+            <MaterialCommunityIcons name="home" color={color} size={26} />
+          ),
+        }}
+      />
+      <Screen
+        name="Pigs"
+        component={Pigs}
+        options={{
+          tabBarIcon: ({_, color}) => (
+            <MaterialCommunityIcons name="piggy-bank" color={color} size={26} />
+          ),
+        }}
+      />
+      <Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: ({_, color}) => (
+            <MaterialCommunityIcons name="cog" color={color} size={26} />
+          ),
+        }}
+      />
+    </Navigator>
   );
 }
 
@@ -75,7 +133,7 @@ export default function RootNavigation() {
         {isLogin ? (
           <Screen name="afterLogin" component={TabNavigation} />
         ) : (
-          <Screen name="beforeLogin" component={FirstNavigation} />
+          <Screen name="beforeLogin" component={BeforeLoginNavigation} />
         )}
       </Navigator>
     </NavigationContainer>
