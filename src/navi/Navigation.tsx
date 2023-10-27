@@ -18,13 +18,31 @@ import Main from '../Pages/AfterLogin/Main';
 import AddCost from '../Pages/AfterLogin/AddCost';
 import CostList from '../Pages/AfterLogin/CostList';
 // 메인
-import Pigs from '../Pages/AfterLogin/Pig';
+import Pig from '../Pages/AfterLogin/Pigs/Pig';
+import MakePigBattleRoom from '../Pages/AfterLogin/Pigs/MakePigBattleRoom';
+import PigBattleRoom from '../Pages/AfterLogin/Pigs/PigBattleRoom';
+import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
+//배틀
+
 import Settings from '../Pages/AfterLogin/Settings';
 
 import {primaryColor, descColor} from '../utils/styles';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
+};
+
+export type MainStackParamList = {
+  Main: undefined;
+  AddCost: undefined;
+  CostList: undefined;
+};
+
+export type PigStackParamList = {
+  Pig: undefined;
+  MakePigBattleRoom: undefined;
+  MatchingRoom: undefined;
+  PigBattleRoom: undefined;
 };
 
 export type BeforeLoginStackParamList = {
@@ -34,15 +52,9 @@ export type BeforeLoginStackParamList = {
   Nickname: undefined;
 };
 
-export type MainStackParamList = {
-  Main: undefined;
-  AddCost: undefined;
-  CostList: undefined;
-};
-
 export type AfterLoginTabParamList = {
   MainStack: MainStackParamList;
-  Pigs: undefined;
+  Pigs: PigStackParamList;
   Settings: undefined;
 };
 
@@ -52,6 +64,7 @@ export type RootStackParamList = {
 };
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
+const PigStack = createNativeStackNavigator<PigStackParamList>();
 
 const MainTab = createMaterialBottomTabNavigator<AfterLoginTabParamList>();
 
@@ -84,6 +97,19 @@ function MainNavigation() {
   );
 }
 
+function PigNavigation() {
+  const {Navigator, Screen} = PigStack;
+
+  return (
+    <Navigator screenOptions={options}>
+      <Screen name="Pig" component={Pig} />
+      <Screen name="MakePigBattleRoom" component={MakePigBattleRoom} />
+      <Screen name="MatchingRoom" component={MatchingRoom} />
+      <Screen name="PigBattleRoom" component={PigBattleRoom} />
+    </Navigator>
+  );
+}
+
 function TabNavigation() {
   const {Navigator, Screen} = MainTab;
 
@@ -103,7 +129,7 @@ function TabNavigation() {
       />
       <Screen
         name="Pigs"
-        component={Pigs}
+        component={PigNavigation}
         options={{
           tabBarIcon: ({_, color}) => (
             <MaterialCommunityIcons name="piggy-bank" color={color} size={26} />

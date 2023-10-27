@@ -8,12 +8,12 @@ import {
   Dimensions,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {Calendar} from 'react-native-calendars';
 import {LineChart} from 'react-native-chart-kit';
 import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
 
-type Props = NativeStackScreenProps<MainStackParamList, 'AddCost'>;
+type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 
 export default function Main({navigation}: Props) {
   const {width} = Dimensions.get('window');

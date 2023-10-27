@@ -1,10 +1,10 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 
-export default function Pig() {
+export default function PigBattleRoom() {
   return (
     <View>
-      <Text>Pig</Text>
+      <Text>PigBattleRoom</Text>
     </View>
   );
 }
