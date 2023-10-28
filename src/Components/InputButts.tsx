@@ -1,5 +1,11 @@
 import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
-import {lightGrayColor, title4, defaultFont} from '../utils/styles';
+import {
+  lightGrayColor,
+  title4,
+  defaultFont,
+  primaryColor,
+  descColor,
+} from '../utils/styles';
 import {buttonList, liType} from '../utils/datas';
 import React, {useLayoutEffect, useState} from 'react';
 
@@ -12,7 +18,7 @@ export default function InputButts({
   subtitle: string;
   type: string;
 }) {
-  const [buttons, setButtons] = useState<liType>([
+  const [buttons, setButtons] = useState<liType[]>([
     {label: '', value: 0},
     {label: '', value: 0},
     {label: '', value: 0},
@@ -63,10 +69,11 @@ const styles = StyleSheet.create({
   },
   titleFont: {
     ...title4,
-    color: 'black',
+    color: primaryColor,
   },
   subtitle: {
     ...defaultFont,
+    color: descColor,
   },
   buttonsView: {
     flexDirection: 'row',

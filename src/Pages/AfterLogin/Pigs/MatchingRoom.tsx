@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 
 export default function MatchingRoom() {
@@ -8,3 +8,5 @@ export default function MatchingRoom() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({});

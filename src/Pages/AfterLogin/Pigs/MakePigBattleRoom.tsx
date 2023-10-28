@@ -1,11 +1,28 @@
-import React from 'react';
-import {View, Text, StyleSheet, TextInput, ScrollView} from 'react-native';
-import {grayColor, title4, defaultFont, descColor} from '../../../utils/styles';
+import React, {useCallback} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import {
+  grayColor,
+  title4,
+  defaultFont,
+  descColor,
+  primaryColor,
+} from '../../../utils/styles';
 import InputButtons from '../../../Components/InputButts';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 export default function MakePigBattleRoom() {
+  const movePage = useCallback(() => {}, []);
+
   return (
     <View style={styles.view}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={styles.userImgBack} />
           <Text style={styles.nickname}>닉네임</Text>
@@ -24,7 +41,18 @@ export default function MakePigBattleRoom() {
           목표 {'\t'}
           <Text style={styles.subtitle}>(15자 이내로)</Text>
         </Text>
-        <TextInput placeholder="11월 일본여행?" />
+        <TextInput placeholder="예시) 11월 일본여행?" />
+
+        <Pressable onPress={movePage}>
+          <View style={styles.bottom}>
+            <Text style={styles.buttFont}>입장하기</Text>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              color={primaryColor}
+              size={44}
+            />
+          </View>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -49,10 +77,11 @@ const styles = StyleSheet.create({
   },
   nickname: {
     ...title4,
+    color: primaryColor,
   },
   titleFont: {
     ...title4,
-    color: 'black',
+    color: primaryColor,
     marginTop: 36,
   },
   subtitle: {
@@ -60,4 +89,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: descColor,
   },
+  bottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  buttFont: {fontSize: 22, fontWeight: 'bold', color: primaryColor},
 });

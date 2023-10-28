@@ -1,4 +1,4 @@
-type liType = {label: string; value: number};
+export type liType = {label: string; value: number};
 
 export const moneyRange: liType[] = [
   {label: '0', value: 0},
