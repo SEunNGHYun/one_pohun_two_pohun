@@ -5,6 +5,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {NativeStackNavigationOptions} from '@react-navigation/native-stack';
+import {
+  NativeStackScreenProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -165,3 +169,6 @@ export default function RootNavigation() {
     </NavigationContainer>
   );
 }
+
+export type PigUseNaviProps = NativeStackNavigationProp<PigStackParamList>;
+export type PigNaviProps = NativeStackScreenProps<PigStackParamList>;

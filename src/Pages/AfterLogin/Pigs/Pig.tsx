@@ -1,18 +1,11 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import type {PigStackParamList} from '../../../navi/Navigation';
 import {grayColor, primaryColor} from '../../../utils/styles';
+import type {PigNaviProps} from '../../../navi/Navigation';
 
-type Props = NativeStackScreenProps<
-  PigStackParamList,
-  'MakePigBattleRoom',
-  'PigBattleRoom'
->;
-
-export default function Pig({navigation}: Props) {
+export default function Pig({navigation}: PigNaviProps) {
   const [toggleEnterModal, setToggleEnterModal] = useState(false);
   const [code, setCode] = useState('');
 
@@ -53,10 +46,15 @@ export default function Pig({navigation}: Props) {
           <TextInput style={styles.codeInput} onChangeText={codeInput} />
           <Pressable onPress={movePage} disabled={!code}>
             <View style={styles.modalBottom}>
-              <Text style={styles.modalButtFont}>입장하기</Text>
+              <Text
+                style={
+                  !code ? styles.disableModalButtFont : styles.modalButtFont
+                }>
+                입장하기
+              </Text>
               <MaterialCommunityIcons
                 name="chevron-right"
-                color={primaryColor}
+                color={!code ? grayColor : primaryColor}
                 size={44}
               />
             </View>
@@ -94,7 +92,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
   },
-  modalView: {backgroundColor: 'white', height: 200, padding: 20, margin: 10},
+  modalView: {
+    backgroundColor: 'white',
+    height: 200,
+    padding: 20,
+    margin: 10,
+    borderRadius: 20,
+  },
   codeInput: {
     marginTop: 18,
     margin: 8,
@@ -113,5 +117,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: primaryColor,
+  },
+  disableModalButtFont: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: grayColor,
   },
 });

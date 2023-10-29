@@ -16,9 +16,15 @@ import {
 } from '../../../utils/styles';
 import InputButtons from '../../../Components/InputButts';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
+import type {PigUseNaviProps} from '../../../navi/Navigation';
 
 export default function MakePigBattleRoom() {
-  const movePage = useCallback(() => {}, []);
+  const navigation = useNavigation<PigUseNaviProps>();
+
+  const movePage = useCallback(() => {
+    navigation.navigate('MatchingRoom');
+  }, []);
 
   return (
     <View style={styles.view}>
@@ -45,7 +51,7 @@ export default function MakePigBattleRoom() {
 
         <Pressable onPress={movePage}>
           <View style={styles.bottom}>
-            <Text style={styles.buttFont}>입장하기</Text>
+            <Text style={styles.buttFont}>초대하기</Text>
             <MaterialCommunityIcons
               name="chevron-right"
               color={primaryColor}
