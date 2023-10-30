@@ -13,4 +13,8 @@
 - React-Navigation
 - Firebase
 
-####
+#### 기획
+
+[흐름도](https://drive.google.com/file/d/1uqQeYUKWgPh3UOR9LFNylk7MgB4QC-YN/view?usp=sharing)
+<br/>
+[디자인](https://ovenapp.io/project/ODyBQ3ugDs0Iw68SvfDkk7ZVFXbo841H#LUGMl)
