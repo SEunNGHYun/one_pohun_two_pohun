@@ -1,10 +1,10 @@
 import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
 import React from 'react';
-import {grayColor, title3, title4} from '../utils/styles';
+import {grayColor, title3, title4, sub} from '../utils/styles';
 
 export default function BattleUserData({position}: {position: string}) {
   const {height, width} = useWindowDimensions();
-
+  const data = ['2100원', '2100원', '2100원', '2100원'];
   return (
     <View style={{width: (width - 40) / 2}}>
       <View
@@ -27,16 +27,21 @@ export default function BattleUserData({position}: {position: string}) {
         </Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.totalCostFont}>현재 지출내역</Text>
-        <View style={{alignItems: 'center'}}>
-          <Text>2100원</Text>
-          <Text>2100원</Text>
-          <Text>2100원</Text>
-          <Text>2100원</Text>
-          <Text>...</Text>
+        <Text style={styles.totalFont}>현재 지출내역</Text>
+        <View style={styles.costLi}>
+          {data.map((d, i) => (
+            <Text key={i} style={styles.costFont}>
+              {d}
+            </Text>
+          ))}
+          <Text style={{fontSize: 12, fontWeight: 'bold'}}>
+            .{'\n'}.{'\n'}.
+          </Text>
         </View>
-        <Text>총 10000원</Text>
-        <Text>2천7백원 절약</Text>
+        <View style={styles.totalCostView}>
+          <Text style={styles.totalCostFont}>총 10000원</Text>
+          <Text style={styles.totalCostFont}>2천7백원 절약</Text>
+        </View>
       </View>
     </View>
   );
@@ -62,8 +67,24 @@ const styles = StyleSheet.create({
   body: {
     alignItems: 'center',
   },
-  totalCostFont: {
+  totalFont: {
     ...title4,
+    color: 'black',
+  },
+  costLi: {alignItems: 'center', marginTop: 18},
+  costFont: {
+    ...sub,
+    fontWeight: '700',
+    marginVertical: 4,
+  },
+  totalCostView: {
+    marginTop: 36,
+    alignItems: 'center',
+  },
+  totalCostFont: {
+    ...sub,
+    fontWeight: '900',
+    marginVertical: 4,
     color: 'black',
   },
 });

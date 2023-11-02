@@ -35,6 +35,10 @@ export const subtitle: TextStyle = {
   fontWeight: '900',
 };
 
+export const sub: TextStyle = {
+  fontSize: 22,
+};
+
 export const defaultFont: TextStyle = {
   fontSize: 18,
   fontWeight: '900',
