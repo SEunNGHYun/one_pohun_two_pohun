@@ -2,7 +2,7 @@ import {atom} from 'recoil';
 
 export const LoginState = atom<boolean>({
   key: 'LoginState',
-  default: true,
+  default: false,
 });
 
 export const AvgDayCostState = atom<number>({

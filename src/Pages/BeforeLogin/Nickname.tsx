@@ -4,8 +4,11 @@ import {
   StyleSheet,
   TextInput,
   TouchableWithoutFeedback,
+  Pressable,
 } from 'react-native';
 import React, {useState} from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {getCameraGalleryPermissions} from '../../utils/PermissionsFuncs';
 import {
   primaryColor,
   descColor,
@@ -16,6 +19,7 @@ import {
 
 export default function Nickname({navigation}) {
   const [nickname, setNickname] = useState<string>('');
+  const [userImage, setUserImage] = useState();
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -47,7 +51,7 @@ export default function Nickname({navigation}) {
   };
 
   const getUserImgage = () => {
-    console.log('imgee!');
+    getCameraGalleryPermissions(setUserImage);
   };
 
   const nextPageMove = () => {
@@ -61,9 +65,14 @@ export default function Nickname({navigation}) {
         <Text style={styles.headertitle}>처음이신가요?</Text>
       </View>
       <View style={styles.body}>
-        <TouchableWithoutFeedback onPress={getUserImgage}>
-          <View style={styles.circle} />
-        </TouchableWithoutFeedback>
+        <Pressable onPress={getUserImgage}>
+          <View style={styles.user_img}>
+            <View style={styles.circle} />
+            <View style={styles.circle_icon}>
+              <MaterialCommunityIcons name="camera-plus-outline" size={50} />
+            </View>
+          </View>
+        </Pressable>
         <View style={{width: '100%'}}>
           <Text style={styles.nickname}>닉네임</Text>
           <TextInput
@@ -115,6 +124,10 @@ const styles = StyleSheet.create({
     color: primaryColor,
     ...title,
   },
+  user_img: {
+    width: 150,
+    height: 150,
+  },
   circle: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -122,6 +135,11 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 150,
+  },
+  circle_icon: {
+    position: 'absolute',
+    left: 100,
+    top: 100,
   },
   nickname: {
     color: 'black',
