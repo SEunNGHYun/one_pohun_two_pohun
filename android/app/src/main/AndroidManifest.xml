@@ -19,6 +19,7 @@
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
         android:exported="true">
+        <!-- android:windowSoftInputMode="adjustResize" keyboard 설정 때문에 일단 삭제--> 
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />

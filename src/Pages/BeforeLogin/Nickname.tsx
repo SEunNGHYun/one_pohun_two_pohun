@@ -5,8 +5,10 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   Pressable,
+  Image,
+  Keyboard,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getCameraGalleryPermissions} from '../../utils/PermissionsFuncs';
 import {
@@ -17,11 +19,12 @@ import {
   grayColor,
 } from '../../utils/styles';
 
-export default function Nickname({navigation}) {
+export default function Nickname({navigation}): React.FC {
   const [nickname, setNickname] = useState<string>('');
-  const [userImage, setUserImage] = useState();
+  const [userImage, setUserImage] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
 
   const onchangeNickname = (text: string) => {
     setNickname(text);
@@ -59,6 +62,19 @@ export default function Nickname({navigation}) {
     navigation.navigate('Targetcost1');
   };
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.view}>
       <View style={styles.header}>
@@ -66,10 +82,32 @@ export default function Nickname({navigation}) {
       </View>
       <View style={styles.body}>
         <Pressable onPress={getUserImgage}>
-          <View style={styles.user_img}>
-            <View style={styles.circle} />
-            <View style={styles.circle_icon}>
-              <MaterialCommunityIcons name="camera-plus-outline" size={50} />
+          <View
+            style={
+              keyboardStatus
+                ? styles.resize_user_img_backgroundBox
+                : styles.user_img_backgroundBox
+            }>
+            <View style={keyboardStatus ? styles.re_circle : styles.circle}>
+              {userImage?.assets && (
+                <Image
+                  resizeMode="contain"
+                  resizeMethod="scale"
+                  style={
+                    keyboardStatus ? styles.re_userImage : styles.userImage
+                  }
+                  source={{uri: userImage.assets[0].uri}}
+                />
+              )}
+            </View>
+            <View
+              style={
+                keyboardStatus ? styles.re_circle_icon : styles.circle_icon
+              }>
+              <MaterialCommunityIcons
+                name="camera-plus-outline"
+                size={keyboardStatus ? 50 : 70}
+              />
             </View>
           </View>
         </Pressable>
@@ -113,7 +151,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 7,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
   },
   foot: {
     flex: 2,
@@ -124,7 +161,13 @@ const styles = StyleSheet.create({
     color: primaryColor,
     ...title,
   },
-  user_img: {
+  user_img_backgroundBox: {
+    marginVertical: 25,
+    width: 200,
+    height: 200,
+  },
+  resize_user_img_backgroundBox: {
+    marginVertical: 25,
     width: 150,
     height: 150,
   },
@@ -132,18 +175,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: grayColor,
+    width: 200,
+    height: 200,
+    borderRadius: 200,
+  },
+  re_circle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: grayColor,
     width: 150,
     height: 150,
     borderRadius: 150,
   },
+  userImage: {
+    width: 198,
+    height: 198,
+    borderRadius: 198,
+  },
+  re_userImage: {
+    width: 148,
+    height: 148,
+    borderRadius: 148,
+  },
   circle_icon: {
+    position: 'absolute',
+    left: 130,
+    top: 130,
+  },
+  re_circle_icon: {
     position: 'absolute',
     left: 100,
     top: 100,
   },
   nickname: {
-    color: 'black',
-    marginBottom: 5,
+    color: primaryColor,
+    marginBottom: 12,
     ...subtitle,
   },
   inputarea: {

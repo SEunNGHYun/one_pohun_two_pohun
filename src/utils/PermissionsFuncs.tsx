@@ -1,7 +1,13 @@
+import React from 'react';
 import {PermissionsAndroid} from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {
+  ImagePickerResponse,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 
-export const getCameraGalleryPermissions = async callback => {
+export const getCameraGalleryPermissions = async (
+  callback: React.Dispatch<React.SetStateAction<undefined>>,
+) => {
   try {
     const granted = await PermissionsAndroid.requestMultiple([
       PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
@@ -13,16 +19,15 @@ export const getCameraGalleryPermissions = async callback => {
       // granted['android.permission.CAMERA'] === 'granted' &&
       granted['android.permission.READ_EXTERNAL_STORAGE'] === 'granted'
     ) {
-      const result = await launchImageLibrary(
+      launchImageLibrary(
         {
           selectionLimit: 0,
           mediaType: 'photo',
           includeBase64: false,
-          includeExtra: true,
+          includeExtra: false,
         },
         callback,
-      );
-      console.log('result', result);
+      ); // 하지만 예제에서는 이렇게 하는걸...
     } else {
       console.log('노놉');
     }
