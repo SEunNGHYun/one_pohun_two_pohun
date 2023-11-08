@@ -50,9 +50,22 @@ export type PigStackParamList = {
 };
 
 export type BeforeLoginStackParamList = {
-  Targetcost2More: undefined;
-  Targetcost2Less: undefined;
-  Targetcost1: undefined;
+  Targetcost2More: {
+    userImage: string | null;
+    nickname: string;
+    million: number;
+    thousand: number;
+  };
+  Targetcost2Less: {
+    userImage: string | null;
+    nickname: string;
+    million: number;
+    thousand: number;
+  };
+  Targetcost1: {
+    userImage: string | null;
+    nickname: string;
+  };
   Nickname: undefined;
 };
 
@@ -118,14 +131,12 @@ function TabNavigation() {
   const {Navigator, Screen} = MainTab;
 
   return (
-    <Navigator
-      activeColor={primaryColor}
-      inactiveColor={descColor}
-      labeled={false}>
+    <Navigator activeColor={primaryColor} inactiveColor={descColor}>
       <Screen
         name="MainStack"
         component={MainNavigation}
         options={{
+          title: '홈',
           tabBarIcon: ({_, color}) => (
             <MaterialCommunityIcons name="home" color={color} size={26} />
           ),
@@ -135,6 +146,7 @@ function TabNavigation() {
         name="Pigs"
         component={PigNavigation}
         options={{
+          title: '배틀',
           tabBarIcon: ({_, color}) => (
             <MaterialCommunityIcons name="piggy-bank" color={color} size={26} />
           ),
@@ -144,6 +156,7 @@ function TabNavigation() {
         name="Settings"
         component={Settings}
         options={{
+          title: '설정',
           tabBarIcon: ({_, color}) => (
             <MaterialCommunityIcons name="cog" color={color} size={26} />
           ),

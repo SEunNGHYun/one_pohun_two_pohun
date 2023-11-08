@@ -1,13 +1,17 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useRecoilValue} from 'recoil';
+import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import {AvgDayCostState} from '../../recoils/states';
 import {primaryColor, descColor, title, subtitle} from '../../utils/styles';
 import {moneyRange} from '../../utils/datas';
 // DropDownPicker.setListMode('SCROLLVIEW');
+type Props = NativeStackScreenProps<BeforeLoginStackParamList, 'Targetcost1'>;
 
-export default function Targetcost1({navigation}) {
+export default function Targetcost1({route, navigation}: Props) {
+  const {userImage, nickname} = route.params;
   const [million, setMillion] = useState<number>(-1);
   const [thousand, setThousand] = useState<number>(-1);
   const [mOpen, setMOpen] = useState<boolean>(false);
@@ -28,9 +32,19 @@ export default function Targetcost1({navigation}) {
   const nextPageMove = useCallback(() => {
     const userDayCost: number = million + 0.1 * thousand;
     if (AvgDayCost < userDayCost) {
-      navigation.navigate('Targetcost2More', {/*nickname*/ million, thousand});
+      navigation.navigate('Targetcost2More', {
+        userImage,
+        nickname,
+        million,
+        thousand,
+      });
     } else {
-      navigation.navigate('Targetcost2Less', {/*nickname*/ million, thousand});
+      navigation.navigate('Targetcost2Less', {
+        userImage,
+        nickname,
+        million,
+        thousand,
+      });
     }
   }, [AvgDayCost, million, thousand, navigation]);
 

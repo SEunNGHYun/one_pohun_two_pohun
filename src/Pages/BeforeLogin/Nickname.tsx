@@ -8,8 +8,9 @@ import {
   Image,
   Keyboard,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import {getCameraGalleryPermissions} from '../../utils/PermissionsFuncs';
 import {
   primaryColor,
@@ -25,6 +26,10 @@ export default function Nickname({navigation}): React.FC {
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const showModal = useCallback(() => setModalVisible(true), []);
+  const hideModal = useCallback(() => setModalVisible(false), []);
 
   const onchangeNickname = (text: string) => {
     setNickname(text);
@@ -55,14 +60,29 @@ export default function Nickname({navigation}): React.FC {
 
   const getUserImgage = () => {
     getCameraGalleryPermissions(setUserImage);
+    hideModal();
+  };
+
+  const getDefaultImage = () => {
+    setUserImage({
+      assets: [
+        {
+          uri: 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png',
+        },
+      ],
+    });
+    hideModal();
   };
 
   const nextPageMove = () => {
-    console.log('image + nickname move');
-    navigation.navigate('Targetcost1');
+    navigation.navigate('Targetcost1', {
+      userImage,
+      nickname,
+    });
   };
 
   useEffect(() => {
+    //키보드 활성 상태인지 체크
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
     });
@@ -76,64 +96,86 @@ export default function Nickname({navigation}): React.FC {
   }, []);
 
   return (
-    <View style={styles.view}>
-      <View style={styles.header}>
-        <Text style={styles.headertitle}>처음이신가요?</Text>
-      </View>
-      <View style={styles.body}>
-        <Pressable onPress={getUserImgage}>
-          <View
-            style={
-              keyboardStatus
-                ? styles.resize_user_img_backgroundBox
-                : styles.user_img_backgroundBox
-            }>
-            <View style={keyboardStatus ? styles.re_circle : styles.circle}>
-              {userImage?.assets && (
-                <Image
-                  resizeMode="contain"
-                  resizeMethod="scale"
-                  style={
-                    keyboardStatus ? styles.re_userImage : styles.userImage
-                  }
-                  source={{uri: userImage.assets[0].uri}}
-                />
-              )}
-            </View>
+    <PaperProvider>
+      <View style={styles.view}>
+        <View style={styles.header}>
+          <Text style={styles.headertitle}>처음이신가요?</Text>
+        </View>
+        <View style={styles.body}>
+          <Pressable onPress={showModal}>
             <View
               style={
-                keyboardStatus ? styles.re_circle_icon : styles.circle_icon
+                keyboardStatus
+                  ? styles.resize_user_img_backgroundBox
+                  : styles.user_img_backgroundBox
               }>
-              <MaterialCommunityIcons
-                name="camera-plus-outline"
-                size={keyboardStatus ? 50 : 70}
-              />
+              <View style={keyboardStatus ? styles.re_circle : styles.circle}>
+                {userImage?.assets && (
+                  <Image
+                    resizeMode="contain"
+                    resizeMethod="scale"
+                    style={
+                      keyboardStatus ? styles.re_userImage : styles.userImage
+                    }
+                    source={{uri: userImage.assets[0].uri}}
+                  />
+                )}
+              </View>
+              <View
+                style={
+                  keyboardStatus ? styles.re_circle_icon : styles.circle_icon
+                }>
+                <MaterialCommunityIcons
+                  name="camera-plus-outline"
+                  size={keyboardStatus ? 50 : 70}
+                />
+              </View>
             </View>
+          </Pressable>
+          <View style={{width: '100%'}}>
+            <Text style={styles.nickname}>닉네임</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={onchangeNickname}
+              value={nickname}
+              placeholder=""
+              maxLength={10}
+            />
+            <Text
+              style={!error && visible ? {color: '#ff4f4f'} : styles.desctext}>
+              2~10자이내 특수문자,공백제외 (\~@#$%^&*)
+            </Text>
           </View>
-        </Pressable>
-        <View style={{width: '100%'}}>
-          <Text style={styles.nickname}>닉네임</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={onchangeNickname}
-            value={nickname}
-            placeholder=""
-            maxLength={10}
-          />
-          <Text
-            style={!error && visible ? {color: '#ff4f4f'} : styles.desctext}>
-            2~10자이내 특수문자,공백제외 (\~@#$%^&*)
-          </Text>
+        </View>
+        <View style={keyboardStatus ? styles.re_foot : styles.foot}>
+          <TouchableWithoutFeedback disabled={!error} onPress={nextPageMove}>
+            <Text style={!error ? styles.disabledpress : styles.nextpress}>
+              다음
+            </Text>
+          </TouchableWithoutFeedback>
         </View>
       </View>
-      <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={!error} onPress={nextPageMove}>
-          <Text style={!error ? styles.disabledpress : styles.nextpress}>
-            다음
-          </Text>
-        </TouchableWithoutFeedback>
-      </View>
-    </View>
+      <Portal>
+        <Modal
+          visible={modalVisible}
+          onDismiss={hideModal}
+          contentContainerStyle={styles.modalContainer}>
+          <Pressable onPress={getUserImgage}>
+            <View style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>이미지 불러오가</Text>
+            </View>
+          </Pressable>
+          <View
+            style={{width: '100%', height: 0.5, backgroundColor: grayColor}}
+          />
+          <Pressable onPress={getDefaultImage}>
+            <View style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>기본 이미지 선택하기</Text>
+            </View>
+          </Pressable>
+        </Modal>
+      </Portal>
+    </PaperProvider>
   );
 }
 
@@ -157,6 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
   },
+  re_foot: {position: 'absolute', bottom: 12, right: 40},
   headertitle: {
     color: primaryColor,
     ...title,
@@ -167,7 +210,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   resize_user_img_backgroundBox: {
-    marginVertical: 25,
+    marginVertical: 15,
     width: 150,
     height: 150,
   },
@@ -233,5 +276,16 @@ const styles = StyleSheet.create({
   disabledpress: {
     ...subtitle,
     color: descColor,
+  },
+  modalContainer: {
+    margin: 20,
+    backgroundColor: 'white',
+  },
+  modalButton: {
+    paddingVertical: 28,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'black',
   },
 });
