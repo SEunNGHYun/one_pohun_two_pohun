@@ -31,16 +31,8 @@ export default function Nickname({navigation}): React.FC {
   const showModal = useCallback(() => setModalVisible(true), []);
   const hideModal = useCallback(() => setModalVisible(false), []);
 
-  const onchangeNickname = (text: string) => {
-    setNickname(text);
-    let check = check_nickname(text);
-    if (check) {
-      setVisible(true); // 처음 닉네임 유효성검사 안해도 빨간색뜨는 기능 수정하기 위해 넣음
-    }
-    setError(check);
-  };
-
   const check_nickname = (text: string) => {
+    //닉네임 유효성검사
     const trim_nickname = text.trim();
 
     if (trim_nickname.length < 2 || trim_nickname.length > 10) {
@@ -56,6 +48,15 @@ export default function Nickname({navigation}): React.FC {
     }
 
     return true;
+  };
+
+  const onchangeNickname = (text: string) => {
+    setNickname(text);
+    let check = check_nickname(text);
+    if (check) {
+      setVisible(true); // 처음 닉네임 유효성검사 안해도 빨간색뜨는 기능 수정하기 위해 넣음
+    }
+    setError(check);
   };
 
   const getUserImgage = () => {
@@ -148,7 +149,9 @@ export default function Nickname({navigation}): React.FC {
           </View>
         </View>
         <View style={keyboardStatus ? styles.re_foot : styles.foot}>
-          <TouchableWithoutFeedback disabled={!error} onPress={nextPageMove}>
+          <TouchableWithoutFeedback
+            disabled={!error && !userImage}
+            onPress={nextPageMove}>
             <Text style={!error ? styles.disabledpress : styles.nextpress}>
               다음
             </Text>

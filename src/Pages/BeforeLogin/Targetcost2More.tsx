@@ -1,35 +1,47 @@
 import React, {useMemo, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
 
 import {
   primaryColor,
-  grayColor,
+  lightGrayColor,
   title2,
   subtitle,
   descColor,
   defaultFont,
 } from '../../utils/styles';
 
-// DropDownPicker.setListMode('SCROLLVIEW');
+type Props = NativeStackScreenProps<
+  BeforeLoginStackParamList,
+  'Targetcost2More'
+>;
 
-export default function Targetcost2More({navigation}) {
-  const [choice, setChoice] = useState<number>(-1);
-  const [disable, setDisable] = useState<boolean>(false);
+export default function Targetcost2More({route, navigation}: Props) {
+  const [choice, setChoice] = useState<string>('');
+  const [cost, setCost] = useState(0);
+  const [disable, setDisable] = useState<boolean>(true);
 
-  const discountChoice = () => {
-    //전페이지에서 설정한 값에서 3000원 절약된 가격 넘겨주기
-    //회원가입 성공
-    navigation.navigate('Targetcost2', {
-      /*nickname,  million, thousand - 3*/
-    });
-  };
-  const noDiscoutChoice = () => {
-    navigation.navigate('Targetcost2', {
-      /*nickname, million, thousand*/
-    });
-  };
-  const nextPageMove = () => {};
+  const pressChoiceButt = useCallback(
+    (t: 'yes' | 'no'): void => {
+      const {userCost} = route.params;
+
+      setChoice(t);
+      setDisable(false);
+
+      if (t === 'yes') {
+        setCost(userCost - 0.3); // 3천원 부터 절약
+      } else if (t === 'no') {
+        setCost(userCost); //그대로
+      }
+    },
+    [route],
+  );
+
+  const nextPageMove = useCallback(() => {
+    console.log('회원가입 성공');
+  }, [navigation]);
 
   return (
     <View style={styles.view}>
@@ -41,14 +53,34 @@ export default function Targetcost2More({navigation}) {
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
         <Text style={styles.requestFont}>" 절약 " 해보실래요?</Text>
         <View style={styles.discountButtonView}>
-          <TouchableWithoutFeedback onPress={discountChoice}>
-            <View style={styles.discountButton}>
-              <Text style={styles.buttonFont}>네!</Text>
+          <TouchableWithoutFeedback onPress={() => pressChoiceButt('yes')}>
+            <View
+              style={
+                choice === 'yes' ? styles.ablePress : styles.discountButton
+              }>
+              <Text
+                style={
+                  choice === 'yes'
+                    ? {...styles.buttonFont, color: 'white'}
+                    : styles.buttonFont
+                }>
+                네!
+              </Text>
             </View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress={noDiscoutChoice}>
-            <View style={styles.discountButton}>
-              <Text style={styles.buttonFont}>그대로 갈게요</Text>
+          <TouchableWithoutFeedback onPress={() => pressChoiceButt('no')}>
+            <View
+              style={
+                choice === 'no' ? styles.ablePress : styles.discountButton
+              }>
+              <Text
+                style={
+                  choice === 'no'
+                    ? {...styles.buttonFont, color: 'white'}
+                    : styles.buttonFont
+                }>
+                그대로 갈게요
+              </Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -58,8 +90,8 @@ export default function Targetcost2More({navigation}) {
         </Text>
       </View>
       <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={!disable} onPress={nextPageMove}>
-          <Text style={!disable ? styles.disabledpress : styles.nextpress}>
+        <TouchableWithoutFeedback disabled={disable} onPress={nextPageMove}>
+          <Text style={disable ? styles.disabledpress : styles.nextpress}>
             다음
           </Text>
         </TouchableWithoutFeedback>
@@ -107,7 +139,7 @@ const styles = StyleSheet.create({
   discountButton: {
     width: 150,
     height: 48,
-    backgroundColor: grayColor,
+    backgroundColor: lightGrayColor,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -123,5 +155,13 @@ const styles = StyleSheet.create({
   disabledpress: {
     ...subtitle,
     color: descColor,
+  },
+  ablePress: {
+    width: 150,
+    height: 48,
+    backgroundColor: primaryColor,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

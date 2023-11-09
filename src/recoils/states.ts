@@ -7,5 +7,5 @@ export const LoginState = atom<boolean>({
 
 export const AvgDayCostState = atom<number>({
   key: 'AvgDayCost',
-  default: 0,
+  default: 1.0,
 });

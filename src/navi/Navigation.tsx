@@ -53,14 +53,12 @@ export type BeforeLoginStackParamList = {
   Targetcost2More: {
     userImage: string | null;
     nickname: string;
-    million: number;
-    thousand: number;
+    userCost: number;
   };
   Targetcost2Less: {
     userImage: string | null;
     nickname: string;
-    million: number;
-    thousand: number;
+    userCost: number;
   };
   Targetcost1: {
     userImage: string | null;

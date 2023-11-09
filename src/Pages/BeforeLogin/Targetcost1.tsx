@@ -12,41 +12,40 @@ type Props = NativeStackScreenProps<BeforeLoginStackParamList, 'Targetcost1'>;
 
 export default function Targetcost1({route, navigation}: Props) {
   const {userImage, nickname} = route.params;
-  const [million, setMillion] = useState<number>(-1);
-  const [thousand, setThousand] = useState<number>(-1);
-  const [mOpen, setMOpen] = useState<boolean>(false);
-  const [tOpen, setTOpen] = useState<boolean>(false);
+  const [tenWon, setTenWon] = useState<number>(-1);
+  const [oneWon, setOneWon] = useState<number>(-1);
+  const [tOpen, setMOpen] = useState<boolean>(false);
+  const [oOpen, setOOpen] = useState<boolean>(false);
 
-  const AvgDayCost = useRecoilValue<number>(AvgDayCostState);
+  const AvgDayCost = useRecoilValue<number>(AvgDayCostState); //전역에서 평균 소비가격 저장
   const [disable, setDisable] = useState<boolean>(false);
 
   const onChangeMoney = useCallback(() => {
-    if (million <= 0 && thousand <= 0) {
+    if (tenWon <= 0 && oneWon <= 0) {
       // 초기값 -1이 아니면서 두가지 모두 0이 들어오면 안될경우
       setDisable(false);
     } else {
       setDisable(true);
     }
-  }, [million, thousand]);
+  }, [tenWon, oneWon]);
 
   const nextPageMove = useCallback(() => {
-    const userDayCost: number = million + 0.1 * thousand;
+    const userDayCost: number = tenWon + 0.1 * oneWon; //하루 소비금액을 소숫점 ex) 3.4형식
+
     if (AvgDayCost < userDayCost) {
       navigation.navigate('Targetcost2More', {
         userImage,
         nickname,
-        million,
-        thousand,
+        userCost: userDayCost, // 하루 소비금액
       });
     } else {
       navigation.navigate('Targetcost2Less', {
         userImage,
         nickname,
-        million,
-        thousand,
+        userCost: userDayCost,
       });
     }
-  }, [AvgDayCost, million, thousand, navigation]);
+  }, [userImage, nickname, AvgDayCost, tenWon, oneWon, navigation]);
 
   return (
     <View style={styles.view}>
@@ -57,23 +56,23 @@ export default function Targetcost1({route, navigation}: Props) {
         <View style={styles.costView}>
           <DropDownPicker
             placeholder="0"
-            open={mOpen}
-            value={million}
+            open={tOpen}
+            value={tenWon}
             items={moneyRange}
             setOpen={setMOpen}
-            setValue={setMillion}
+            setValue={setTenWon}
             onChangeValue={onChangeMoney}
             style={styles.dropdown}
             containerStyle={{width: 85}}
           />
           <Text style={styles.choiceCostFont}>만</Text>
           <DropDownPicker
-            open={tOpen}
+            open={oOpen}
             placeholder="0"
-            value={thousand}
+            value={oneWon}
             items={moneyRange}
-            setOpen={setTOpen}
-            setValue={setThousand}
+            setOpen={setOOpen}
+            setValue={setOneWon}
             onChangeValue={onChangeMoney}
             style={styles.dropdown}
             containerStyle={{width: 85}}
