@@ -1,5 +1,6 @@
 import React, {useMemo, useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import auth from '@react-native-firebase/auth';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';

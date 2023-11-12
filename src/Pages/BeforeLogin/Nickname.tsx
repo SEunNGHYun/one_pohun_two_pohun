@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Modal, Portal, PaperProvider} from 'react-native-paper';
+import {Modal, Portal, PaperProvider, Snackbar} from 'react-native-paper';
 import {getCameraGalleryPermissions} from '../../utils/PermissionsFuncs';
 import {
   primaryColor,
@@ -19,19 +19,21 @@ import {
   subtitle,
   grayColor,
 } from '../../utils/styles';
+import firestore from '@react-native-firebase/firestore';
 
 export default function Nickname({navigation}): React.FC {
   const [nickname, setNickname] = useState<string>('');
-  const [userImage, setUserImage] = useState<any>(null);
+  const [userImage, setUserImage] = useState<any>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [snackVisible, setSnackVisible] = useState<boolean>(false);
 
   const showModal = useCallback(() => setModalVisible(true), []);
   const hideModal = useCallback(() => setModalVisible(false), []);
 
-  const check_nickname = (text: string) => {
+  const check_nickname = useCallback((text: string) => {
     //닉네임 유효성검사
     const trim_nickname = text.trim();
 
@@ -48,23 +50,26 @@ export default function Nickname({navigation}): React.FC {
     }
 
     return true;
-  };
+  }, []);
 
-  const onchangeNickname = (text: string) => {
-    setNickname(text);
-    let check = check_nickname(text);
-    if (check) {
-      setVisible(true); // 처음 닉네임 유효성검사 안해도 빨간색뜨는 기능 수정하기 위해 넣음
-    }
-    setError(check);
-  };
+  const onchangeNickname = useCallback(
+    (text: string) => {
+      setNickname(text);
+      let check = check_nickname(text);
+      if (check) {
+        setVisible(true); // 처음 닉네임 유효성검사 안해도 빨간색뜨는 기능 수정하기 위해 넣음
+      }
+      setError(check);
+    },
+    [check_nickname],
+  );
 
-  const getUserImgage = () => {
+  const getUserImgage = useCallback(() => {
     getCameraGalleryPermissions(setUserImage);
     hideModal();
-  };
+  }, [hideModal]);
 
-  const getDefaultImage = () => {
+  const getDefaultImage = useCallback(() => {
     setUserImage({
       assets: [
         {
@@ -73,14 +78,25 @@ export default function Nickname({navigation}): React.FC {
       ],
     });
     hideModal();
-  };
+  }, [hideModal]);
 
-  const nextPageMove = () => {
-    navigation.navigate('Targetcost1', {
-      userImage,
-      nickname,
-    });
-  };
+  const nextPageMove = useCallback(async (): Promise<void> => {
+    //db user에서 닉네임 중복 페크
+    const userSnapShot = firestore().collection('users');
+    try {
+      const user = await userSnapShot.doc(nickname).get();
+      if (!user.data()) {
+        navigation.navigate('Targetcost1', {
+          userImage,
+          nickname,
+        });
+      } else {
+        setSnackVisible(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [navigation, nickname, userImage]);
 
   useEffect(() => {
     //키보드 활성 상태인지 체크
@@ -150,9 +166,13 @@ export default function Nickname({navigation}): React.FC {
         </View>
         <View style={keyboardStatus ? styles.re_foot : styles.foot}>
           <TouchableWithoutFeedback
-            disabled={!error && !userImage}
+            //닉네임 제외사항 없고 이미지 없으때 disable 하나라도 없거나 제외사항이면 true가 된다.
+            disabled={!error || !userImage}
             onPress={nextPageMove}>
-            <Text style={!error ? styles.disabledpress : styles.nextpress}>
+            <Text
+              style={
+                !error || !userImage ? styles.disabledpress : styles.nextpress
+              }>
               다음
             </Text>
           </TouchableWithoutFeedback>
@@ -178,6 +198,9 @@ export default function Nickname({navigation}): React.FC {
           </Pressable>
         </Modal>
       </Portal>
+      <Snackbar visible={snackVisible} onDismiss={() => setSnackVisible(false)}>
+        사용하고있는 닉네임입니다.
+      </Snackbar>
     </PaperProvider>
   );
 }
