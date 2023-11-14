@@ -1,8 +1,11 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useSetRecoilState} from 'recoil';
+import firestore from '@react-native-firebase/firestore';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
+import {LoginState} from '../../recoils/states';
 import {
   primaryColor,
   lightGrayColor,
@@ -17,10 +20,11 @@ type Props = NativeStackScreenProps<
   'Targetcost2Less'
 >;
 
-export default function Targetcost2Less({route, navigation}: Props) {
+export default function Targetcost2Less({route}: Props) {
   const [choice, setChoice] = useState<string>('');
   const [cost, setCost] = useState(0);
   const [disable, setDisable] = useState<boolean>(true);
+  const LoginSuccess = useSetRecoilState(LoginState);
 
   const pressChoiceButt = useCallback(
     (t: 'yes' | 'no'): void => {
@@ -29,7 +33,11 @@ export default function Targetcost2Less({route, navigation}: Props) {
       setChoice(t);
       setDisable(false);
       if (t === 'yes') {
-        setCost(userCost - 0.3); // 3천원 부터 절약
+        if (userCost > 0.3) {
+          setCost(userCost - 0.3); // 3천원 부터 절약
+        } else {
+          setCost(0);
+        }
       } else if (t === 'no') {
         setCost(userCost); //그대로
       }
@@ -37,9 +45,23 @@ export default function Targetcost2Less({route, navigation}: Props) {
     [route],
   );
 
-  const nextPageMove = useCallback(() => {
-    console.log('회원가입 성공');
-  }, [navigation]);
+  const successSignUp = useCallback(async () => {
+    const {img, nickname, userCost} = route.params;
+    console.log(cost);
+    const userSnapShot = firestore().collection('users');
+    try {
+      userSnapShot.doc().set({
+        nickname,
+        img,
+        current_cost: userCost,
+        goal_cost: cost,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      LoginSuccess(true);
+    }
+  }, [LoginSuccess, route, cost]);
 
   return (
     <View style={styles.view}>
@@ -88,7 +110,7 @@ export default function Targetcost2Less({route, navigation}: Props) {
         </Text>
       </View>
       <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={disable} onPress={nextPageMove}>
+        <TouchableWithoutFeedback disabled={disable} onPress={successSignUp}>
           <Text style={disable ? styles.disabledpress : styles.nextpress}>
             다음
           </Text>

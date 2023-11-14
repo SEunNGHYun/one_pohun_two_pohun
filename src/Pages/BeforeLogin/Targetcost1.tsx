@@ -11,14 +11,13 @@ import {moneyRange} from '../../utils/datas';
 type Props = NativeStackScreenProps<BeforeLoginStackParamList, 'Targetcost1'>;
 
 export default function Targetcost1({route, navigation}: Props) {
-  const {userImage, nickname} = route.params;
-  const [tenWon, setTenWon] = useState<number>(-1);
-  const [oneWon, setOneWon] = useState<number>(-1);
+  const [tenWon, setTenWon] = useState<number>(0);
+  const [oneWon, setOneWon] = useState<number>(0);
   const [tOpen, setMOpen] = useState<boolean>(false);
   const [oOpen, setOOpen] = useState<boolean>(false);
+  const [disable, setDisable] = useState<boolean>(false);
 
   const AvgDayCost = useRecoilValue<number>(AvgDayCostState); //전역에서 평균 소비가격 저장
-  const [disable, setDisable] = useState<boolean>(false);
 
   const onChangeMoney = useCallback(() => {
     if (tenWon <= 0 && oneWon <= 0) {
@@ -30,22 +29,23 @@ export default function Targetcost1({route, navigation}: Props) {
   }, [tenWon, oneWon]);
 
   const nextPageMove = useCallback(() => {
+    const {img, nickname} = route.params;
     const userDayCost: number = tenWon + 0.1 * oneWon; //하루 소비금액을 소숫점 ex) 3.4형식
 
     if (AvgDayCost < userDayCost) {
       navigation.navigate('Targetcost2More', {
-        userImage,
+        img,
         nickname,
         userCost: userDayCost, // 하루 소비금액
       });
     } else {
       navigation.navigate('Targetcost2Less', {
-        userImage,
+        img,
         nickname,
         userCost: userDayCost,
       });
     }
-  }, [userImage, nickname, AvgDayCost, tenWon, oneWon, navigation]);
+  }, [route, AvgDayCost, tenWon, oneWon, navigation]);
 
   return (
     <View style={styles.view}>
@@ -58,6 +58,7 @@ export default function Targetcost1({route, navigation}: Props) {
             placeholder="0"
             open={tOpen}
             value={tenWon}
+            onPress={() => setOOpen(false)}
             items={moneyRange}
             setOpen={setMOpen}
             setValue={setTenWon}
@@ -70,6 +71,7 @@ export default function Targetcost1({route, navigation}: Props) {
             open={oOpen}
             placeholder="0"
             value={oneWon}
+            onPress={() => setMOpen(false)}
             items={moneyRange}
             setOpen={setOOpen}
             setValue={setOneWon}

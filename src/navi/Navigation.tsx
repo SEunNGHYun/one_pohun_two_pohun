@@ -51,17 +51,17 @@ export type PigStackParamList = {
 
 export type BeforeLoginStackParamList = {
   Targetcost2More: {
-    userImage: string | null;
+    img: string | null;
     nickname: string;
     userCost: number;
   };
   Targetcost2Less: {
-    userImage: string | null;
+    img: string | null;
     nickname: string;
     userCost: number;
   };
   Targetcost1: {
-    userImage: string | null;
+    img: string | null;
     nickname: string;
   };
   Nickname: undefined;

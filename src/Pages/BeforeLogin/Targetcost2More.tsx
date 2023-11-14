@@ -41,7 +41,7 @@ export default function Targetcost2More({route, navigation}: Props) {
   );
 
   const nextPageMove = useCallback(() => {
-    console.log('회원가입 성공');
+    
   }, [navigation]);
 
   return (
