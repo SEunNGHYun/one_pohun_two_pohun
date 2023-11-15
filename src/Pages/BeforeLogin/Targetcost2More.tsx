@@ -1,10 +1,12 @@
-import React, {useMemo, useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import {useSetRecoilState} from 'recoil';
+import firestore from '@react-native-firebase/firestore';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
-
+import {LoginState} from '../../recoils/states';
 import {
   primaryColor,
   lightGrayColor,
@@ -19,10 +21,12 @@ type Props = NativeStackScreenProps<
   'Targetcost2More'
 >;
 
-export default function Targetcost2More({route, navigation}: Props) {
+export default function Targetcost2More({route}: Props) {
   const [choice, setChoice] = useState<string>('');
   const [cost, setCost] = useState(0);
   const [disable, setDisable] = useState<boolean>(true);
+
+  const LoginSuccess = useSetRecoilState(LoginState);
 
   const pressChoiceButt = useCallback(
     (t: 'yes' | 'no'): void => {
@@ -40,15 +44,32 @@ export default function Targetcost2More({route, navigation}: Props) {
     [route],
   );
 
-  const nextPageMove = useCallback(() => {
-    
-  }, [navigation]);
+  const successSignUp = useCallback(async () => {
+    const {img, nickname, userCost} = route.params;
+    const data = {
+      nickname,
+      img,
+      current_cost: userCost,
+      goal_cost: cost,
+    };
+    const userSnapShot = firestore().collection('users');
+    try {
+      userSnapShot.doc().set(data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      try {
+        await AsyncStorage.setItem('user_data', JSON.stringify(data));
+      } catch (err) {}
+      LoginSuccess(true);
+    }
+  }, [LoginSuccess, route, cost]);
 
   return (
     <View style={styles.view}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>다른 사용자보다</Text>
-        <UnderLineText txt="1만원" next="더" color={primaryColor} />
+        <UnderLineText txt="더 많이" color={primaryColor} />
         <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
@@ -80,7 +101,7 @@ export default function Targetcost2More({route, navigation}: Props) {
                     ? {...styles.buttonFont, color: 'white'}
                     : styles.buttonFont
                 }>
-                그대로 갈게요
+                유지할게요!
               </Text>
             </View>
           </TouchableWithoutFeedback>
@@ -91,7 +112,7 @@ export default function Targetcost2More({route, navigation}: Props) {
         </Text>
       </View>
       <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={disable} onPress={nextPageMove}>
+        <TouchableWithoutFeedback disabled={disable} onPress={successSignUp}>
           <Text style={disable ? styles.disabledpress : styles.nextpress}>
             다음
           </Text>

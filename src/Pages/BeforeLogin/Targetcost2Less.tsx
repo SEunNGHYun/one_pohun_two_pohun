@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSetRecoilState} from 'recoil';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
 import {LoginState} from '../../recoils/states';
@@ -47,18 +48,21 @@ export default function Targetcost2Less({route}: Props) {
 
   const successSignUp = useCallback(async () => {
     const {img, nickname, userCost} = route.params;
-    console.log(cost);
+    const data = {
+      nickname,
+      img,
+      current_cost: userCost,
+      goal_cost: cost,
+    };
     const userSnapShot = firestore().collection('users');
     try {
-      userSnapShot.doc().set({
-        nickname,
-        img,
-        current_cost: userCost,
-        goal_cost: cost,
-      });
+      userSnapShot.doc().set(data);
     } catch (err) {
       console.log(err);
     } finally {
+      try {
+        await AsyncStorage.setItem('user_data', JSON.stringify(data));
+      } catch (err) {}
       LoginSuccess(true);
     }
   }, [LoginSuccess, route, cost]);
@@ -67,7 +71,7 @@ export default function Targetcost2Less({route}: Props) {
     <View style={styles.view}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>다른 사용자보다</Text>
-        <UnderLineText txt="1만원" next="더 적게" color={primaryColor} />
+        <UnderLineText txt="더 적게" color={primaryColor} />
         <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
@@ -84,7 +88,7 @@ export default function Targetcost2Less({route}: Props) {
                     ? {...styles.buttonFont, color: 'white'}
                     : styles.buttonFont
                 }>
-                네!
+                더 절약할래요!
               </Text>
             </View>
           </TouchableWithoutFeedback>

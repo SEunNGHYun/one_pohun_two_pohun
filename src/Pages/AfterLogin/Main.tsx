@@ -36,6 +36,9 @@ export default function Main({navigation}: Props) {
           onDayPress={day => {
             setSelected(day.dateString);
           }}
+          theme={{
+            selectedDayBackgroundColor: primaryColor,
+          }}
           markedDates={{
             [selected]: {
               selected: true,

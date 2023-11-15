@@ -3,11 +3,9 @@ import {View, Text, StyleSheet} from 'react-native';
 
 export default function UnderLineText({
   txt,
-  next,
   color,
 }: {
   txt: string;
-  next: string;
   color: string;
 }) {
   return (
@@ -15,12 +13,6 @@ export default function UnderLineText({
       <View>
         <Text style={[styles.txt, {color}]}>{txt}</Text>
         <View style={[styles.underline, {backgroundColor: color}]} />
-      </View>
-      <View>
-        <Text style={[styles.txt, {color}]}>
-          {'\t'}
-          {next}
-        </Text>
       </View>
     </View>
   );

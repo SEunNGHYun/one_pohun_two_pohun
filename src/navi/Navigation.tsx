@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 
 import {useRecoilState} from 'recoil';
 import {NavigationContainer} from '@react-navigation/native';
@@ -11,6 +11,7 @@ import {
 } from '@react-navigation/native-stack';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {LoginState} from '../recoils/states';
 import Nickname from '../Pages/BeforeLogin/Nickname';
@@ -167,6 +168,19 @@ function TabNavigation() {
 export default function RootNavigation() {
   const [isLogin, setIsLogin] = useRecoilState(LoginState);
   const {Navigator, Screen} = RootStack;
+
+  const getLoginState = useCallback(async () => {
+    try {
+      const userData = await AsyncStorage.getItem('user_data');
+      if (userData != null) {
+        setIsLogin(true);
+      }
+    } catch (err) {}
+  }, [setIsLogin]);
+
+  useEffect(() => {
+    getLoginState();
+  }, [getLoginState]);
 
   return (
     <NavigationContainer>

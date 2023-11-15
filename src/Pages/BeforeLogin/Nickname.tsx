@@ -54,6 +54,9 @@ export default function Nickname({navigation}): React.FC {
 
   const onchangeNickname = useCallback(
     (text: string) => {
+      text = text.trim(); // 앞 뒤 공백제거
+      text = text.replace(' ', ''); // 문자열안에 공백제거
+
       setNickname(text);
       let check = check_nickname(text);
       if (check) {
@@ -113,102 +116,95 @@ export default function Nickname({navigation}): React.FC {
   }, []);
 
   return (
-    console.log(!error || !userImage),
-    (
-      <PaperProvider>
-        <View style={styles.view}>
-          <View style={styles.header}>
-            <Text style={styles.headertitle}>처음이신가요?</Text>
-          </View>
-          <View style={styles.body}>
-            <Pressable onPress={showModal}>
+    <PaperProvider>
+      <View style={styles.view}>
+        <View style={styles.header}>
+          <Text style={styles.headertitle}>처음이신가요?</Text>
+        </View>
+        <View style={styles.body}>
+          <Pressable onPress={showModal}>
+            <View
+              style={
+                keyboardStatus
+                  ? styles.resize_user_img_backgroundBox
+                  : styles.user_img_backgroundBox
+              }>
+              <View style={keyboardStatus ? styles.re_circle : styles.circle}>
+                {userImage?.assets && (
+                  <Image
+                    resizeMode="contain"
+                    resizeMethod="scale"
+                    style={
+                      keyboardStatus ? styles.re_userImage : styles.userImage
+                    }
+                    source={{uri: userImage.assets[0].uri}}
+                  />
+                )}
+              </View>
               <View
                 style={
-                  keyboardStatus
-                    ? styles.resize_user_img_backgroundBox
-                    : styles.user_img_backgroundBox
+                  keyboardStatus ? styles.re_circle_icon : styles.circle_icon
                 }>
-                <View style={keyboardStatus ? styles.re_circle : styles.circle}>
-                  {userImage?.assets && (
-                    <Image
-                      resizeMode="contain"
-                      resizeMethod="scale"
-                      style={
-                        keyboardStatus ? styles.re_userImage : styles.userImage
-                      }
-                      source={{uri: userImage.assets[0].uri}}
-                    />
-                  )}
-                </View>
-                <View
-                  style={
-                    keyboardStatus ? styles.re_circle_icon : styles.circle_icon
-                  }>
-                  <MaterialCommunityIcons
-                    name="camera-plus-outline"
-                    size={keyboardStatus ? 50 : 70}
-                  />
-                </View>
+                <MaterialCommunityIcons
+                  name="camera-plus-outline"
+                  size={keyboardStatus ? 50 : 70}
+                />
               </View>
-            </Pressable>
-            <View style={{width: '100%'}}>
-              <Text style={styles.nickname}>닉네임</Text>
-              <TextInput
-                style={styles.input}
-                onChangeText={onchangeNickname}
-                value={nickname}
-                placeholder=""
-                maxLength={10}
-              />
-              <Text
-                style={
-                  !error && visible ? {color: '#ff4f4f'} : styles.desctext
-                }>
-                2~10자이내 특수문자,공백제외 (\~@#$%^&*)
-              </Text>
             </View>
-          </View>
-          <View style={keyboardStatus ? styles.re_foot : styles.foot}>
-            <TouchableWithoutFeedback
-              //닉네임 제외사항 없고 이미지 없으때 disable 하나라도 없거나 제외사항이면 true가 된다.
-              disabled={!error || !userImage}
-              onPress={nextPageMove}>
-              <Text
-                style={
-                  !error || !userImage ? styles.disabledpress : styles.nextpress
-                }>
-                다음
-              </Text>
-            </TouchableWithoutFeedback>
+          </Pressable>
+          <View style={{width: '100%'}}>
+            <Text style={styles.nickname}>닉네임</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={onchangeNickname}
+              value={nickname}
+              placeholder=""
+              maxLength={10}
+            />
+            <Text
+              style={!error && visible ? {color: '#ff4f4f'} : styles.desctext}>
+              2~10자이내 특수문자,공백제외 (\~@#$%^&*)
+            </Text>
           </View>
         </View>
-        <Portal>
-          <Modal
-            visible={modalVisible}
-            onDismiss={hideModal}
-            contentContainerStyle={styles.modalContainer}>
-            <Pressable onPress={getUserImgage}>
-              <View style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>이미지 불러오가</Text>
-              </View>
-            </Pressable>
-            <View
-              style={{width: '100%', height: 0.5, backgroundColor: grayColor}}
-            />
-            <Pressable onPress={getDefaultImage}>
-              <View style={styles.modalButton}>
-                <Text style={styles.modalButtonText}>기본 이미지 선택하기</Text>
-              </View>
-            </Pressable>
-          </Modal>
-        </Portal>
-        <Snackbar
-          visible={snackVisible}
-          onDismiss={() => setSnackVisible(false)}>
-          사용중인 닉네임입니다.
-        </Snackbar>
-      </PaperProvider>
-    )
+        <View style={keyboardStatus ? styles.re_foot : styles.foot}>
+          <TouchableWithoutFeedback
+            //닉네임 제외사항 없고 이미지 없으때 disable 하나라도 없거나 제외사항이면 true가 된다.
+            disabled={!error || !userImage}
+            onPress={nextPageMove}>
+            <Text
+              style={
+                !error || !userImage ? styles.disabledpress : styles.nextpress
+              }>
+              다음
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
+      </View>
+      <Portal>
+        <Modal
+          visible={modalVisible}
+          onDismiss={hideModal}
+          contentContainerStyle={styles.modalContainer}>
+          <Pressable onPress={getUserImgage}>
+            <View style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>이미지 불러오기</Text>
+            </View>
+          </Pressable>
+          <View
+            style={{width: '100%', height: 0.5, backgroundColor: grayColor}}
+          />
+          <Pressable onPress={getDefaultImage}>
+            <View style={styles.modalButton}>
+              <Text style={styles.modalButtonText}>기본 이미지 선택하기</Text>
+            </View>
+          </Pressable>
+        </Modal>
+      </Portal>
+      <Snackbar visible={snackVisible} onDismiss={() => setSnackVisible(false)}>
+        사용중인 닉네임입니다.
+      </Snackbar>
+    </PaperProvider>
   );
 }
 
@@ -288,14 +284,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     ...subtitle,
   },
-  inputarea: {
-    flexDirection: 'row',
-  },
   input: {
-    borderWidth: 1,
+    borderWidth: 1.3,
+    borderColor: '#3d3d3d',
     paddingHorizontal: 10,
     borderRadius: 10,
-    marginBottom: 5,
+    marginBottom: 7,
     width: '100%',
     height: 48,
   },
@@ -312,6 +306,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     margin: 20,
+    borderRadius: 10,
     backgroundColor: 'white',
   },
   modalButton: {
@@ -319,6 +314,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
-    color: 'black',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#3d3d3d',
   },
 });
