@@ -14,7 +14,6 @@ import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
-
 export default function Main({navigation}: Props) {
   const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState('');
@@ -38,6 +37,13 @@ export default function Main({navigation}: Props) {
           }}
           theme={{
             selectedDayBackgroundColor: primaryColor,
+            todayTextColor: primaryColor,
+            textSectionTitleColor: primaryColor,
+            textMonthFontWeight: '600',
+            textDayFontWeight: '600',
+            textDayHeaderFontWeight: '600',
+            indicatorColor: primaryColor,
+            dayTextColor: '#2d4150',
           }}
           markedDates={{
             [selected]: {
@@ -45,6 +51,12 @@ export default function Main({navigation}: Props) {
               disableTouchEvent: true,
             },
           }}
+          hideArrows={true}
+          onDayLongPress={day => {
+            console.log('selected day', day);
+          }}
+          enableSwipeMonths={true}
+          hideExtraDays={false}
         />
         <Text style={styles.totalCostFont}>10월 총20,000원 사용</Text>
         <LineChart
