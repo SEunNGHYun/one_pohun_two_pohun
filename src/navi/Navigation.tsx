@@ -1,6 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 
-import {useRecoilState} from 'recoil';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
@@ -9,26 +8,27 @@ import {
   NativeStackScreenProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useRecoilState} from 'recoil';
+import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {LoginState} from '../recoils/states';
+import {SignupState} from '../recoils/states';
+//회원가입
 import Nickname from '../Pages/BeforeLogin/Nickname';
 import Targetcost1 from '../Pages/BeforeLogin/Targetcost1';
 import Targetcost2More from '../Pages/BeforeLogin/Targetcost2More';
 import Targetcost2Less from '../Pages/BeforeLogin/Targetcost2Less';
-
+// 메인
 import Main from '../Pages/AfterLogin/Main';
 import AddCost from '../Pages/AfterLogin/AddCost';
 import CostList from '../Pages/AfterLogin/CostList';
-// 메인
+//배틀
 import Pig from '../Pages/AfterLogin/Pigs/Pig';
 import MakePigBattleRoom from '../Pages/AfterLogin/Pigs/MakePigBattleRoom';
 import PigBattleRoom from '../Pages/AfterLogin/Pigs/PigBattleRoom';
 import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
-//배틀
-
+//세팅
 import Settings from '../Pages/AfterLogin/Settings';
 
 import {primaryColor, descColor} from '../utils/styles';
@@ -53,7 +53,7 @@ export type PigStackParamList = {
 export type BeforeLoginStackParamList = {
   Targetcost2More: {
     img: string | null;
-    nickname: string;
+    Kickname: string;
     userCost: number;
   };
   Targetcost2Less: {
@@ -75,8 +75,9 @@ export type AfterLoginTabParamList = {
 };
 
 export type RootStackParamList = {
-  afterLogin: undefined;
-  beforeLogin: undefined;
+  Splash: undefined;
+  AfterLogin: AfterLoginTabParamList;
+  BeforeLogin: BeforeLoginStackParamList;
 };
 
 const MainStack = createNativeStackNavigator<MainStackParamList>();
@@ -166,17 +167,22 @@ function TabNavigation() {
 }
 
 export default function RootNavigation() {
-  const [isLogin, setIsLogin] = useRecoilState(LoginState);
   const {Navigator, Screen} = RootStack;
+  const [isSignup, setIsSignup] = useRecoilState<boolean>(SignupState);
 
   const getLoginState = useCallback(async () => {
     try {
       const userData = await AsyncStorage.getItem('user_data');
       if (userData != null) {
-        setIsLogin(true);
+        setIsSignup(true);
+      } else {
+        setIsSignup(false);
       }
-    } catch (err) {}
-  }, [setIsLogin]);
+    } catch (err) {
+    } finally {
+      LottieSplashScreen.hide();
+    }
+  }, [setIsSignup]);
 
   useEffect(() => {
     getLoginState();
@@ -185,11 +191,8 @@ export default function RootNavigation() {
   return (
     <NavigationContainer>
       <Navigator screenOptions={options}>
-        {isLogin ? (
-          <Screen name="afterLogin" component={TabNavigation} />
-        ) : (
-          <Screen name="beforeLogin" component={BeforeLoginNavigation} />
-        )}
+        <Screen name="AfterLogin" component={TabNavigation} />
+        <Screen name="BeforeLogin" component={BeforeLoginNavigation} />
       </Navigator>
     </NavigationContainer>
   );
