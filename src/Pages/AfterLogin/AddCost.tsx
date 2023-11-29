@@ -8,9 +8,11 @@ import {
   grayColor,
   defaultFont,
 } from '../../utils/styles';
+import {day, date, month} from '../../utils/utils';
 
 export default function AddCost() {
   const [cost, setCost] = useState<string>('0');
+  const [viewCost, setViewCost] = useState<string>('0');
   const [open, setOpen] = useState<boolean>(false);
   const [categories, _] = useState([
     {label: '식비', value: '식비'},
@@ -21,27 +23,44 @@ export default function AddCost() {
   const onChangeCate = useCallback(() => {}, []);
   const onChangeCost = useCallback((text: string) => {
     setCost(text);
+    let reversedStr = text.replace(/\D/g, '').split('').reverse().join('');
+
+    // 3자리 단위로 쉼표 추가
+    let formattedStr = reversedStr.replace(/(\d{3})/g, '$1,');
+
+    // 다시 역순으로 변환하여 최종 결과 얻기12
+    let result = formattedStr.split('').reverse();
+    if (result[0] === ',') {
+      result = result.slice(1);
+    }
+    setViewCost(result.join(''));
   }, []);
+
+  const editViewCost = useCallback(() => {}, []);
+
   const onPressOkButt = useCallback(() => {}, []);
 
   return (
     <View style={styles.background}>
       <View style={styles.header}>
-        <Text style={styles.todayText}>10월 25일 화요일</Text>
+        <Text style={styles.todayText}>
+          {month}월 {date}일 {day}요일
+        </Text>
       </View>
       <View style={styles.body}>
         <View>
           <Text style={styles.desc}>지출액</Text>
           <TextInput
-            value={cost}
+            value={viewCost}
             style={styles.textInput}
             onChangeText={onChangeCost}
+            keyboardType="number-pad"
           />
         </View>
         <View>
-          <Text style={styles.desc}>분류</Text>
+          <Text style={styles.desc}>지출 분류</Text>
           <DropDownPicker
-            placeholder="지출금에 붕류를 고르시오"
+            placeholder="지출금에 분류를 고르시오"
             open={open}
             value={checkCate}
             items={categories}
@@ -54,7 +73,10 @@ export default function AddCost() {
         </View>
         <View style={styles.bottom}>
           <Pressable onPress={onPressOkButt}>
-            <View style={styles.okButt}>
+            <View
+              style={
+                cost && checkCate ? styles.okButtActive : styles.okButtDisable
+              }>
               <Text style={styles.buttText}>확인</Text>
             </View>
           </Pressable>
@@ -99,7 +121,15 @@ const styles = StyleSheet.create({
     marginBottom: 36,
   },
   dropdown: {},
-  okButt: {
+  okButtActive: {
+    backgroundColor: primaryColor,
+    width: 100,
+    height: 50,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  okButtDisable: {
     backgroundColor: grayColor,
     width: 100,
     height: 50,

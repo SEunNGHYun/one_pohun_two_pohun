@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,15 @@ import {Calendar} from 'react-native-calendars';
 import {LineChart} from 'react-native-chart-kit';
 import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
+import {month} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
+
 export default function Main({navigation}: Props) {
   const {width} = Dimensions.get('window');
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState<string>('');
+  const [months, _] = useState<number>(month);
+
   return (
     <ScrollView contentContainerStyle={styles.view}>
       <View style={styles.dayTotalCostView}>
@@ -58,7 +62,7 @@ export default function Main({navigation}: Props) {
           enableSwipeMonths={true}
           hideExtraDays={false}
         />
-        <Text style={styles.totalCostFont}>10월 총20,000원 사용</Text>
+        <Text style={styles.totalCostFont}>{months}월 총 20,000원 사용</Text>
         <LineChart
           data={{
             labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
