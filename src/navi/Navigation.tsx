@@ -8,14 +8,14 @@ import {
   NativeStackScreenProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {useRecoilState} from 'recoil';
+import {useSetRecoilState} from 'recoil';
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {SignupState} from '../recoils/states';
+import {SignupState, userNickNameState} from '../recoils/states';
 //회원가입
-import Nickname from '../Pages/BeforeLogin/Nickname';
+import NickName from '../Pages/BeforeLogin/NickName';
 import Targetcost1 from '../Pages/BeforeLogin/Targetcost1';
 import Targetcost2More from '../Pages/BeforeLogin/Targetcost2More';
 import Targetcost2Less from '../Pages/BeforeLogin/Targetcost2Less';
@@ -53,7 +53,7 @@ export type PigStackParamList = {
 export type BeforeLoginStackParamList = {
   Targetcost2More: {
     img: string | null;
-    Kickname: string;
+    nickname: string;
     userCost: number;
   };
   Targetcost2Less: {
@@ -65,7 +65,7 @@ export type BeforeLoginStackParamList = {
     img: string | null;
     nickname: string;
   };
-  Nickname: undefined;
+  NickName: undefined;
 };
 
 export type AfterLoginTabParamList = {
@@ -94,7 +94,7 @@ function BeforeLoginNavigation() {
   const {Navigator, Screen} = BeforeLoginStack;
   return (
     <Navigator screenOptions={options}>
-      <Screen name="Nickname" component={Nickname} />
+      <Screen name="NickName" component={NickName} />
       <Screen name="Targetcost1" component={Targetcost1} />
       <Screen name="Targetcost2More" component={Targetcost2More} />
       <Screen name="Targetcost2Less" component={Targetcost2Less} />
@@ -168,13 +168,15 @@ function TabNavigation() {
 
 export default function RootNavigation() {
   const {Navigator, Screen} = RootStack;
-  const [isSignup, setIsSignup] = useRecoilState<boolean>(SignupState);
+  const setIsSignup = useSetRecoilState<boolean>(SignupState);
+  const setUserNickName = useSetRecoilState<string>(userNickNameState);
 
   const getLoginState = useCallback(async () => {
     try {
       const userData = await AsyncStorage.getItem('user_data');
       if (userData != null) {
         setIsSignup(true);
+        setUserNickName(userData);
       } else {
         setIsSignup(false);
       }
@@ -182,7 +184,7 @@ export default function RootNavigation() {
     } finally {
       LottieSplashScreen.hide();
     }
-  }, [setIsSignup]);
+  }, [setIsSignup, setUserNickName]);
 
   useEffect(() => {
     getLoginState();

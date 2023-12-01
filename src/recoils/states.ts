@@ -5,6 +5,11 @@ export const SignupState = atom<boolean>({
   default: false,
 });
 
+export const userNickNameState = atom<string>({
+  key: 'userNickNameState',
+  default: '',
+});
+
 export const AvgDayCostState = atom<number>({
   key: 'AvgDayCost',
   default: 1.0,

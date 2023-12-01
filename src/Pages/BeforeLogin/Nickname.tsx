@@ -21,8 +21,8 @@ import {
 } from '../../utils/styles';
 import firestore from '@react-native-firebase/firestore';
 
-export default function Nickname({navigation}): React.FC {
-  const [nickname, setNickname] = useState<string>('');
+export default function NickName({navigation}): React.FC {
+  const [nickname, setNickName] = useState<string>('');
   const [userImage, setUserImage] = useState<any>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -52,12 +52,12 @@ export default function Nickname({navigation}): React.FC {
     return true;
   }, []);
 
-  const onchangeNickname = useCallback(
+  const onchangeNickName = useCallback(
     (text: string) => {
       text = text.trim(); // 앞 뒤 공백제거
       text = text.replace(' ', ''); // 문자열안에 공백제거
 
-      setNickname(text);
+      setNickName(text);
       let check = check_nickname(text);
       if (check) {
         setVisible(true); // 처음 닉네임 유효성검사 안해도 빨간색뜨는 기능 수정하기 위해 넣음
@@ -156,7 +156,7 @@ export default function Nickname({navigation}): React.FC {
             <Text style={styles.nickname}>닉네임</Text>
             <TextInput
               style={styles.input}
-              onChangeText={onchangeNickname}
+              onChangeText={onchangeNickName}
               value={nickname}
               placeholder=""
               maxLength={10}

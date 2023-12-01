@@ -10,6 +10,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar} from 'react-native-calendars';
 import {LineChart} from 'react-native-chart-kit';
+import firestore from '@react-native-firebase/firestore';
 import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
 import {month} from '../../utils/utils';

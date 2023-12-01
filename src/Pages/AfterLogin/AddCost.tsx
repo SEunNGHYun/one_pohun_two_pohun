@@ -1,6 +1,9 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
+import {useRecoilValue} from 'recoil';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {userNickNameState} from '../../recoils/states';
+import firestore from '@react-native-firebase/firestore';
 import {
   title2,
   title3,
@@ -13,8 +16,9 @@ import {day, date, month} from '../../utils/utils';
 export default function AddCost() {
   const [cost, setCost] = useState<string>('0');
   const [viewCost, setViewCost] = useState<string>('0');
+  const userNickName = useRecoilValue<string>(userNickNameState);
   const [open, setOpen] = useState<boolean>(false);
-  const [categories, _] = useState([
+  const [categories, _] = useState<{label: string; value: string}[]>([
     {label: '식비', value: '식비'},
     {label: '자기개발비', value: '자기개발비'},
   ]);
@@ -36,9 +40,7 @@ export default function AddCost() {
     setViewCost(result.join(''));
   }, []);
 
-  const editViewCost = useCallback(() => {}, []);
-
-  const onPressOkButt = useCallback(() => {}, []);
+  const saveCostAndMovePage = useCallback(() => {}, []);
 
   return (
     <View style={styles.background}>
@@ -72,7 +74,7 @@ export default function AddCost() {
           />
         </View>
         <View style={styles.bottom}>
-          <Pressable onPress={onPressOkButt}>
+          <Pressable onPress={saveCostAndMovePage}>
             <View
               style={
                 cost && checkCate ? styles.okButtActive : styles.okButtDisable
