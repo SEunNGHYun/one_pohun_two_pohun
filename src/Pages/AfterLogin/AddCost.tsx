@@ -2,8 +2,11 @@ import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import {useRecoilValue} from 'recoil';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {userNickNameState} from '../../recoils/states';
 import firestore from '@react-native-firebase/firestore';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AddCostData} from '../../types/types';
+import type {MainStackParamList} from '../../navi/Navigation';
+import {userNickNameState} from '../../recoils/states';
 import {
   title2,
   title3,
@@ -11,9 +14,11 @@ import {
   grayColor,
   defaultFont,
 } from '../../utils/styles';
-import {day, date, month} from '../../utils/utils';
+import {day, date, month, today} from '../../utils/utils';
 
-export default function AddCost() {
+type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
+
+export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
   const [viewCost, setViewCost] = useState<string>('0');
   const userNickName = useRecoilValue<string>(userNickNameState);
@@ -21,6 +26,8 @@ export default function AddCost() {
   const [categories, _] = useState<{label: string; value: string}[]>([
     {label: '식비', value: '식비'},
     {label: '자기개발비', value: '자기개발비'},
+    {label: '취미', value: '취미'},
+    {label: '기타', value: '기타'},
   ]);
   const [checkCate, setCheckCate] = useState<string>('');
 
@@ -40,7 +47,21 @@ export default function AddCost() {
     setViewCost(result.join(''));
   }, []);
 
-  const saveCostAndMovePage = useCallback(() => {}, []);
+  const saveCostAndMovePage = useCallback(async () => {
+    const fireStoreDoc = firestore().collection('personal_cost');
+    const data: AddCostData = {
+      nickname: userNickName,
+      categories: checkCate,
+      cost: Number(cost.replace(/\,/g, '')),
+      timestamp: today.toDateString(),
+    };
+    try {
+      await fireStoreDoc.doc().set(data);
+    } catch (e) {
+    } finally {
+      navigation.replace('Main');
+    }
+  }, [userNickName, checkCate, cost, navigation]);
 
   return (
     <View style={styles.background}>

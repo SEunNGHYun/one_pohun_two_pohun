@@ -53,9 +53,9 @@ export default function Targetcost2More({route}: Props) {
       current_cost: userCost,
       goal_cost: cost,
     };
-    const userSnapShot = firestore().collection('users');
+    const fireStoreDoc = firestore().collection('users');
     try {
-      await userSnapShot.doc().set(data);
+      await fireStoreDoc.doc().set(data);
       await AsyncStorage.setItem('user_data', JSON.stringify(data));
     } catch (err) {
       console.log(err);

@@ -29,7 +29,7 @@ import MakePigBattleRoom from '../Pages/AfterLogin/Pigs/MakePigBattleRoom';
 import PigBattleRoom from '../Pages/AfterLogin/Pigs/PigBattleRoom';
 import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
 //세팅
-import Settings from '../Pages/AfterLogin/Settings';
+import Settings from '../Pages/AfterLogin/Settings/Settings';
 
 import {primaryColor, descColor} from '../utils/styles';
 

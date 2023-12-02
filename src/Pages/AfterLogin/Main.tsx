@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,9 @@ export default function Main({navigation}: Props) {
   const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState<string>('');
   const [months, _] = useState<number>(month);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {}, []);
 
   return (
     <ScrollView contentContainerStyle={styles.view}>
@@ -31,7 +34,7 @@ export default function Main({navigation}: Props) {
         </View>
         <Pressable onPress={() => navigation.navigate('AddCost')}>
           <View style={styles.addButt}>
-            <Text>+</Text>
+            <Text style={styles.addButtText}>+</Text>
           </View>
         </Pressable>
       </View>
@@ -109,16 +112,15 @@ export default function Main({navigation}: Props) {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1,
     backgroundColor: 'white',
-    paddingHorizontal: 16,
-    paddingVertical: 32,
+    paddingHorizontal: 18,
+    paddingVertical: 36,
   },
   dayTotalCostView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   dayTotalCostText: {
     ...title2,
@@ -135,6 +137,11 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addButtText: {
+    fontSize: 36,
+    color: 'black',
+    fontWeight: 'bold',
   },
   totalCostFont: {
     ...title4,
