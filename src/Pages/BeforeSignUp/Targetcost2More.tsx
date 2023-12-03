@@ -6,7 +6,7 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
-import {SignupState, userNickNameState} from '../../recoils/states';
+import {userState} from '../../recoils/states';
 import {
   primaryColor,
   lightGrayColor,
@@ -26,8 +26,7 @@ export default function Targetcost2More({route}: Props) {
   const [cost, setCost] = useState(0);
   const [disable, setDisable] = useState<boolean>(true);
 
-  const setSginUpSuccess = useSetRecoilState(SignupState);
-  const setUserNickName = useSetRecoilState(userNickNameState);
+  const setUserData = useSetRecoilState(userState);
 
   const pressChoiceButt = useCallback(
     (t: 'yes' | 'no'): void => {
@@ -47,7 +46,7 @@ export default function Targetcost2More({route}: Props) {
 
   const successSignUp = useCallback(async () => {
     const {img, nickname, userCost} = route.params;
-    const data = {
+    const userData = {
       nickname,
       img,
       current_cost: userCost,
@@ -55,15 +54,14 @@ export default function Targetcost2More({route}: Props) {
     };
     const fireStoreDoc = firestore().collection('users');
     try {
-      await fireStoreDoc.doc().set(data);
-      await AsyncStorage.setItem('user_data', JSON.stringify(data));
+      await fireStoreDoc.doc().set(userData);
+      await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);
     } finally {
-      setSginUpSuccess(true);
-      setUserNickName(nickname);
+      setUserData(userData);
     }
-  }, [route, cost, setSginUpSuccess, setUserNickName]);
+  }, [route, cost, setUserData]);
 
   return (
     <View style={styles.view}>

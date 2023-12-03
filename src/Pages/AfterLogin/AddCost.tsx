@@ -6,7 +6,7 @@ import firestore from '@react-native-firebase/firestore';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AddCostData} from '../../types/types';
 import type {MainStackParamList} from '../../navi/Navigation';
-import {userNickNameState} from '../../recoils/states';
+import {userState} from '../../recoils/states';
 import {
   title2,
   title3,
@@ -14,6 +14,7 @@ import {
   grayColor,
   defaultFont,
 } from '../../utils/styles';
+import {UserData} from '../../types/types';
 import {day, date, month, today} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
@@ -21,7 +22,7 @@ type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
   const [viewCost, setViewCost] = useState<string>('0');
-  const userNickName = useRecoilValue<string>(userNickNameState);
+  const userData = useRecoilValue<UserData>(userState);
   const [open, setOpen] = useState<boolean>(false);
   const [categories, _] = useState<{label: string; value: string}[]>([
     {label: '식비', value: '식비'},
@@ -50,7 +51,7 @@ export default function AddCost({navigation}: Props) {
   const saveCostAndMovePage = useCallback(async () => {
     const fireStoreDoc = firestore().collection('personal_cost');
     const data: AddCostData = {
-      nickname: userNickName,
+      nickname: userData.nickname,
       categories: checkCate,
       cost: Number(cost.replace(/\,/g, '')),
       timestamp: today.toDateString(),
@@ -61,7 +62,7 @@ export default function AddCost({navigation}: Props) {
     } finally {
       navigation.replace('Main');
     }
-  }, [userNickName, checkCate, cost, navigation]);
+  }, [userData, checkCate, cost, navigation]);
 
   return (
     <View style={styles.background}>

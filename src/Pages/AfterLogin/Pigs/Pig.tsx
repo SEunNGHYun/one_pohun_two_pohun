@@ -1,14 +1,24 @@
 import React, {useState, useCallback, useEffect} from 'react';
-import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Image,
+} from 'react-native';
+import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {userState} from '../../../recoils/states';
+import {UserData} from '../../../types/types';
 import {grayColor, primaryColor} from '../../../utils/styles';
 import type {PigNaviProps} from '../../../navi/Navigation';
 
 export default function Pig({navigation}: PigNaviProps) {
   const [toggleEnterModal, setToggleEnterModal] = useState(false);
   const [code, setCode] = useState('');
-
+  const userData = useRecoilValue<UserData>(userState);
   const showModal = useCallback(() => setToggleEnterModal(true), []);
   const hideModal = useCallback(() => setToggleEnterModal(false), []);
 
@@ -25,7 +35,15 @@ export default function Pig({navigation}: PigNaviProps) {
   return (
     <PaperProvider>
       <View style={styles.view}>
-        <View style={styles.userImgBack} />
+        <Image
+          source={{
+            uri:
+              userData.img === null
+                ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
+                : userData.img,
+          }}
+          style={styles.userImgBack}
+        />
         <Pressable onPress={() => navigation.navigate('MakePigBattleRoom')}>
           <View style={styles.butt}>
             <Text style={styles.buttText}>만들기</Text>

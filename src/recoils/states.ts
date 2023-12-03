@@ -1,13 +1,14 @@
 import {atom} from 'recoil';
+import {UserData} from '../types/types';
 
-export const SignupState = atom<boolean>({
-  key: 'SignupState',
-  default: false,
-});
-
-export const userNickNameState = atom<string>({
+export const userState = atom<UserData>({
   key: 'userNickNameState',
-  default: '',
+  default: {
+    nickname: '',
+    img: null,
+    current_cost: 0,
+    goal_cost: 0,
+  },
 });
 
 export const AvgDayCostState = atom<number>({

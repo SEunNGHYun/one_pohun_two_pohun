@@ -65,7 +65,7 @@ export default function InputButts({
 const styles = StyleSheet.create({
   InputView: {
     marginBottom: 18,
-    marginTop: 36,
+    marginTop: 26,
   },
   titleFont: {
     ...title4,

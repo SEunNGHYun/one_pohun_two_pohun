@@ -13,12 +13,12 @@ import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {SignupState, userNickNameState} from '../recoils/states';
+import {userState} from '../recoils/states';
 //회원가입
-import NickName from '../Pages/BeforeLogin/NickName';
-import Targetcost1 from '../Pages/BeforeLogin/Targetcost1';
-import Targetcost2More from '../Pages/BeforeLogin/Targetcost2More';
-import Targetcost2Less from '../Pages/BeforeLogin/Targetcost2Less';
+import NickName from '../Pages/BeforeSignUp/NickName';
+import Targetcost1 from '../Pages/BeforeSignUp/Targetcost1';
+import Targetcost2More from '../Pages/BeforeSignUp/Targetcost2More';
+import Targetcost2Less from '../Pages/BeforeSignUp/Targetcost2Less';
 // 메인
 import Main from '../Pages/AfterLogin/Main';
 import AddCost from '../Pages/AfterLogin/AddCost';
@@ -32,6 +32,7 @@ import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
 import Settings from '../Pages/AfterLogin/Settings/Settings';
 
 import {primaryColor, descColor} from '../utils/styles';
+import type {UserData} from '../types/types';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
@@ -168,23 +169,19 @@ function TabNavigation() {
 
 export default function RootNavigation() {
   const {Navigator, Screen} = RootStack;
-  const setIsSignup = useSetRecoilState<boolean>(SignupState);
-  const setUserNickName = useSetRecoilState<string>(userNickNameState);
+  const setUserData = useSetRecoilState<UserData>(userState);
 
   const getLoginState = useCallback(async () => {
     try {
       const userData = await AsyncStorage.getItem('user_data');
       if (userData != null) {
-        setIsSignup(true);
-        setUserNickName(userData);
-      } else {
-        setIsSignup(false);
+        setUserData(JSON.parse(userData));
       }
     } catch (err) {
     } finally {
       LottieSplashScreen.hide();
     }
-  }, [setIsSignup, setUserNickName]);
+  }, [setUserData]);
 
   useEffect(() => {
     getLoginState();

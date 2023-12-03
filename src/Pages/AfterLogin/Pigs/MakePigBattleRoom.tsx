@@ -6,7 +6,13 @@ import {
   TextInput,
   ScrollView,
   Pressable,
+  Image,
 } from 'react-native';
+import {useRecoilValue} from 'recoil';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
+import {userState} from '../../../recoils/states';
+import {UserData} from '../../../types/types';
 import {
   grayColor,
   title4,
@@ -15,12 +21,11 @@ import {
   primaryColor,
 } from '../../../utils/styles';
 import InputButtons from '../../../Components/InputButts';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useNavigation} from '@react-navigation/native';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
 
 export default function MakePigBattleRoom() {
   const navigation = useNavigation<PigUseNaviProps>();
+  const userData = useRecoilValue<UserData>(userState);
 
   const movePage = useCallback(() => {
     navigation.navigate('MatchingRoom');
@@ -30,7 +35,15 @@ export default function MakePigBattleRoom() {
     <View style={styles.view}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View style={styles.userImgBack} />
+          <Image
+            source={{
+              uri:
+                userData.img === null
+                  ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
+                  : userData.img,
+            }}
+            style={styles.userImgBack}
+          />
           <Text style={styles.nickname}>닉네임</Text>
         </View>
         <InputButtons
@@ -48,7 +61,6 @@ export default function MakePigBattleRoom() {
           <Text style={styles.subtitle}>(15자 이내로)</Text>
         </Text>
         <TextInput placeholder="예시) 11월 일본여행?" />
-
         <Pressable onPress={movePage}>
           <View style={styles.bottom}>
             <Text style={styles.buttFont}>초대하기</Text>
@@ -88,7 +100,7 @@ const styles = StyleSheet.create({
   titleFont: {
     ...title4,
     color: primaryColor,
-    marginTop: 36,
+    marginTop: 26,
   },
   subtitle: {
     ...defaultFont,
