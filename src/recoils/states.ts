@@ -8,6 +8,7 @@ export const userState = atom<UserData>({
     img: null,
     current_cost: 0,
     goal_cost: 0,
+    push_notification: false,
   },
 });
 

@@ -10,4 +10,5 @@ export interface UserData {
   img: string | null;
   current_cost: number;
   goal_cost: number;
+  push_notification: boolean;
 }
