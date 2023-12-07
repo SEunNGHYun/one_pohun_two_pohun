@@ -63,6 +63,7 @@ export default function Settings() {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    backgroundColor: 'white',
   },
   header: {
     flex: 5,

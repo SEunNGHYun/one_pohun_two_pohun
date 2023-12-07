@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar} from 'react-native-calendars';
 import {LineChart} from 'react-native-chart-kit';
 import firestore from '@react-native-firebase/firestore';
+import {getPushNotification} from '../../utils/PermissionsFuncs';
 import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
 import {month} from '../../utils/utils';
@@ -23,7 +24,14 @@ export default function Main({navigation}: Props) {
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {}, []);
+  const getNotificationPermissionStatus = useCallback(async () => {
+    const status = await getPushNotification();
+    console.log('Status', status);
+  }, []);
+
+  useEffect(() => {
+    getNotificationPermissionStatus(); // 핸드폰으로 실행
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.view}>

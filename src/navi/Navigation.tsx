@@ -8,7 +8,7 @@ import {
   NativeStackScreenProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {useSetRecoilState} from 'recoil';
+import {useRecoilState} from 'recoil';
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -169,13 +169,13 @@ function TabNavigation() {
 
 export default function RootNavigation() {
   const {Navigator, Screen} = RootStack;
-  const setUserData = useSetRecoilState<UserData>(userState);
+  const [userData, setUserData] = useRecoilState<UserData>(userState);
 
   const getLoginState = useCallback(async () => {
     try {
-      const userData = await AsyncStorage.getItem('user_data');
-      if (userData != null) {
-        setUserData(JSON.parse(userData));
+      const getUserData = await AsyncStorage.getItem('user_data');
+      if (getUserData != null) {
+        setUserData(JSON.parse(getUserData));
       }
     } catch (err) {
     } finally {
@@ -190,8 +190,11 @@ export default function RootNavigation() {
   return (
     <NavigationContainer>
       <Navigator screenOptions={options}>
-        <Screen name="AfterLogin" component={TabNavigation} />
-        <Screen name="BeforeLogin" component={BeforeLoginNavigation} />
+        {userData.nickname === '' ? (
+          <Screen name="BeforeLogin" component={BeforeLoginNavigation} />
+        ) : (
+          <Screen name="AfterLogin" component={TabNavigation} />
+        )}
       </Navigator>
     </NavigationContainer>
   );
