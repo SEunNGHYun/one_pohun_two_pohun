@@ -18,7 +18,7 @@ import {month} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 
-export default function Main({navigation}: Props) {
+export default function Main({navigation}: Props): React.ReactElement {
   const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState<string>('');
   const [months, _] = useState<number>(month);

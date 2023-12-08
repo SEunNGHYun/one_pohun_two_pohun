@@ -21,7 +21,7 @@ import {
 } from '../../utils/styles';
 import firestore from '@react-native-firebase/firestore';
 
-export default function NickName({navigation}): React.FC {
+export default function NickName({navigation}): React.ReactElement {
   const [nickname, setNickName] = useState<string>('');
   const [userImage, setUserImage] = useState<any>(false);
   const [visible, setVisible] = useState<boolean>(false);
