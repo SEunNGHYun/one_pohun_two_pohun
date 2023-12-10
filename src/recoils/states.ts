@@ -1,5 +1,5 @@
 import {atom} from 'recoil';
-import {UserData} from '../types/types';
+import {UserData, Themes} from '../types/types';
 
 export const userState = atom<UserData>({
   key: 'userNickNameState',
@@ -25,4 +25,9 @@ export const errActive = atom<boolean>({
 export const errState = atom<string>({
   key: 'errState',
   default: '',
+});
+
+export const appTheme = atom<Themes>({
+  key: 'appTheme',
+  default: '#d54183',
 });

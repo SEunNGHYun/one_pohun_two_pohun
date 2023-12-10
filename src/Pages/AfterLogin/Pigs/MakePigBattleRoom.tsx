@@ -42,6 +42,7 @@ export default function MakePigBattleRoom() {
                   ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
                   : userData.img,
             }}
+            resizeMode="contain"
             style={styles.userImgBack}
           />
           <Text style={styles.nickname}>닉네임</Text>
@@ -90,6 +91,8 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 150,
+    borderWidth: 1.5,
+    borderColor: grayColor,
     backgroundColor: grayColor,
     marginBottom: 18,
   },

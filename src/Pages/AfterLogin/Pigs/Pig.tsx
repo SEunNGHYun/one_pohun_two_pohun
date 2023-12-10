@@ -42,6 +42,7 @@ export default function Pig({navigation}: PigNaviProps) {
                 ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
                 : userData.img,
           }}
+          resizeMode="contain"
           style={styles.userImgBack}
         />
         <Pressable onPress={() => navigation.navigate('MakePigBattleRoom')}>
@@ -91,11 +92,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userImgBack: {
-    width: 150,
-    height: 150,
-    borderRadius: 150,
+    borderWidth: 1.5,
+    borderColor: grayColor,
+    width: 200,
+    height: 200,
+    borderRadius: 200,
     backgroundColor: grayColor,
-    marginBottom: 120,
+    marginBottom: 60,
   },
   butt: {
     width: 130,
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-    marginBottom: 54,
+    marginBottom: 36,
   },
   buttText: {
     fontSize: 20,

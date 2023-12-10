@@ -4,13 +4,22 @@ import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Modal, Portal, PaperProvider, Snackbar} from 'react-native-paper';
-import {userState} from '../../../recoils/states';
-import {UserData} from '../../../types/types';
+import {userState, appTheme} from '../../../recoils/states';
+import {UserData, Themes} from '../../../types/types';
+import {grayColor} from '../../../utils/styles';
 
 export default function Settings(): React.ReactElement {
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const [visible, setVisible] = useState<boolean>(false);
-
+  const [themesModalVisible, setThemesVisibleModal] = useState<boolean>(false);
+  const [themes, setTheme] = useRecoilState<Themes>(appTheme);
+  const [themeList, setThemeList] = useState<
+    {color: Themes; checked: boolean}[]
+  >([
+    {color: '#d54183', checked: true},
+    {color: '#f5c9ff', checked: false},
+    {color: '#99ffec', checked: false},
+  ]);
   const togglePushNotification = useCallback(
     (changeVal: boolean) => {
       setUserData(pre => {
@@ -35,8 +44,31 @@ export default function Settings(): React.ReactElement {
     });
     await AsyncStorage.removeItem('user_data');
   }, [setUserData]);
+  const pressThemeShowModal = useCallback(() => {
+    setThemesVisibleModal(true);
+  }, []);
+  const pressThemeHideModal = useCallback(() => {
+    setThemesVisibleModal(false);
+  }, []);
 
-  const editPageMove = useCallback(() => {}, []);
+  const pressEditSetting = useCallback(() => {}, []);
+  const pressThemeColor = useCallback(
+    (i: number) => {
+      const newThemeList = themeList.map((t, idx) => {
+        if (i === idx) {
+          return {...t, checked: true};
+        }
+        return {...t, checked: false};
+      });
+      setThemeList(newThemeList);
+    },
+    [themeList],
+  );
+
+  const pressThemeOkButt = useCallback(() => {
+    themeList.forEach(t => t.checked && setTheme(t.color));
+    pressThemeHideModal();
+  }, []);
 
   return (
     <PaperProvider>
@@ -51,28 +83,31 @@ export default function Settings(): React.ReactElement {
                   : userData.img,
             }}
             resizeMode="contain"
-            resizeMethod="scale"
           />
           <Text style={styles.userNickname}>dddd</Text>
         </View>
         <View style={styles.body}>
-          <Pressable onPress={editPageMove}>
+          <Pressable onPress={pressThemeShowModal}>
+            <View style={[styles.buttArea, {paddingTop: 16}]}>
+              <Text style={styles.defaultFont}>테마색 설정</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={pressEditSetting}>
             <View style={[styles.buttArea, {paddingTop: 16}]}>
               <Text style={styles.defaultFont}>회원정보 수정하기</Text>
             </View>
           </Pressable>
-          <View style={styles.buttArea}>
-            <Text style={styles.defaultFont}>푸시알림 설정</Text>
-            {userData.push_notification ? (
-              <Pressable onPress={() => togglePushNotification(false)}>
+          <Pressable
+            onPress={() => togglePushNotification(!userData.push_notification)}>
+            <View style={styles.buttArea}>
+              <Text style={styles.defaultFont}>푸시알림 설정</Text>
+              {userData.push_notification ? (
                 <Icon name="toggle-on" size={45} />
-              </Pressable>
-            ) : (
-              <Pressable onPress={() => togglePushNotification(true)}>
+              ) : (
                 <Icon name="toggle-off" size={45} />
-              </Pressable>
-            )}
-          </View>
+              )}
+            </View>
+          </Pressable>
           <Pressable onPress={showModal}>
             <View style={[styles.buttArea, {paddingBottom: 16}]}>
               <Text style={styles.defaultFont}>회원탈퇴</Text>
@@ -95,6 +130,35 @@ export default function Settings(): React.ReactElement {
               </Pressable>
             </View>
           </Modal>
+          <Modal
+            contentContainerStyle={styles.modalView}
+            onDismiss={pressThemeHideModal}
+            visible={themesModalVisible}>
+            <View>
+              <View style={styles.themesModalHeader}>
+                {themeList.map((t, i) => (
+                  <Pressable key={t.color} onPress={() => pressThemeColor(i)}>
+                    <View
+                      style={[
+                        styles.themesColorPoint,
+                        {
+                          backgroundColor: t.color,
+                          borderColor: t.checked ? grayColor : 'white',
+                        },
+                      ]}
+                    />
+                  </Pressable>
+                ))}
+              </View>
+              <View style={styles.modalBottom}>
+                <Pressable onPress={pressThemeOkButt}>
+                  <View style={styles.modalPressView}>
+                    <Text style={styles.modalButtText}>확인</Text>
+                  </View>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
         </Portal>
       </View>
     </PaperProvider>
@@ -107,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    flex: 5,
+    flex: 4.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -115,11 +179,14 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 200,
+    borderWidth: 1.5,
+    borderColor: grayColor,
+    marginBottom: 36,
   },
   userNickname: {
     fontSize: 36,
   },
-  body: {flex: 5},
+  body: {flex: 5.5},
   buttArea: {
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -129,6 +196,7 @@ const styles = StyleSheet.create({
   },
   defaultFont: {
     fontSize: 28,
+    color: 'black',
   },
   modalView: {
     marginHorizontal: 30,
@@ -158,5 +226,17 @@ const styles = StyleSheet.create({
   modalText: {
     color: 'black',
     fontSize: 22,
+  },
+  themesModalHeader: {
+    paddingVertical: 35,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  themesColorPoint: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: 'white',
   },
 });

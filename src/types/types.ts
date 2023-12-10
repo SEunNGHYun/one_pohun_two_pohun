@@ -12,3 +12,5 @@ export interface UserData {
   goal_cost: number;
   push_notification: boolean;
 }
+
+export type Themes = '#d54183' | '#f5c9ff' | '#99ffec';

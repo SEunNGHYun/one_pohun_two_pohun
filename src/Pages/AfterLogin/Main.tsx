@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  SafeAreaView,
   Pressable,
   Dimensions,
 } from 'react-native';
@@ -17,9 +17,9 @@ import type {MainStackParamList} from '../../navi/Navigation';
 import {month} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
+const {width, height} = Dimensions.get('window');
 
 export default function Main({navigation}: Props): React.ReactElement {
-  const {width} = Dimensions.get('window');
   const [selected, setSelected] = useState<string>('');
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,9 +34,9 @@ export default function Main({navigation}: Props): React.ReactElement {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.view}>
+    <SafeAreaView style={styles.view}>
       <View style={styles.dayTotalCostView}>
-        <View>
+        <View style={styles.fontArea}>
           <Text style={styles.dayTotalCostTextDesc}>오늘 총 지출액</Text>
           <Text style={styles.dayTotalCostText}>20,000원</Text>
         </View>
@@ -92,7 +92,7 @@ export default function Main({navigation}: Props): React.ReactElement {
             ],
           }}
           width={width} // from react-native
-          height={220}
+          height={200}
           yAxisSuffix="원"
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
@@ -114,45 +114,50 @@ export default function Main({navigation}: Props): React.ReactElement {
           bezier
         />
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   view: {
     backgroundColor: 'white',
+    width: width,
+    height: height,
     paddingHorizontal: 18,
-    paddingVertical: 36,
   },
   dayTotalCostView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    marginBottom: 8,
+    paddingVertical: 7.5,
   },
+  fontArea: {},
   dayTotalCostText: {
     ...title2,
+    fontSize: 48,
     color: primaryColor,
   },
   dayTotalCostTextDesc: {
     ...title4,
+    fontSize: 26,
     color: primaryColor,
   },
   addButt: {
     backgroundColor: grayColor,
-    width: 60,
-    height: 60,
-    borderRadius: 60,
+    width: 45,
+    height: 45,
+    borderRadius: 45,
     justifyContent: 'center',
     alignItems: 'center',
   },
   addButtText: {
-    fontSize: 36,
+    fontSize: 18,
     color: 'black',
     fontWeight: 'bold',
   },
   totalCostFont: {
     ...title4,
+
     marginVertical: 18,
     color: primaryColor,
   },
