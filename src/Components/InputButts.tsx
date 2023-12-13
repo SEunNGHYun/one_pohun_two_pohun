@@ -1,11 +1,8 @@
 import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
-import {
-  lightGrayColor,
-  title4,
-  defaultFont,
-  primaryColor,
-  descColor,
-} from '../utils/styles';
+import {lightGrayColor, title4, defaultFont, descColor} from '../utils/styles';
+import {useRecoilValue} from 'recoil';
+import {Themes} from '../types/types';
+import {appTheme} from '../recoils/states';
 import {buttonList, liType} from '../utils/datas';
 import React, {useLayoutEffect, useState} from 'react';
 
@@ -24,6 +21,7 @@ export default function InputButts({
     {label: '', value: 0},
     {label: '', value: 0},
   ]);
+  const theme = useRecoilValue<Themes>(appTheme);
 
   useLayoutEffect(() => {
     setButtons(buttonList(type));
@@ -31,7 +29,7 @@ export default function InputButts({
 
   return (
     <View style={styles.InputView}>
-      <Text style={styles.titleFont}>
+      <Text style={[styles.titleFont, {color: theme}]}>
         {title} {'\t'}
         <Text style={styles.subtitle}>({subtitle})</Text>
       </Text>
@@ -69,7 +67,6 @@ const styles = StyleSheet.create({
   },
   titleFont: {
     ...title4,
-    color: primaryColor,
   },
   subtitle: {
     ...defaultFont,

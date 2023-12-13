@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome6';
-import {Modal, Portal, PaperProvider, Snackbar} from 'react-native-paper';
+import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import {userState, appTheme} from '../../../recoils/states';
 import {UserData, Themes} from '../../../types/types';
 import {grayColor} from '../../../utils/styles';
@@ -66,9 +66,14 @@ export default function Settings(): React.ReactElement {
   );
 
   const pressThemeOkButt = useCallback(() => {
-    themeList.forEach(t => t.checked && setTheme(t.color));
+    themeList.forEach(async t => {
+      if (t.checked) {
+        setTheme(t.color);
+        await AsyncStorage.setItem('appThemeColor', t.color);
+      }
+    });
     pressThemeHideModal();
-  }, []);
+  }, [themeList, pressThemeHideModal, setTheme]);
 
   return (
     <PaperProvider>

@@ -8,12 +8,12 @@ import {
   NativeStackScreenProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {useRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState, useRecoilValue} from 'recoil';
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {userState} from '../recoils/states';
+import {userState, appTheme} from '../recoils/states';
 //회원가입
 import NickName from '../Pages/BeforeSignUp/NickName';
 import Targetcost1 from '../Pages/BeforeSignUp/Targetcost1';
@@ -31,8 +31,8 @@ import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
 //세팅
 import Settings from '../Pages/AfterLogin/Settings/Settings';
 
-import {primaryColor, descColor} from '../utils/styles';
-import type {UserData} from '../types/types';
+import {descColor} from '../utils/styles';
+import type {UserData, Themes} from '../types/types';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
@@ -130,9 +130,10 @@ function PigNavigation() {
 
 function TabNavigation() {
   const {Navigator, Screen} = MainTab;
+  const getAppTheme = useRecoilValue<Themes>(appTheme);
 
   return (
-    <Navigator activeColor={primaryColor} inactiveColor={descColor}>
+    <Navigator activeColor={getAppTheme} inactiveColor={descColor}>
       <Screen
         name="MainStack"
         component={MainNavigation}
@@ -170,12 +171,21 @@ function TabNavigation() {
 export default function RootNavigation() {
   const {Navigator, Screen} = RootStack;
   const [userData, setUserData] = useRecoilState<UserData>(userState);
-
+  const setAppTheme = useSetRecoilState<Themes>(appTheme);
   const getLoginState = useCallback(async () => {
     try {
-      const getUserData = await AsyncStorage.getItem('user_data');
-      if (getUserData != null) {
+      const [getUserDataArr, getAppThemeArr] = await AsyncStorage.multiGet([
+        'user_data',
+        'appThemeColor',
+      ]);
+      const [__, getUserData] = getUserDataArr;
+      const [_, getAppTheme] = getAppThemeArr;
+      console.log(getUserData, getAppTheme);
+      if (getUserData !== null) {
         setUserData(JSON.parse(getUserData));
+      }
+      if (getAppTheme !== null) {
+        setAppTheme(getAppTheme);
       }
     } catch (err) {
     } finally {

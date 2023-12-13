@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   },
   totalCostFont: {
     ...title4,
-
     marginVertical: 18,
     color: primaryColor,
   },
