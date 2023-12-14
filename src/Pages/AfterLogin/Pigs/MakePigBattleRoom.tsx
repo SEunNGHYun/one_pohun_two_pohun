@@ -11,20 +11,15 @@ import {
 import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
-import {userState} from '../../../recoils/states';
-import {UserData} from '../../../types/types';
-import {
-  grayColor,
-  title4,
-  defaultFont,
-  descColor,
-  primaryColor,
-} from '../../../utils/styles';
+import {userState, appTheme} from '../../../recoils/states';
+import type {UserData, Themes} from '../../../types/types';
+import {grayColor, title4, defaultFont, descColor} from '../../../utils/styles';
 import InputButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
 
 export default function MakePigBattleRoom() {
   const navigation = useNavigation<PigUseNaviProps>();
+  const theme = useRecoilValue<Themes>(appTheme);
   const userData = useRecoilValue<UserData>(userState);
 
   const movePage = useCallback(() => {
@@ -43,9 +38,9 @@ export default function MakePigBattleRoom() {
                   : userData.img,
             }}
             resizeMode="contain"
-            style={styles.userImgBack}
+            style={[styles.userImgBack, {borderColor: theme}]}
           />
-          <Text style={styles.nickname}>닉네임</Text>
+          <Text style={[styles.nickname, {color: theme}]}>닉네임</Text>
         </View>
         <InputButtons
           title={'총 목표 금액'}
@@ -57,17 +52,17 @@ export default function MakePigBattleRoom() {
           subtitle="만3천원 추천"
           type="day"
         />
-        <Text style={styles.titleFont}>
+        <Text style={[styles.titleFont, {color: theme}]}>
           목표 {'\t'}
           <Text style={styles.subtitle}>(15자 이내로)</Text>
         </Text>
         <TextInput placeholder="예시) 11월 일본여행?" />
         <Pressable onPress={movePage}>
           <View style={styles.bottom}>
-            <Text style={styles.buttFont}>초대하기</Text>
+            <Text style={[styles.buttFont, {color: theme}]}>초대하기</Text>
             <MaterialCommunityIcons
               name="chevron-right"
-              color={primaryColor}
+              color={theme}
               size={44}
             />
           </View>
@@ -91,18 +86,16 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 150,
-    borderWidth: 1.5,
+    borderWidth: 1.2,
     borderColor: grayColor,
     backgroundColor: grayColor,
     marginBottom: 18,
   },
   nickname: {
     ...title4,
-    color: primaryColor,
   },
   titleFont: {
     ...title4,
-    color: primaryColor,
     marginTop: 26,
   },
   subtitle: {
@@ -115,5 +108,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  buttFont: {fontSize: 22, fontWeight: 'bold', color: primaryColor},
+  buttFont: {fontSize: 22, fontWeight: 'bold'},
 });

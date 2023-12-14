@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, {useEffect, useCallback, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -180,18 +180,17 @@ export default function RootNavigation() {
       ]);
       const [__, getUserData] = getUserDataArr;
       const [_, getAppTheme] = getAppThemeArr;
-      console.log(getUserData, getAppTheme);
       if (getUserData !== null) {
         setUserData(JSON.parse(getUserData));
       }
       if (getAppTheme !== null) {
-        setAppTheme(getAppTheme);
+        setAppTheme(getAppTheme as Themes);
       }
     } catch (err) {
     } finally {
       LottieSplashScreen.hide();
     }
-  }, [setUserData]);
+  }, [setUserData, setAppTheme]);
 
   useEffect(() => {
     getLoginState();

@@ -1,3 +1,4 @@
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,7 +9,6 @@ import {
   Image,
   Keyboard,
 } from 'react-native';
-import React, {useState, useEffect, useCallback} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Modal, Portal, PaperProvider, Snackbar} from 'react-native-paper';
 import {getCameraGalleryPermissions} from '../../utils/PermissionsFuncs';

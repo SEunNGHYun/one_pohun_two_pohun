@@ -10,15 +10,16 @@ import {
 import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {userState} from '../../../recoils/states';
-import {UserData} from '../../../types/types';
-import {grayColor, primaryColor} from '../../../utils/styles';
+import {userState, appTheme} from '../../../recoils/states';
+import type {UserData, Themes} from '../../../types/types';
+import {grayColor} from '../../../utils/styles';
 import type {PigNaviProps} from '../../../navi/Navigation';
 
 export default function Pig({navigation}: PigNaviProps) {
   const [toggleEnterModal, setToggleEnterModal] = useState(false);
   const [code, setCode] = useState('');
   const userData = useRecoilValue<UserData>(userState);
+  const theme = useRecoilValue<Themes>(appTheme);
   const showModal = useCallback(() => setToggleEnterModal(true), []);
   const hideModal = useCallback(() => setToggleEnterModal(false), []);
 
@@ -61,19 +62,23 @@ export default function Pig({navigation}: PigNaviProps) {
           visible={toggleEnterModal}
           onDismiss={hideModal}
           contentContainerStyle={styles.modalView}>
-          <Text style={styles.modalFont}>입장 코드를 입력하세요</Text>
+          <Text style={[styles.modalFont, {color: theme}]}>
+            입장 코드를 입력하세요
+          </Text>
           <TextInput style={styles.codeInput} onChangeText={codeInput} />
           <Pressable onPress={movePage} disabled={!code}>
             <View style={styles.modalBottom}>
               <Text
                 style={
-                  !code ? styles.disableModalButtFont : styles.modalButtFont
+                  !code
+                    ? styles.disableModalButtFont
+                    : [styles.modalButtFont, {color: theme}]
                 }>
                 입장하기
               </Text>
               <MaterialCommunityIcons
                 name="chevron-right"
-                color={!code ? grayColor : primaryColor}
+                color={!code ? grayColor : theme}
                 size={44}
               />
             </View>
@@ -127,7 +132,6 @@ const styles = StyleSheet.create({
   modalFont: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: primaryColor,
   },
   modalBottom: {
     flexDirection: 'row',
@@ -137,7 +141,6 @@ const styles = StyleSheet.create({
   modalButtFont: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: primaryColor,
   },
   disableModalButtFont: {
     fontSize: 22,

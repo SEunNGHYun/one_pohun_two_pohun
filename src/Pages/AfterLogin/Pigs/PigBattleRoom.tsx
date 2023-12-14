@@ -1,11 +1,15 @@
 import React from 'react';
 import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BattleUserData from '../../../Components/BattleUserData';
 import {primaryColor, title2} from '../../../utils/styles';
+import type {Themes} from '../../../types/types';
+import {appTheme} from '../../../recoils/states';
 
 export default function PigBattleRoom() {
   let {width} = useWindowDimensions();
+  const theme = useRecoilValue<Themes>(appTheme);
 
   return (
     <View style={styles.view}>

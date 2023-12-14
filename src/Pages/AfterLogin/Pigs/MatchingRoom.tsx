@@ -1,17 +1,22 @@
 import React, {useCallback} from 'react';
 import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
+import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {grayColor, primaryColor} from '../../../utils/styles';
+import {grayColor} from '../../../utils/styles';
+import type {Themes} from '../../../types/types';
+import {appTheme} from '../../../recoils/states';
 
 export default function MatchingRoom() {
+  const theme = useRecoilValue<Themes>(appTheme);
+
   const movePage = useCallback(() => {}, []);
   return (
     <PaperProvider>
       <View style={{flex: 1, backgroundColor: 'white'}} />
       <Portal>
         <Modal visible={true} contentContainerStyle={styles.modalView}>
-          <Text style={styles.modalFont}>입장 코드</Text>
+          <Text style={[styles.modalFont, {color: theme}]}>입장 코드</Text>
           <TextInput
             style={styles.codeFont}
             editable={false}
@@ -23,7 +28,7 @@ export default function MatchingRoom() {
               <Text style={styles.modalButtFont}>공유하기</Text>
               <MaterialCommunityIcons
                 name="chevron-right"
-                color={primaryColor}
+                color={theme}
                 size={44}
               />
             </View>
@@ -44,7 +49,6 @@ const styles = StyleSheet.create({
   modalFont: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: primaryColor,
     marginBottom: 18,
   },
   codeFont: {
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 18,
   },
-  modalButtFont: {fontSize: 22, fontWeight: 'bold', color: primaryColor},
+  modalButtFont: {fontSize: 22, fontWeight: 'bold'},
   modalBottom: {
     flexDirection: 'row',
     alignItems: 'center',

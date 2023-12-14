@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,22 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar} from 'react-native-calendars';
+import {useRecoilValue} from 'recoil';
 import {LineChart} from 'react-native-chart-kit';
 import firestore from '@react-native-firebase/firestore';
 import {getPushNotification} from '../../utils/PermissionsFuncs';
-import {primaryColor, grayColor, title4, title2} from '../../utils/styles';
+import {grayColor, title4, title2} from '../../utils/styles';
 import type {MainStackParamList} from '../../navi/Navigation';
 import {month} from '../../utils/utils';
+import type {Themes} from '../../types/types';
+import {appTheme} from '../../recoils/states';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 const {width, height} = Dimensions.get('window');
 
 export default function Main({navigation}: Props): React.ReactElement {
   const [selected, setSelected] = useState<string>('');
+  const theme = useRecoilValue<Themes>(appTheme);
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -31,14 +35,18 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   useEffect(() => {
     getNotificationPermissionStatus(); // 핸드폰으로 실행
-  }, []);
+  }, [getNotificationPermissionStatus, theme]);
 
   return (
     <SafeAreaView style={styles.view}>
       <View style={styles.dayTotalCostView}>
         <View style={styles.fontArea}>
-          <Text style={styles.dayTotalCostTextDesc}>오늘 총 지출액</Text>
-          <Text style={styles.dayTotalCostText}>20,000원</Text>
+          <Text style={[styles.dayTotalCostTextDesc, {color: theme}]}>
+            오늘 총 지출액
+          </Text>
+          <Text style={[styles.dayTotalCostText, {color: theme}]}>
+            20,000원
+          </Text>
         </View>
         <Pressable onPress={() => navigation.navigate('AddCost')}>
           <View style={styles.addButt}>
@@ -48,17 +56,17 @@ export default function Main({navigation}: Props): React.ReactElement {
       </View>
       <View>
         <Calendar
+          key={theme} // 테마 색 변경시 리렌더링을 위하여
           onDayPress={day => {
             setSelected(day.dateString);
           }}
           theme={{
-            selectedDayBackgroundColor: primaryColor,
-            todayTextColor: primaryColor,
-            textSectionTitleColor: primaryColor,
+            selectedDayBackgroundColor: theme,
+            todayTextColor: theme,
+            textSectionTitleColor: theme,
             textMonthFontWeight: '600',
             textDayFontWeight: '600',
             textDayHeaderFontWeight: '600',
-            indicatorColor: primaryColor,
             dayTextColor: '#2d4150',
           }}
           markedDates={{
@@ -74,7 +82,9 @@ export default function Main({navigation}: Props): React.ReactElement {
           enableSwipeMonths={true}
           hideExtraDays={false}
         />
-        <Text style={styles.totalCostFont}>{months}월 총 20,000원 사용</Text>
+        <Text style={[styles.totalCostFont, {color: theme}]}>
+          {months}월 총 20,000원 사용
+        </Text>
         <LineChart
           data={{
             labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
@@ -99,7 +109,7 @@ export default function Main({navigation}: Props): React.ReactElement {
             backgroundGradientFrom: 'white',
             backgroundGradientTo: 'white',
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: _ => 'rgba(213, 65, 131, 0.2)',
+            color: _ => theme,
             labelColor: _ => 'rgba(80, 97, 109, 1)',
             style: {
               borderRadius: 1,
@@ -107,7 +117,7 @@ export default function Main({navigation}: Props): React.ReactElement {
             propsForDots: {
               r: '0',
               strokeWidth: '2',
-              stroke: primaryColor,
+              stroke: theme,
             },
           }}
           withHorizontalLines={false}
@@ -135,12 +145,10 @@ const styles = StyleSheet.create({
   dayTotalCostText: {
     ...title2,
     fontSize: 48,
-    color: primaryColor,
   },
   dayTotalCostTextDesc: {
     ...title4,
     fontSize: 26,
-    color: primaryColor,
   },
   addButt: {
     backgroundColor: grayColor,
@@ -158,6 +166,5 @@ const styles = StyleSheet.create({
   totalCostFont: {
     ...title4,
     marginVertical: 18,
-    color: primaryColor,
   },
 });

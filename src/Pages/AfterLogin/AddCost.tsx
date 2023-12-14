@@ -6,15 +6,9 @@ import firestore from '@react-native-firebase/firestore';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AddCostData} from '../../types/types';
 import type {MainStackParamList} from '../../navi/Navigation';
-import {userState} from '../../recoils/states';
-import {
-  title2,
-  title3,
-  primaryColor,
-  grayColor,
-  defaultFont,
-} from '../../utils/styles';
-import {UserData} from '../../types/types';
+import {userState, appTheme} from '../../recoils/states';
+import {title2, title3, grayColor, defaultFont} from '../../utils/styles';
+import type {UserData, Themes} from '../../types/types';
 import {day, date, month, today} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
@@ -23,6 +17,7 @@ export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
   const [viewCost, setViewCost] = useState<string>('0');
   const userData = useRecoilValue<UserData>(userState);
+  const theme = useRecoilValue<Themes>(appTheme);
   const [open, setOpen] = useState<boolean>(false);
   const [categories, _] = useState<{label: string; value: string}[]>([
     {label: '식비', value: '식비'},
@@ -67,13 +62,13 @@ export default function AddCost({navigation}: Props) {
   return (
     <View style={styles.background}>
       <View style={styles.header}>
-        <Text style={styles.todayText}>
+        <Text style={[styles.todayText, {color: theme}]}>
           {month}월 {date}일 {day}요일
         </Text>
       </View>
       <View style={styles.body}>
         <View>
-          <Text style={styles.desc}>지출액</Text>
+          <Text style={[styles.desc, {color: theme}]}>지출액</Text>
           <TextInput
             value={viewCost}
             style={styles.textInput}
@@ -82,7 +77,7 @@ export default function AddCost({navigation}: Props) {
           />
         </View>
         <View>
-          <Text style={styles.desc}>지출 분류</Text>
+          <Text style={[styles.desc, {color: theme}]}>지출 분류</Text>
           <DropDownPicker
             placeholder="지출금에 분류를 고르시오"
             open={open}
@@ -99,7 +94,9 @@ export default function AddCost({navigation}: Props) {
           <Pressable onPress={saveCostAndMovePage}>
             <View
               style={
-                cost && checkCate ? styles.okButtActive : styles.okButtDisable
+                cost && checkCate
+                  ? [styles.okButtActive, {backgroundColor: theme}]
+                  : styles.okButtDisable
               }>
               <Text style={styles.buttText}>확인</Text>
             </View>
@@ -132,11 +129,9 @@ const styles = StyleSheet.create({
   },
   todayText: {
     ...title2,
-    color: primaryColor,
   },
   desc: {
     ...title3,
-    color: primaryColor,
     marginBottom: 8,
   },
   textInput: {
@@ -146,7 +141,6 @@ const styles = StyleSheet.create({
   },
   dropdown: {},
   okButtActive: {
-    backgroundColor: primaryColor,
     width: 100,
     height: 50,
     borderRadius: 10,

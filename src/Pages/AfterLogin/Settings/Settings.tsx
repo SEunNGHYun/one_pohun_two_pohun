@@ -12,13 +12,13 @@ export default function Settings(): React.ReactElement {
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const [visible, setVisible] = useState<boolean>(false);
   const [themesModalVisible, setThemesVisibleModal] = useState<boolean>(false);
-  const [themes, setTheme] = useRecoilState<Themes>(appTheme);
+  const [theme, setTheme] = useRecoilState<Themes>(appTheme);
   const [themeList, setThemeList] = useState<
     {color: Themes; checked: boolean}[]
   >([
     {color: '#d54183', checked: true},
-    {color: '#f5c9ff', checked: false},
-    {color: '#99ffec', checked: false},
+    {color: '#30ba21', checked: false},
+    {color: '#2121ba', checked: false},
   ]);
   const togglePushNotification = useCallback(
     (changeVal: boolean) => {
@@ -32,18 +32,6 @@ export default function Settings(): React.ReactElement {
     [setUserData],
   );
 
-  const showModal = useCallback(() => setVisible(true), []);
-  const hideModal = useCallback(() => setVisible(false), []);
-  const pressExitButt = useCallback(async () => {
-    setUserData({
-      nickname: '',
-      img: null,
-      current_cost: 0,
-      goal_cost: 0,
-      push_notification: false,
-    });
-    await AsyncStorage.removeItem('user_data');
-  }, [setUserData]);
   const pressThemeShowModal = useCallback(() => {
     setThemesVisibleModal(true);
   }, []);
@@ -75,12 +63,24 @@ export default function Settings(): React.ReactElement {
     pressThemeHideModal();
   }, [themeList, pressThemeHideModal, setTheme]);
 
+  const showExitModal = useCallback(() => setVisible(true), []);
+  const hideExitModal = useCallback(() => setVisible(false), []);
+  const pressExitButt = useCallback(async () => {
+    setUserData({
+      nickname: '',
+      img: null,
+      current_cost: 0,
+      goal_cost: 0,
+      push_notification: false,
+    });
+    await AsyncStorage.removeItem('user_data');
+  }, [setUserData]);
   return (
     <PaperProvider>
       <View style={styles.view}>
         <View style={styles.header}>
           <Image
-            style={styles.userImage}
+            style={[styles.userImage, {borderColor: theme}]}
             source={{
               uri:
                 userData.img === null
@@ -89,40 +89,48 @@ export default function Settings(): React.ReactElement {
             }}
             resizeMode="contain"
           />
-          <Text style={styles.userNickname}>dddd</Text>
+          <Text style={[styles.userNickname, {color: theme}]}>
+            {userData.nickname}
+          </Text>
         </View>
         <View style={styles.body}>
           <Pressable onPress={pressThemeShowModal}>
             <View style={[styles.buttArea, {paddingTop: 16}]}>
-              <Text style={styles.defaultFont}>테마색 설정</Text>
+              <Text style={[styles.defaultFont, {color: theme}]}>
+                테마색 설정
+              </Text>
             </View>
           </Pressable>
           <Pressable onPress={pressEditSetting}>
             <View style={[styles.buttArea, {paddingTop: 16}]}>
-              <Text style={styles.defaultFont}>회원정보 수정하기</Text>
+              <Text style={[styles.defaultFont, {color: theme}]}>
+                회원정보 수정하기
+              </Text>
             </View>
           </Pressable>
           <Pressable
             onPress={() => togglePushNotification(!userData.push_notification)}>
             <View style={styles.buttArea}>
-              <Text style={styles.defaultFont}>푸시알림 설정</Text>
+              <Text style={[styles.defaultFont, {color: theme}]}>
+                푸시알림 설정
+              </Text>
               {userData.push_notification ? (
-                <Icon name="toggle-on" size={45} />
+                <Icon name="toggle-on" size={36} color={theme} />
               ) : (
-                <Icon name="toggle-off" size={45} />
+                <Icon name="toggle-off" size={36} color={theme} />
               )}
             </View>
           </Pressable>
-          <Pressable onPress={showModal}>
+          <Pressable onPress={showExitModal}>
             <View style={[styles.buttArea, {paddingBottom: 16}]}>
-              <Text style={styles.defaultFont}>회원탈퇴</Text>
+              <Text style={[styles.defaultFont, {color: theme}]}>회원탈퇴</Text>
             </View>
           </Pressable>
         </View>
         <Portal>
           <Modal
             contentContainerStyle={styles.modalView}
-            onDismiss={hideModal}
+            onDismiss={hideExitModal}
             visible={visible}>
             <View style={styles.modalTop}>
               <Text style={styles.modalText}>정말 나가실건가요?</Text>
@@ -181,15 +189,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   userImage: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
     borderRadius: 200,
-    borderWidth: 1.5,
-    borderColor: grayColor,
+    borderWidth: 1.3,
     marginBottom: 36,
   },
   userNickname: {
     fontSize: 36,
+    fontWeight: 'bold',
   },
   body: {flex: 5.5},
   buttArea: {
@@ -200,8 +208,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   defaultFont: {
-    fontSize: 28,
-    color: 'black',
+    fontSize: 26,
+    fontWeight: 'bold',
   },
   modalView: {
     marginHorizontal: 30,
