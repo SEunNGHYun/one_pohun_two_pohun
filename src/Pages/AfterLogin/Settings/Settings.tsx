@@ -75,23 +75,27 @@ export default function Settings(): React.ReactElement {
     });
     await AsyncStorage.removeItem('user_data');
   }, [setUserData]);
+
   return (
     <PaperProvider>
       <View style={styles.view}>
-        <View style={styles.header}>
-          <Image
-            style={[styles.userImage, {borderColor: theme}]}
-            source={{
-              uri:
-                userData.img === null
-                  ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
-                  : userData.img,
-            }}
-            resizeMode="contain"
-          />
-          <Text style={[styles.userNickname, {color: theme}]}>
-            {userData.nickname}
-          </Text>
+        <View style={[styles.header, {backgroundColor: theme}]}>
+          <View style={styles.userImageBackground1}>
+            <View
+              style={[styles.userImageBackground2, {backgroundColor: theme}]}>
+              <Image
+                style={styles.userImage}
+                source={{
+                  uri:
+                    userData.img === null
+                      ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
+                      : userData.img,
+                }}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+          <Text style={styles.userNickname}>{userData.nickname}</Text>
         </View>
         <View style={styles.body}>
           <Pressable onPress={pressThemeShowModal}>
@@ -185,19 +189,34 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 4.5,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
+  userImageBackground1: {
+    width: 210,
+    height: 210,
+    borderRadius: 210,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  userImageBackground2: {
+    width: 200,
+    height: 200,
+    padding: 5,
+    borderRadius: 200,
   },
   userImage: {
-    width: 180,
-    height: 180,
-    borderRadius: 200,
-    borderWidth: 1.3,
+    width: 190,
+    height: 190,
+    borderWidth: 10,
+    borderRadius: 190,
     marginBottom: 36,
   },
   userNickname: {
     fontSize: 36,
     fontWeight: 'bold',
+    color: 'white',
   },
   body: {flex: 5.5},
   buttArea: {

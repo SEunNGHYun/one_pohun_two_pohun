@@ -18,7 +18,7 @@ export default function PigBattleRoom() {
         <BattleUserData position="left" />
         <MaterialCommunityIcons
           name="piggy-bank"
-          color={primaryColor}
+          color={theme}
           size={68}
           style={[
             styles.pigIcon,

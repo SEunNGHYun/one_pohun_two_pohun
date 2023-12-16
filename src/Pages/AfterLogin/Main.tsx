@@ -49,7 +49,7 @@ export default function Main({navigation}: Props): React.ReactElement {
           </Text>
         </View>
         <Pressable onPress={() => navigation.navigate('AddCost')}>
-          <View style={styles.addButt}>
+          <View style={[styles.addButt, {backgroundColor: theme}]}>
             <Text style={styles.addButtText}>+</Text>
           </View>
         </Pressable>
@@ -159,8 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButtText: {
-    fontSize: 18,
-    color: 'black',
+    fontSize: 22,
+    color: 'white',
     fontWeight: 'bold',
   },
   totalCostFont: {

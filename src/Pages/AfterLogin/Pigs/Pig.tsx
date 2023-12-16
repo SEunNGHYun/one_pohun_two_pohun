@@ -44,15 +44,15 @@ export default function Pig({navigation}: PigNaviProps) {
                 : userData.img,
           }}
           resizeMode="contain"
-          style={styles.userImgBack}
+          style={[styles.userImgBack, {borderColor: theme}]}
         />
         <Pressable onPress={() => navigation.navigate('MakePigBattleRoom')}>
-          <View style={styles.butt}>
+          <View style={[styles.butt, {backgroundColor: theme}]}>
             <Text style={styles.buttText}>만들기</Text>
           </View>
         </Pressable>
         <Pressable onPress={showModal}>
-          <View style={styles.butt}>
+          <View style={[styles.butt, {backgroundColor: theme}]}>
             <Text style={styles.buttText}>입장하기</Text>
           </View>
         </Pressable>
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
   },
   userImgBack: {
     borderWidth: 1.5,
-    borderColor: grayColor,
     width: 200,
     height: 200,
     borderRadius: 200,
