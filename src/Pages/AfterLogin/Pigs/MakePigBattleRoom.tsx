@@ -11,6 +11,7 @@ import {
 import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
 import {grayColor, title4, defaultFont, descColor} from '../../../utils/styles';
@@ -28,6 +29,7 @@ export default function MakePigBattleRoom() {
   return (
     <View style={styles.view}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <UserDataHeader headerRange={3.5} imgSize={150} />
         <View style={styles.body}>
           <InputButtons
             title={'총 목표 금액'}

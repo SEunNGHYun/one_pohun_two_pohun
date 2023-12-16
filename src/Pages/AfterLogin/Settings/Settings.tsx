@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import UserDataHeader from '../../../Components/UserDataHeader';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import {userState, appTheme} from '../../../recoils/states';
@@ -79,24 +80,7 @@ export default function Settings(): React.ReactElement {
   return (
     <PaperProvider>
       <View style={styles.view}>
-        <View style={[styles.header, {backgroundColor: theme}]}>
-          <View style={styles.userImageBackground1}>
-            <View
-              style={[styles.userImageBackground2, {backgroundColor: theme}]}>
-              <Image
-                style={styles.userImage}
-                source={{
-                  uri:
-                    userData.img === null
-                      ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
-                      : userData.img,
-                }}
-                resizeMode="contain"
-              />
-            </View>
-          </View>
-          <Text style={styles.userNickname}>{userData.nickname}</Text>
-        </View>
+        <UserDataHeader headerRange={2.5} imgSize={185} />
         <View style={styles.body}>
           <Pressable onPress={pressThemeShowModal}>
             <View style={[styles.buttArea, {paddingTop: 16}]}>
