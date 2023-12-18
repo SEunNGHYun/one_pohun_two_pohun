@@ -12,12 +12,12 @@ import {Calendar} from 'react-native-calendars';
 import {useRecoilValue} from 'recoil';
 import {LineChart} from 'react-native-chart-kit';
 import firestore from '@react-native-firebase/firestore';
-import {getPushNotification} from '../../utils/PermissionsFuncs';
-import {grayColor, title4, title2} from '../../utils/styles';
-import type {MainStackParamList} from '../../navi/Navigation';
-import {month} from '../../utils/utils';
-import type {Themes} from '../../types/types';
-import {appTheme} from '../../recoils/states';
+import {getPushNotification} from '../../../utils/PermissionsFuncs';
+import {grayColor, title4, title2} from '../../../utils/styles';
+import type {MainStackParamList} from '../../../navi/Navigation';
+import {month} from '../../../utils/utils';
+import type {Themes} from '../../../types/types';
+import {appTheme} from '../../../recoils/states';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 const {width, height} = Dimensions.get('window');
@@ -75,12 +75,11 @@ export default function Main({navigation}: Props): React.ReactElement {
               disableTouchEvent: true,
             },
           }}
+          onDayLongPress={day => {}}
+          hideExtraDays={true}
           hideArrows={true}
-          onDayLongPress={day => {
-            console.log('selected day', day);
-          }}
-          enableSwipeMonths={true}
-          hideExtraDays={false}
+          enableSwipeMonths={false}
+          disableMonthChange={true}
         />
         <Text style={[styles.totalCostFont, {color: theme}]}>
           {months}월 총 20,000원 사용

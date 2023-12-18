@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserDataHeader from '../../../Components/UserDataHeader';
@@ -18,7 +18,7 @@ export default function Settings(): React.ReactElement {
     {color: Themes; checked: boolean}[]
   >([
     {color: '#d54183', checked: true},
-    {color: '#30ba21', checked: false},
+    {color: '#59b54f', checked: false},
     {color: '#2121ba', checked: false},
   ]);
   const togglePushNotification = useCallback(

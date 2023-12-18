@@ -4,12 +4,12 @@ import {useRecoilValue} from 'recoil';
 import DropDownPicker from 'react-native-dropdown-picker';
 import firestore from '@react-native-firebase/firestore';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AddCostData} from '../../types/types';
-import type {MainStackParamList} from '../../navi/Navigation';
-import {userState, appTheme} from '../../recoils/states';
-import {title2, title3, grayColor, defaultFont} from '../../utils/styles';
-import type {UserData, Themes} from '../../types/types';
-import {day, date, month, today} from '../../utils/utils';
+import {AddCostData} from '../../../types/types';
+import type {MainStackParamList} from '../../../navi/Navigation';
+import {userState, appTheme} from '../../../recoils/states';
+import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
+import type {UserData, Themes} from '../../../types/types';
+import {day, date, month, today} from '../../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 

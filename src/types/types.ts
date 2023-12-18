@@ -13,4 +13,4 @@ export interface UserData {
   push_notification: boolean;
 }
 
-export type Themes = '#d54183' | '#30ba21' | '#2121ba';
+export type Themes = '#d54183' | '#59b54f' | '#2121ba';

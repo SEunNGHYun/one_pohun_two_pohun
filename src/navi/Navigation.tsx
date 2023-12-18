@@ -20,9 +20,9 @@ import Targetcost1 from '../Pages/BeforeSignUp/Targetcost1';
 import Targetcost2More from '../Pages/BeforeSignUp/Targetcost2More';
 import Targetcost2Less from '../Pages/BeforeSignUp/Targetcost2Less';
 // 메인
-import Main from '../Pages/AfterLogin/Main';
-import AddCost from '../Pages/AfterLogin/AddCost';
-import CostList from '../Pages/AfterLogin/CostList';
+import Main from '../Pages/AfterLogin/Main/Main';
+import AddCost from '../Pages/AfterLogin/Main/AddCost';
+import EachDayCost from '../Pages/AfterLogin/Main/EachDayCost';
 //배틀
 import Pig from '../Pages/AfterLogin/Pigs/Pig';
 import MakePigBattleRoom from '../Pages/AfterLogin/Pigs/MakePigBattleRoom';
@@ -41,7 +41,6 @@ const options: NativeStackNavigationOptions = {
 export type MainStackParamList = {
   Main: undefined;
   AddCost: undefined;
-  CostList: undefined;
 };
 
 export type PigStackParamList = {
@@ -71,7 +70,7 @@ export type BeforeLoginStackParamList = {
 
 export type AfterLoginTabParamList = {
   MainStack: MainStackParamList;
-  Pigs: PigStackParamList;
+  PigStack: PigStackParamList;
   Settings: undefined;
 };
 
@@ -110,7 +109,6 @@ function MainNavigation() {
     <Navigator screenOptions={options}>
       <Screen name="Main" component={Main} />
       <Screen name="AddCost" component={AddCost} />
-      <Screen name="CostList" component={CostList} />
     </Navigator>
   );
 }
@@ -145,7 +143,7 @@ function TabNavigation() {
         }}
       />
       <Screen
-        name="Pigs"
+        name="PigStack"
         component={PigNavigation}
         options={{
           title: '배틀',
