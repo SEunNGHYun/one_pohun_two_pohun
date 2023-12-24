@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar} from 'react-native-calendars';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useRecoilValue} from 'recoil';
 import {LineChart} from 'react-native-chart-kit';
 import firestore from '@react-native-firebase/firestore';
@@ -38,92 +39,94 @@ export default function Main({navigation}: Props): React.ReactElement {
   }, [getNotificationPermissionStatus, theme]);
 
   return (
-    <SafeAreaView style={styles.view}>
-      <View style={styles.dayTotalCostView}>
-        <View style={styles.fontArea}>
-          <Text style={[styles.dayTotalCostTextDesc, {color: theme}]}>
-            오늘 총 지출액
-          </Text>
-          <Text style={[styles.dayTotalCostText, {color: theme}]}>
-            20,000원
-          </Text>
-        </View>
-        <Pressable onPress={() => navigation.navigate('AddCost')}>
-          <View style={[styles.addButt, {backgroundColor: theme}]}>
-            <Text style={styles.addButtText}>+</Text>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <SafeAreaView style={styles.view}>
+        <View style={styles.dayTotalCostView}>
+          <View style={styles.fontArea}>
+            <Text style={[styles.dayTotalCostTextDesc, {color: theme}]}>
+              오늘 총 지출액
+            </Text>
+            <Text style={[styles.dayTotalCostText, {color: theme}]}>
+              20,000원
+            </Text>
           </View>
-        </Pressable>
-      </View>
-      <View>
-        <Calendar
-          key={theme} // 테마 색 변경시 리렌더링을 위하여
-          onDayPress={day => {
-            setSelected(day.dateString);
-          }}
-          theme={{
-            selectedDayBackgroundColor: theme,
-            todayTextColor: theme,
-            textSectionTitleColor: theme,
-            textMonthFontWeight: '600',
-            textDayFontWeight: '600',
-            textDayHeaderFontWeight: '600',
-            dayTextColor: '#2d4150',
-          }}
-          markedDates={{
-            [selected]: {
-              selected: true,
-              disableTouchEvent: true,
-            },
-          }}
-          onDayLongPress={day => {}}
-          hideExtraDays={true}
-          hideArrows={true}
-          enableSwipeMonths={false}
-          disableMonthChange={true}
-        />
-        <Text style={[styles.totalCostFont, {color: theme}]}>
-          {months}월 총 20,000원 사용
-        </Text>
-        <LineChart
-          data={{
-            labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
-            datasets: [
-              {
-                data: [
-                  Math.random() * 1000,
-                  Math.random() * 1000,
-                  Math.random() * 1000,
-                  Math.random() * 1000,
-                  Math.random() * 1000,
-                  Math.random() * 1000,
-                ],
+          <Pressable onPress={() => navigation.navigate('AddCost')}>
+            <View style={[styles.addButt, {backgroundColor: theme}]}>
+              <Text style={styles.addButtText}>+</Text>
+            </View>
+          </Pressable>
+        </View>
+        <View>
+          <Calendar
+            key={theme} // 테마 색 변경시 리렌더링을 위하여
+            onDayPress={day => {
+              setSelected(day.dateString);
+            }}
+            theme={{
+              selectedDayBackgroundColor: theme,
+              todayTextColor: theme,
+              textSectionTitleColor: theme,
+              textMonthFontWeight: '600',
+              textDayFontWeight: '600',
+              textDayHeaderFontWeight: '600',
+              dayTextColor: '#2d4150',
+            }}
+            markedDates={{
+              [selected]: {
+                selected: true,
+                disableTouchEvent: true,
               },
-            ],
-          }}
-          width={width} // from react-native
-          height={200}
-          yAxisSuffix="원"
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundGradientFrom: 'white',
-            backgroundGradientTo: 'white',
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: _ => theme,
-            labelColor: _ => 'rgba(80, 97, 109, 1)',
-            style: {
-              borderRadius: 1,
-            },
-            propsForDots: {
-              r: '0',
-              strokeWidth: '2',
-              stroke: theme,
-            },
-          }}
-          withHorizontalLines={false}
-          bezier
-        />
-      </View>
-    </SafeAreaView>
+            }}
+            onDayLongPress={day => {}}
+            hideExtraDays={true}
+            hideArrows={true}
+            enableSwipeMonths={false}
+            disableMonthChange={true}
+          />
+          <Text style={[styles.totalCostFont, {color: theme}]}>
+            {months}월 총 20,000원 사용
+          </Text>
+          <LineChart
+            data={{
+              labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+              datasets: [
+                {
+                  data: [
+                    Math.random() * 1000,
+                    Math.random() * 1000,
+                    Math.random() * 1000,
+                    Math.random() * 1000,
+                    Math.random() * 1000,
+                    Math.random() * 1000,
+                  ],
+                },
+              ],
+            }}
+            width={width} // from react-native
+            height={200}
+            yAxisSuffix="원"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundGradientFrom: 'white',
+              backgroundGradientTo: 'white',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: _ => theme,
+              labelColor: _ => 'rgba(80, 97, 109, 1)',
+              style: {
+                borderRadius: 1,
+              },
+              propsForDots: {
+                r: '0',
+                strokeWidth: '2',
+                stroke: theme,
+              },
+            }}
+            withHorizontalLines={false}
+            bezier
+          />
+        </View>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
