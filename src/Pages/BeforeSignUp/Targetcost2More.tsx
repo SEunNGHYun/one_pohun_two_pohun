@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {useSetRecoilState} from 'recoil';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
@@ -38,7 +38,7 @@ export default function Targetcost2More({route}: Props) {
       if (t === 'yes') {
         setCost(userCost - 0.3); // 3천원 부터 절약
       } else if (t === 'no') {
-        setCost(userCost); //그대로
+        setCost(userCost); //그대로0
       }
     },
     [route],
@@ -52,9 +52,9 @@ export default function Targetcost2More({route}: Props) {
       current_cost: userCost,
       goal_cost: cost,
     };
-    const fireStoreDoc = firestore().collection('users');
+    console.log(userData);
     try {
-      await fireStoreDoc.doc().set(userData);
+      await database().ref(`/phoun/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);

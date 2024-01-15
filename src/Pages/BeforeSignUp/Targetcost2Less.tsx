@@ -2,7 +2,7 @@ import React, {useState, useCallback} from 'react';
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSetRecoilState} from 'recoil';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
@@ -55,9 +55,8 @@ export default function Targetcost2Less({route}: Props) {
       current_cost: userCost,
       goal_cost: cost,
     };
-    const fireStoreDoc = firestore().collection('users');
     try {
-      await fireStoreDoc.doc().set(userData);
+      await database().ref(`/phoun/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);

@@ -19,7 +19,7 @@ import {
   subtitle,
   grayColor,
 } from '../../utils/styles';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
 
 export default function NickName({navigation}): React.ReactElement {
   const [nickname, setNickName] = useState<string>('');
@@ -85,10 +85,9 @@ export default function NickName({navigation}): React.ReactElement {
 
   const nextPageMove = useCallback(async (): Promise<void> => {
     //db user에서 닉네임 중복 페크
-    const userSnapShot = firestore().collection('users');
+    const snapshot = await database().ref(`/phoun/${nickname}`).once('value');
     try {
-      const user = await userSnapShot.doc(nickname).get();
-      if (!user.data()) {
+      if (!snapshot.val()) {
         navigation.navigate('Targetcost1', {
           img: userImage.assets[0].uri,
           nickname,

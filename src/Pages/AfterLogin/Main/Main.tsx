@@ -34,6 +34,7 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   // variables
   const snapPoints = useMemo(() => ['1%', '65%'], []);
+
   const handleSnapPress = useCallback(index => {
     sheetRef.current?.snapToIndex(index);
   }, []);

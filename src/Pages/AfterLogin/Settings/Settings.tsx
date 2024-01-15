@@ -2,6 +2,8 @@ import React, {useCallback, useState} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import database from '@react-native-firebase/database';
+
 import UserDataHeader from '../../../Components/UserDataHeader';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
@@ -74,8 +76,9 @@ export default function Settings(): React.ReactElement {
       goal_cost: 0,
       push_notification: false,
     });
+    await database().ref(`/phoun/users/${userData.nickname}`).remove();
     await AsyncStorage.removeItem('user_data');
-  }, [setUserData]);
+  }, [setUserData, userData]);
 
   return (
     <PaperProvider>
