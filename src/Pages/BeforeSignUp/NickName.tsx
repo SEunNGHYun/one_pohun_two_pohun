@@ -85,7 +85,7 @@ export default function NickName({navigation}): React.ReactElement {
 
   const nextPageMove = useCallback(async (): Promise<void> => {
     //db user에서 닉네임 중복 페크
-    const snapshot = await database().ref(`/phoun/${nickname}`).once('value');
+    const snapshot = await database().ref(`/users/${nickname}`).once('value');
     try {
       if (!snapshot.val()) {
         navigation.navigate('Targetcost1', {

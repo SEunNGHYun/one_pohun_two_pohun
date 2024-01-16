@@ -49,12 +49,12 @@ export default function Targetcost2More({route}: Props) {
     const userData = {
       nickname,
       img,
-      current_cost: userCost,
-      goal_cost: cost,
+      day_cost: userCost,
+      day_goal_cost: cost,
     };
     console.log(userData);
     try {
-      await database().ref(`/phoun/users/${nickname}`).set(userData);
+      await database().ref(`/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);
