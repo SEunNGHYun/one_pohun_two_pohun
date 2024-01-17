@@ -1,10 +1,10 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useRecoilState} from 'recoil';
 import DropDownPicker from 'react-native-dropdown-picker';
-import firestore from '@react-native-firebase/firestore';
+import database from '@react-native-firebase/database';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {AddCostData} from '../../../types/types';
+// import {AddCostData} from '../../../types/types';
 import type {MainStackParamList} from '../../../navi/Navigation';
 import {userState, appTheme} from '../../../recoils/states';
 import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
@@ -16,7 +16,7 @@ type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
   const [viewCost, setViewCost] = useState<string>('0');
-  const userData = useRecoilValue<UserData>(userState);
+  const [userData, setUserData] = useRecoilState<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
   const [open, setOpen] = useState<boolean>(false);
   const [categories, _] = useState<{label: string; value: string}[]>([
@@ -44,20 +44,28 @@ export default function AddCost({navigation}: Props) {
   }, []);
 
   const saveCostAndMovePage = useCallback(async () => {
-    const fireStoreDoc = firestore().collection('personal_cost');
-    const data: AddCostData = {
-      nickname: userData.nickname,
-      categories: checkCate,
-      cost: Number(cost.replace(/\,/g, '')),
-      timestamp: today.toDateString(),
-    };
+    const spendDay: string = today.toDateString();
+    const spendCost: number = Number(cost.replace(/\,/g, ''));
+    let data: any = {};
+    data[viewCost] = spendCost;
     try {
-      await fireStoreDoc.doc().set(data);
-    } catch (e) {
+      await database()
+        .ref(`/users/${userData.nickname}/send_cost/${spendDay}/${checkCate}`)
+        .update(data);
+      await database()
+        .ref(`/users/${userData.nickname}/send_cost/${spendDay}`)
+        .update({
+          spend_cost_total: userData.today_spend_cost + spendCost,
+        });
+    } catch (err) {
     } finally {
+      setUserData({
+        ...userData,
+        today_spend_cost: userData.today_spend_cost + spendCost,
+      });
       navigation.replace('Main');
     }
-  }, [userData, checkCate, cost, navigation]);
+  }, [userData, cost, viewCost, checkCate]);
 
   return (
     <View style={styles.background}>

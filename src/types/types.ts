@@ -1,15 +1,13 @@
-export interface AddCostData {
-  nickname: string;
-  categories: string;
-  cost: number;
-  timestamp: string;
-}
+// export interface AddCostData {
+//   categories: number;
+// }
 
 export interface UserData {
   nickname: string;
   img: string | null;
   current_cost: number;
   goal_cost: number;
+  today_spend_cost: number;
   push_notification: boolean;
 }
 
