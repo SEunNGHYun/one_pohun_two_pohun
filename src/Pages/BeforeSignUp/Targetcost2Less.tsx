@@ -15,6 +15,7 @@ import {
   descColor,
   defaultFont,
 } from '../../utils/styles';
+import {day, date, month, today} from '../../utils/utils';
 
 type Props = NativeStackScreenProps<
   BeforeLoginStackParamList,
@@ -49,11 +50,12 @@ export default function Targetcost2Less({route}: Props) {
 
   const successSignUp = useCallback(async () => {
     const {img, nickname, userCost} = route.params;
-    const userData = {
+    let userData = {
       nickname,
       img,
       day_cost: userCost,
       day_goal_cost: cost,
+      spend_cost: {},
     };
     try {
       await database().ref(`/users/${nickname}`).set(userData);

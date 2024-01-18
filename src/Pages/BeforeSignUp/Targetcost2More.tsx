@@ -51,6 +51,7 @@ export default function Targetcost2More({route}: Props) {
       img,
       day_cost: userCost,
       day_goal_cost: cost,
+      spend_cost: {},
     };
     console.log(userData);
     try {

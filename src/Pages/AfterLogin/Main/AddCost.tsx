@@ -50,22 +50,14 @@ export default function AddCost({navigation}: Props) {
     data[viewCost] = spendCost;
     try {
       await database()
-        .ref(`/users/${userData.nickname}/send_cost/${spendDay}/${checkCate}`)
+        .ref(`/users/${userData.nickname}/spend_cost/${spendDay}/${checkCate}`)
         .update(data);
-      await database()
-        .ref(`/users/${userData.nickname}/send_cost/${spendDay}`)
-        .update({
-          spend_cost_total: userData.today_spend_cost + spendCost,
-        });
     } catch (err) {
     } finally {
-      setUserData({
-        ...userData,
-        today_spend_cost: userData.today_spend_cost + spendCost,
-      });
-      navigation.replace('Main');
+      //여기에 데이터 Main애 데이터 값 변한게 설정
+      navigation.pop();
     }
-  }, [userData, cost, viewCost, checkCate]);
+  }, [userData, cost, viewCost, checkCate, navigation]);
 
   return (
     <View style={styles.background}>

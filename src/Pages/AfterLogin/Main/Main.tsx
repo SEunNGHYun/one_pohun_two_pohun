@@ -18,18 +18,21 @@ import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {getPushNotification} from '../../../utils/PermissionsFuncs';
 import {grayColor, title4, title2} from '../../../utils/styles';
 import type {MainStackParamList} from '../../../navi/Navigation';
-import {month} from '../../../utils/utils';
-import type {Themes} from '../../../types/types';
-import {appTheme} from '../../../recoils/states';
+import {month, today} from '../../../utils/utils';
+import type {Themes, UserData} from '../../../types/types';
+import {appTheme, userState} from '../../../recoils/states';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 const {width, height} = Dimensions.get('window');
 
 export default function Main({navigation}: Props): React.ReactElement {
   const theme = useRecoilValue<Themes>(appTheme);
+  const userData = useRecoilValue<UserData>(userState);
   const [selected, setSelected] = useState<string>('');
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
+  const [spendCostData, setSpendCostData] = useState({});
+  const [todaySpendCost, setSpendTodayCost] = useState(0);
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -61,8 +64,34 @@ export default function Main({navigation}: Props): React.ReactElement {
   }, []);
 
   useEffect(() => {
-    getNotificationPermissionStatus(); // 핸드폰으로 실행
-  }, [getNotificationPermissionStatus, theme]);
+    console.log('오잉?');
+    async function getUserData() {
+      const TODAY: string = today.toDateString();
+      let data = await database()
+        .ref(`/users/${userData.nickname}`)
+        .once('value');
+      data = data.val().spend_cost;
+      for (let key in data) {
+        let category = data[key];
+        let today_total_cost = 0;
+        for (let category_key in category) {
+          let category_total_cost = Object.values(
+            category[category_key],
+          ).reduce((pre: number, cur: number): number => pre + cur, 0);
+          category[category_key].category_total_cost = category_total_cost;
+          today_total_cost += category_total_cost;
+        }
+        category.today_total = today_total_cost;
+      }
+      if (TODAY in data) {
+        setSpendTodayCost(data[TODAY].today_total);
+      }
+      setSpendCostData(data);
+    }
+    getUserData();
+    // getNotificationPermissionStatus(); // 핸드폰으로 실행
+    return () => {};
+  }, [userData]);
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -79,7 +108,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                   오늘 총 지출액
                 </Text>
                 <Text style={[styles.dayTotalCostText, {color: theme}]}>
-                  20,000원
+                  {todaySpendCost}원
                 </Text>
               </View>
               <Pressable onPress={() => navigation.navigate('AddCost')}>

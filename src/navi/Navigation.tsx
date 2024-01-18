@@ -171,7 +171,7 @@ export default function RootNavigation() {
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const setAppTheme = useSetRecoilState<Themes>(appTheme);
 
-  const getUserData = useCallback(async () => {
+  const getUserDataInDevice = useCallback(async () => {
     try {
       const [getUserDataArr, getAppThemeArr] = await AsyncStorage.multiGet([
         'user_data',
@@ -180,7 +180,8 @@ export default function RootNavigation() {
       const [__, getUserData] = getUserDataArr;
       const [_, getAppTheme] = getAppThemeArr;
       if (getUserData !== null) {
-        setUserData(JSON.parse(getUserData));
+        let userDataInDevice = JSON.parse(getUserData);
+        setUserData(userDataInDevice);
       }
       if (getAppTheme !== null) {
         setAppTheme(getAppTheme as Themes);
@@ -192,8 +193,8 @@ export default function RootNavigation() {
   }, [setUserData, setAppTheme]);
 
   useEffect(() => {
-    getUserData();
-  }, [getUserData]);
+    getUserDataInDevice();
+  }, [getUserDataInDevice]);
 
   return (
     <NavigationContainer>
