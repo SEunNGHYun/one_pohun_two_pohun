@@ -18,7 +18,7 @@ import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {getPushNotification} from '../../../utils/PermissionsFuncs';
 import {grayColor, title4, title2} from '../../../utils/styles';
 import type {MainStackParamList} from '../../../navi/Navigation';
-import {month, today} from '../../../utils/utils';
+import {month, today, before6Month} from '../../../utils/utils';
 import type {Themes, UserData} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
 
@@ -32,7 +32,8 @@ export default function Main({navigation}: Props): React.ReactElement {
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
   const [spendCostData, setSpendCostData] = useState({});
-  const [todaySpendCost, setSpendTodayCost] = useState(0);
+  const [before6MonthSpendData, setBefore6MonthSpendData] = useState();
+  const [todaySpendCost, setSpendTodayCost] = useState<number>(0);
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -64,13 +65,13 @@ export default function Main({navigation}: Props): React.ReactElement {
   }, []);
 
   useEffect(() => {
-    console.log('오잉?');
+    //일단 AddCost에서 소비금액 추가될 때마다 데이터 가져올 수 있게 살정
     async function getUserData() {
-      const TODAY: string = today.toDateString();
       let data = await database()
         .ref(`/users/${userData.nickname}`)
         .once('value');
       data = data.val().spend_cost;
+
       for (let key in data) {
         let category = data[key];
         let today_total_cost = 0;
@@ -81,10 +82,10 @@ export default function Main({navigation}: Props): React.ReactElement {
           category[category_key].category_total_cost = category_total_cost;
           today_total_cost += category_total_cost;
         }
-        category.today_total = today_total_cost;
+        category.today_total = today_total_cost; //카테고리별 사용 비용
       }
-      if (TODAY in data) {
-        setSpendTodayCost(data[TODAY].today_total);
+      if (today in data) {
+        setSpendTodayCost(data[today].today_total); //오늘 사용 비용
       }
       setSpendCostData(data);
     }
@@ -121,6 +122,7 @@ export default function Main({navigation}: Props): React.ReactElement {
               <Calendar
                 key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
                 onDayPress={day => {
+                  console.log(day, day.dateString);
                   setSelected(day.dateString);
                   setBottomSheetToggle(true);
                   handleSnapPress(1);

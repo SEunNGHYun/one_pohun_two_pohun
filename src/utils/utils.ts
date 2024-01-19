@@ -1,11 +1,23 @@
-export let today: Date = new Date();
+export let currentDate: Date = new Date();
 
-export const month: number = today.getMonth() + 1;
+export const year: number = currentDate.getFullYear();
 
-export const date: number = today.getDate();
+export const month: number = currentDate.getMonth() + 1;
+
+export const date: number = currentDate.getDate();
+
+export const today: string = `${year}-${month}-${date}`;
+
+const currentDate2: Date = new Date();
+currentDate2.setMonth(currentDate2.getMonth() - 6);
+
+export const before6Month = {
+  year: currentDate2.getFullYear(),
+  month: currentDate2.getMonth() + 1,
+};
 
 function checkDayNumToString() {
-  const dayNum: number = today.getDay();
+  const dayNum: number = currentDate.getDay();
 
   if (dayNum === 1) {
     return '월';
@@ -22,4 +34,4 @@ function checkDayNumToString() {
   }
 }
 
-export let day: string = checkDayNumToString();
+export let korea_date: string = checkDayNumToString();
