@@ -9,7 +9,13 @@ import type {MainStackParamList} from '../../../navi/Navigation';
 import {userState, appTheme} from '../../../recoils/states';
 import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
 import type {UserData, Themes} from '../../../types/types';
-import {korea_date, date, month, today} from '../../../utils/utils';
+import {
+  korea_date,
+  date,
+  month,
+  curentTimeStamp,
+  today,
+} from '../../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 
@@ -45,12 +51,18 @@ export default function AddCost({navigation}: Props) {
 
   const saveCostAndMovePage = useCallback(async () => {
     const spendCost: number = Number(cost.replace(/\,/g, ''));
-    let data: any = {};
-    data[viewCost] = spendCost;
+    const timestamp: number = curentTimeStamp();
     try {
       await database()
-        .ref(`/users/${userData.nickname}/spend_cost/${today}/${checkCate}`)
-        .update(data);
+        .ref(`/users/${userData.nickname}/spend_cost`)
+        .push()
+        .set({
+          timestamp,
+          spend_data: {
+            category: checkCate,
+            cost: spendCost,
+          },
+        });
     } catch (err) {
     } finally {
       //여기에 데이터 Main애 데이터 값 변한게 설정

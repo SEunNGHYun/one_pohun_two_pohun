@@ -18,7 +18,7 @@ import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {getPushNotification} from '../../../utils/PermissionsFuncs';
 import {grayColor, title4, title2} from '../../../utils/styles';
 import type {MainStackParamList} from '../../../navi/Navigation';
-import {month, today, before6Month} from '../../../utils/utils';
+import {month, today, before6Month, year, date} from '../../../utils/utils';
 import type {Themes, UserData} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
 
@@ -69,24 +69,13 @@ export default function Main({navigation}: Props): React.ReactElement {
     async function getUserData() {
       let data = await database()
         .ref(`/users/${userData.nickname}`)
+        .child('spend_cost')
+        // .orderByChild('timestamp')
+        .startAt(1)
         .once('value');
-      data = data.val().spend_cost;
-
-      for (let key in data) {
-        let category = data[key];
-        let today_total_cost = 0;
-        for (let category_key in category) {
-          let category_total_cost = Object.values(
-            category[category_key],
-          ).reduce((pre: number, cur: number): number => pre + cur, 0);
-          category[category_key].category_total_cost = category_total_cost;
-          today_total_cost += category_total_cost;
-        }
-        category.today_total = today_total_cost; //카테고리별 사용 비용
-      }
-      if (today in data) {
-        setSpendTodayCost(data[today].today_total); //오늘 사용 비용
-      }
+      data = data.val();
+      console.log('get user spend_date');
+      console.log(data);
       setSpendCostData(data);
     }
     getUserData();

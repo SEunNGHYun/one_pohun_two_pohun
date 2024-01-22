@@ -1,4 +1,6 @@
-export let currentDate: Date = new Date();
+export const currentDate: Date = new Date();
+
+export const curentTimeStamp = Date.now;
 
 export const year: number = currentDate.getFullYear();
 
