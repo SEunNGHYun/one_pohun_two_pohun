@@ -11,10 +11,10 @@ import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
 import type {UserData, Themes} from '../../../types/types';
 import {
   korea_date,
+  year,
   date,
   month,
-  curentTimeStamp,
-  today,
+  nowTimeStamp,
 } from '../../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
@@ -51,17 +51,16 @@ export default function AddCost({navigation}: Props) {
 
   const saveCostAndMovePage = useCallback(async () => {
     const spendCost: number = Number(cost.replace(/\,/g, ''));
-    const timestamp: number = curentTimeStamp();
+    const timestamp: number = nowTimeStamp();
+
     try {
       await database()
         .ref(`/users/${userData.nickname}/spend_cost`)
         .push()
         .set({
           timestamp,
-          spend_data: {
-            category: checkCate,
-            cost: spendCost,
-          },
+          category: checkCate,
+          cost: spendCost,
         });
     } catch (err) {
     } finally {

@@ -9,16 +9,24 @@ import {
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar} from 'react-native-calendars';
+import type {DateData} from 'node_modules/react-native-calendars/src/types.d.ts';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useRecoilValue} from 'recoil';
-import {Portal, Modal, PaperProvider} from 'react-native-paper';
+import {PaperProvider} from 'react-native-paper';
 import database from '@react-native-firebase/database';
 import {LineChart} from 'react-native-chart-kit';
-import BottomSheet, {BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheetView from './BottomSheetView';
 import {getPushNotification} from '../../../utils/PermissionsFuncs';
 import {grayColor, title4, title2} from '../../../utils/styles';
 import type {MainStackParamList} from '../../../navi/Navigation';
-import {month, today, before6Month, year, date} from '../../../utils/utils';
+import {
+  month,
+  thisMonthFirst,
+  thisMonthLast,
+  todayTimeStampFirst,
+  todayTimeStampLast,
+} from '../../../utils/utils';
 import type {Themes, UserData} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
 
@@ -32,11 +40,13 @@ export default function Main({navigation}: Props): React.ReactElement {
   const [months, _] = useState<number>(month);
   const [loading, setLoading] = useState<boolean>(false);
   const [spendCostData, setSpendCostData] = useState({});
+  const [spendTodayCostList, setSpendTodayCostList] = useState([]);
   const [before6MonthSpendData, setBefore6MonthSpendData] = useState();
   const [todaySpendCost, setSpendTodayCost] = useState<number>(0);
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
+  //여기서 부터
   // variables
   const snapPoints = useMemo(() => ['1%', '65%'], []);
 
@@ -59,6 +69,14 @@ export default function Main({navigation}: Props): React.ReactElement {
     setBottomSheetToggle(false);
   }, [handleClosePress, setBottomSheetToggle]);
 
+  //여기 까지 bottomSheet 관련 코드
+
+  const handleDay = useCallback((day: DateData) => {
+    setSelected(day.dateString);
+    setBottomSheetToggle(true);
+    handleSnapPress(1);
+  }, []);
+
   const getNotificationPermissionStatus = useCallback(async () => {
     const status = await getPushNotification();
     console.log('Status', status);
@@ -70,18 +88,35 @@ export default function Main({navigation}: Props): React.ReactElement {
       let data = await database()
         .ref(`/users/${userData.nickname}`)
         .child('spend_cost')
-        // .orderByChild('timestamp')
-        .startAt(1)
+        .orderByChild('timestamp')
+        .startAt(thisMonthFirst)
+        .endAt(thisMonthLast)
         .once('value');
       data = data.val();
-      console.log('get user spend_date');
-      console.log(data);
+      let todayTotalCost = 0;
+
+      for (let key in data) {
+        if (
+          todayTimeStampFirst <= data[key].timestamp &&
+          data[key].timestamp <= todayTimeStampLast
+        ) {
+          todayTotalCost += data[key].cost;
+        }
+      }
+      setSpendTodayCost(todayTotalCost);
       setSpendCostData(data);
     }
     getUserData();
-    // getNotificationPermissionStatus(); // 핸드폰으로 실행
     return () => {};
   }, [userData]);
+
+  useEffect(() => {
+    // getNotificationPermissionStatus(); // 핸드폰으로 테스트 실행 _ 권한 설정 함수
+  }, []);
+
+  useEffect(() => {
+    //평균겂 6개월 간의 데이터 가져오기
+  });
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -111,10 +146,7 @@ export default function Main({navigation}: Props): React.ReactElement {
               <Calendar
                 key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
                 onDayPress={day => {
-                  console.log(day, day.dateString);
-                  setSelected(day.dateString);
-                  setBottomSheetToggle(true);
-                  handleSnapPress(1);
+                  handleDay(day);
                 }}
                 theme={{
                   calendarBackground: bottomSheetToggle ? grayColor : 'white',
@@ -189,9 +221,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}>
-                <BottomSheetScrollView>
-                  <Text>Awesome 🎉</Text>
-                </BottomSheetScrollView>
+                <BottomSheetView />
               </BottomSheet>
             )}
           </SafeAreaView>
