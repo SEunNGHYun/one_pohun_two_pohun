@@ -11,9 +11,9 @@ import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
 import type {UserData, Themes} from '../../../types/types';
 import {
   korea_date,
-  year,
+  categoryData,
   date,
-  month,
+  months,
   nowTimeStamp,
 } from '../../../utils/utils';
 
@@ -25,12 +25,8 @@ export default function AddCost({navigation}: Props) {
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
   const [open, setOpen] = useState<boolean>(false);
-  const [categories, _] = useState<{label: string; value: string}[]>([
-    {label: '식비', value: '식비'},
-    {label: '자기개발비', value: '자기개발비'},
-    {label: '취미', value: '취미'},
-    {label: '기타', value: '기타'},
-  ]);
+  const [categories, _] =
+    useState<{label: string; value: string}[]>(categoryData);
   const [checkCate, setCheckCate] = useState<string>('');
 
   const onChangeCate = useCallback(() => {}, []);
@@ -73,7 +69,7 @@ export default function AddCost({navigation}: Props) {
     <View style={styles.background}>
       <View style={styles.header}>
         <Text style={[styles.todayText, {color: theme}]}>
-          {month}월 {date}일 {korea_date}요일
+          {months}월 {date}일 {korea_date}요일
         </Text>
       </View>
       <View style={styles.body}>

@@ -8,8 +8,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Calendar} from 'react-native-calendars';
-import type {DateData} from 'node_modules/react-native-calendars/src/types.d.ts';
+import {Calendar, DateData} from 'react-native-calendars';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useRecoilValue} from 'recoil';
 import {PaperProvider} from 'react-native-paper';
@@ -21,13 +20,14 @@ import {getPushNotification} from '../../../utils/PermissionsFuncs';
 import {grayColor, title4, title2} from '../../../utils/styles';
 import type {MainStackParamList} from '../../../navi/Navigation';
 import {
-  month,
+  months,
   thisMonthFirst,
   thisMonthLast,
   todayTimeStampFirst,
   todayTimeStampLast,
+  getDayTimeStampEnd,
 } from '../../../utils/utils';
-import type {Themes, UserData} from '../../../types/types';
+import type {Themes, UserData, UserSpendCost} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
@@ -36,19 +36,20 @@ const {width, height} = Dimensions.get('window');
 export default function Main({navigation}: Props): React.ReactElement {
   const theme = useRecoilValue<Themes>(appTheme);
   const userData = useRecoilValue<UserData>(userState);
-  const [selected, setSelected] = useState<string>('');
-  const [months, _] = useState<number>(month);
+  const [selectedDay, setSelectedDay] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [spendCostData, setSpendCostData] = useState({});
-  const [spendTodayCostList, setSpendTodayCostList] = useState([]);
-  const [before6MonthSpendData, setBefore6MonthSpendData] = useState();
+  const [spendCostData, setSpendCostData] = useState<UserSpendCost[]>([]);
+  const [selectedDaySpendData, setSelectedDaySpendData] = useState<
+    UserSpendCost[]
+  >([]);
+  const [before6MonthSpendData, setBefore6MonthSpendData] = useState([]);
   const [todaySpendCost, setSpendTodayCost] = useState<number>(0);
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
   //여기서 부터
   // variables
-  const snapPoints = useMemo(() => ['1%', '65%'], []);
+  const snapPoints = useMemo(() => ['1%', '75%'], []);
 
   // bottomsheet 실행시에 작동하는 함수
   const handleSheetChanges = useCallback((index: number) => {
@@ -71,11 +72,20 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   //여기 까지 bottomSheet 관련 코드
 
-  const handleDay = useCallback((day: DateData) => {
-    setSelected(day.dateString);
-    setBottomSheetToggle(true);
-    handleSnapPress(1);
-  }, []);
+  const pressCalendarDay = useCallback(
+    (dateData: DateData) => {
+      const {dateString, timestamp, year, month, day} = dateData;
+      const endTimeStamp = getDayTimeStampEnd(year, month, day);
+      setSelectedDay(dateString);
+      let pressDateSpendData = spendCostData.filter(
+        data => data.timestamp >= timestamp && data.timestamp <= endTimeStamp,
+      );
+      setSelectedDaySpendData(pressDateSpendData);
+      setBottomSheetToggle(true);
+      handleSnapPress(1);
+    },
+    [handleSnapPress, spendCostData],
+  );
 
   const getNotificationPermissionStatus = useCallback(async () => {
     const status = await getPushNotification();
@@ -85,16 +95,16 @@ export default function Main({navigation}: Props): React.ReactElement {
   useEffect(() => {
     //일단 AddCost에서 소비금액 추가될 때마다 데이터 가져올 수 있게 살정
     async function getUserData() {
-      let data = await database()
+      let getData = await database()
         .ref(`/users/${userData.nickname}`)
         .child('spend_cost')
         .orderByChild('timestamp')
         .startAt(thisMonthFirst)
         .endAt(thisMonthLast)
         .once('value');
-      data = data.val();
+      let data = getData.val();
       let todayTotalCost = 0;
-
+      let dataToList: Array<UserSpendCost> = [];
       for (let key in data) {
         if (
           todayTimeStampFirst <= data[key].timestamp &&
@@ -102,9 +112,11 @@ export default function Main({navigation}: Props): React.ReactElement {
         ) {
           todayTotalCost += data[key].cost;
         }
+        dataToList.push(data[key]);
       }
+
       setSpendTodayCost(todayTotalCost);
-      setSpendCostData(data);
+      setSpendCostData(dataToList);
     }
     getUserData();
     return () => {};
@@ -145,9 +157,7 @@ export default function Main({navigation}: Props): React.ReactElement {
             <View>
               <Calendar
                 key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
-                onDayPress={day => {
-                  handleDay(day);
-                }}
+                onDayPress={dateData => pressCalendarDay(dateData)}
                 theme={{
                   calendarBackground: bottomSheetToggle ? grayColor : 'white',
                   selectedDayBackgroundColor: theme,
@@ -162,7 +172,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                   backgroundColor: bottomSheetToggle ? grayColor : 'white',
                 }}
                 markedDates={{
-                  [selected]: {
+                  [selectedDay]: {
                     selected: true,
                     disableTouchEvent: true,
                   },
@@ -221,7 +231,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}>
-                <BottomSheetView />
+                <BottomSheetView selectedDaySpendData={selectedDaySpendData} />
               </BottomSheet>
             )}
           </SafeAreaView>

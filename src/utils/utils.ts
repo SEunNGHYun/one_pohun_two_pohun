@@ -2,20 +2,24 @@ const currentDate: Date = new Date();
 
 export const year: number = currentDate.getFullYear();
 
-export const month: number = currentDate.getMonth() + 1;
+export const months: number = currentDate.getMonth() + 1;
 
 export const date: number = currentDate.getDate();
 
-export const today: string = `${year}-${month}-${date}`;
+export const today: string = `${year}-${months}-${date}`;
 
-export const saveDayTimeStamp = (y: number, m: number, d: number): number => {
-  const setDate = new Date(y, m - 1, d + 1, -15, 0, 0, 0); // month-1일 0:00:00:0000기준
+export const getDayTimeStampStart = (
+  y: number,
+  m: number,
+  d: number,
+): number => {
+  const setDate = new Date(y, m - 1, d + 1, -15, 0, 0, 0); // months-1일 0:00:00:0000기준
 
   return setDate.getTime();
 };
 
-const saveDayTimeStampEnd = (y: number, m: number, d: number): number => {
-  const setDate = new Date(y, m - 1, d, 32, 59, 59, 999); // month-31일 12:59:59:9999기준
+export const getDayTimeStampEnd = (y: number, m: number, d: number): number => {
+  const setDate = new Date(y, m - 1, d, 32, 59, 59, 999); // months-31일 12:59:59:9999기준
 
   return setDate.getTime();
 };
@@ -26,20 +30,20 @@ export const nowTimeStamp = (): number => {
   return setDate.getTime();
 };
 
-export const thisMonthFirst = saveDayTimeStamp(year, month, 1);
+export const thisMonthFirst = getDayTimeStampStart(year, months, 1);
 
-export const thisMonthLast = saveDayTimeStampEnd(year, month, 31);
+export const thisMonthLast = getDayTimeStampEnd(year, months, 31);
 
-export const todayTimeStampFirst = saveDayTimeStamp(year, month, date);
+export const todayTimeStampFirst = getDayTimeStampStart(year, months, date);
 
-export const todayTimeStampLast = saveDayTimeStampEnd(year, month, date);
+export const todayTimeStampLast = getDayTimeStampEnd(year, months, date);
 
 export const currentDate2: Date = new Date();
 currentDate2.setMonth(currentDate2.getMonth() - 6);
 
 export const before6Month = {
   year: currentDate2.getFullYear(),
-  month: currentDate2.getMonth() + 1,
+  months: currentDate2.getMonth() + 1,
 };
 
 function checkDayNumToString() {
@@ -61,3 +65,10 @@ function checkDayNumToString() {
 }
 
 export let korea_date: string = checkDayNumToString();
+
+export const categoryData = [
+  {label: '식비', value: '식비'},
+  {label: '자기개발비', value: '자기개발비'},
+  {label: '취미', value: '취미'},
+  {label: '기타', value: '기타'},
+];
