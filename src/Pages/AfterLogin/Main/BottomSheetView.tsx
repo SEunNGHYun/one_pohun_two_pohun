@@ -1,28 +1,81 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {categoryData} from '../../../utils/utils';
 import type {UserSpendCost} from '../../../types/types';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 
 export default function BottomSheetView({
   selectedDaySpendData,
+  selectDate,
 }: {
   selectedDaySpendData: UserSpendCost[];
+  selectDate: string;
 }): React.ReactElement {
   return (
     <BottomSheetScrollView>
-      {selectedDaySpendData.map((data: UserSpendCost) => (
-        <View key={data.cost}>
-          <Text>{data.cost}</Text>
-          <Text>{data.category}</Text>
+      <View style={styles.todayView}>
+        <Text style={styles.todayFont}>{selectDate}</Text>
+      </View>
+      {selectedDaySpendData.length > 0 ? (
+        <>
+          <View style={styles.costItemForm}>
+            <Text style={styles.costCateFont}>금액</Text>
+            <Text style={styles.costCateFont}>분류</Text>
+          </View>
+          <View style={styles.line} />
+          {selectedDaySpendData.map((data: UserSpendCost, index: number) => (
+            <View
+              key={data.category + index}
+              style={[styles.costItemForm, styles.constItemBlank]}>
+              <Text style={styles.costItemFont}>{data.cost}</Text>
+              <Text style={styles.costItemFont}>{data.category}</Text>
+            </View>
+          ))}
+        </>
+      ) : (
+        <View style={styles.emptyView}>
+          <Text>지출 내역이 없습니다.</Text>
         </View>
-      ))}
+      )}
     </BottomSheetScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  costItem: {
+  todayView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  todayFont: {
+    paddingTop: 16,
+    paddingBottom: 24,
+    paddingHorizontal: 8,
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  costItemForm: {
     width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  costCateFont: {fontSize: 24, fontWeight: 'bold'},
+  line: {
+    width: '100%',
+    height: 1,
+    backgroundColor: 'lightgray',
+    marginVertical: 8,
+  },
+  costItemFont: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  constItemBlank: {
+    marginVertical: 4,
+  },
+  emptyView: {
+    width: '100%',
+    marginTop: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

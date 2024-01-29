@@ -44,6 +44,7 @@ export default function Main({navigation}: Props): React.ReactElement {
   >([]);
   const [before6MonthSpendData, setBefore6MonthSpendData] = useState([]);
   const [todaySpendCost, setSpendTodayCost] = useState<number>(0);
+  const [monthSpendCost, setMonthSpendCost] = useState<number>(0);
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -76,7 +77,7 @@ export default function Main({navigation}: Props): React.ReactElement {
     (dateData: DateData) => {
       const {dateString, timestamp, year, month, day} = dateData;
       const endTimeStamp = getDayTimeStampEnd(year, month, day);
-      setSelectedDay(dateString);
+      setSelectedDay(`${month}월 ${day}일 지출내역`);
       let pressDateSpendData = spendCostData.filter(
         data => data.timestamp >= timestamp && data.timestamp <= endTimeStamp,
       );
@@ -104,6 +105,7 @@ export default function Main({navigation}: Props): React.ReactElement {
         .once('value');
       let data = getData.val();
       let todayTotalCost = 0;
+      let monthTotalCost = 0;
       let dataToList: Array<UserSpendCost> = [];
       for (let key in data) {
         if (
@@ -112,9 +114,13 @@ export default function Main({navigation}: Props): React.ReactElement {
         ) {
           todayTotalCost += data[key].cost;
         }
+        monthTotalCost += data[key].cost;
         dataToList.push(data[key]);
       }
-
+      dataToList.sort(
+        (a, b) => a.category.localeCompare(b.category) || a.cost - b.cost,
+      ); // 1순위. 분류 기준으로 정렬  2순위. 비용기준으로 정렬
+      setMonthSpendCost(monthTotalCost);
       setSpendTodayCost(todayTotalCost);
       setSpendCostData(dataToList);
     }
@@ -184,11 +190,11 @@ export default function Main({navigation}: Props): React.ReactElement {
                 disableMonthChange={true}
               />
               <Text style={[styles.totalCostFont, {color: theme}]}>
-                {months}월 총 20,000원 사용
+                {months}월 총 {monthSpendCost}원 사용
               </Text>
               <LineChart
                 data={{
-                  labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                  labels: ['1월', '2월', '3월', '4월', '5월', `${months}월`],
                   datasets: [
                     {
                       data: [
@@ -197,7 +203,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                         Math.random() * 1000,
                         Math.random() * 1000,
                         Math.random() * 1000,
-                        Math.random() * 1000,
+                        monthSpendCost,
                       ],
                     },
                   ],
@@ -231,7 +237,10 @@ export default function Main({navigation}: Props): React.ReactElement {
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}>
-                <BottomSheetView selectedDaySpendData={selectedDaySpendData} />
+                <BottomSheetView
+                  selectedDaySpendData={selectedDaySpendData}
+                  selectDate={selectedDay}
+                />
               </BottomSheet>
             )}
           </SafeAreaView>

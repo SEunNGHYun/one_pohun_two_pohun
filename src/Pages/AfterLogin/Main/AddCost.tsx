@@ -4,7 +4,6 @@ import {useRecoilValue, useRecoilState} from 'recoil';
 import DropDownPicker from 'react-native-dropdown-picker';
 import database from '@react-native-firebase/database';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-// import {AddCostData} from '../../../types/types';
 import type {MainStackParamList} from '../../../navi/Navigation';
 import {userState, appTheme} from '../../../recoils/states';
 import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
@@ -61,9 +60,12 @@ export default function AddCost({navigation}: Props) {
     } catch (err) {
     } finally {
       //여기에 데이터 Main애 데이터 값 변한게 설정
-      navigation.replace('Main');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Main'}],
+      });
     }
-  }, [userData, cost, viewCost, checkCate, navigation]);
+  }, [userData, cost, checkCate, navigation]);
 
   return (
     <View style={styles.background}>
