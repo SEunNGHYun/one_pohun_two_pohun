@@ -72,3 +72,17 @@ export const categoryData = [
   {label: '취미', value: '취미'},
   {label: '기타', value: '기타'},
 ];
+
+export const changeMoney = (money: string): string => {
+  let reversedStr = money.replace(/\D/g, '').split('').reverse().join('');
+
+  // 3자리 단위로 쉼표 추가
+  let formattedStr = reversedStr.replace(/(\d{3})/g, '$1,');
+
+  // 다시 역순으로 변환하여 최종 결과 얻기12
+  let result = formattedStr.split('').reverse();
+  if (result[0] === ',') {
+    result = result.slice(1);
+  }
+  return result.join('');
+};

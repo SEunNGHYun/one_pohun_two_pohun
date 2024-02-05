@@ -1,61 +1,90 @@
-import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
-import {lightGrayColor, title4, defaultFont, descColor} from '../utils/styles';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  lightGrayColor,
+  title4,
+  defaultFont,
+  descColor,
+  grayColor,
+} from '../utils/styles';
 import {useRecoilValue} from 'recoil';
 import {Themes} from '../types/types';
 import {appTheme} from '../recoils/states';
-import {buttonList, liType} from '../utils/datas';
-import React, {useLayoutEffect, useState} from 'react';
+import {liType, liTypeCheck} from '../utils/datas';
+import {changeMoney} from '../utils/utils';
+import React, {useCallback, useState} from 'react';
 
 export default function InputButts({
   title,
   subtitle,
   type,
+  setGroupGoalCost,
+  groupGoalCost,
 }: {
   title: string;
   subtitle: string;
   type: string;
+  setGroupGoalCost: React.Dispatch<React.SetStateAction<number>>;
+  groupGoalCost: number;
 }) {
-  const [buttons, setButtons] = useState<liType[]>([
-    {label: '', value: 0},
-    {label: '', value: 0},
-    {label: '', value: 0},
-    {label: '', value: 0},
+  const [value, setValue] = useState<number>(0);
+  const [buttons, setButtons] = useState<liTypeCheck[]>([
+    {label: '+5천원', value: 5000},
+    {label: '+1만원', value: 10000},
+    {label: '+5만원', value: 50000},
+    {label: '+10만원', value: 100000},
   ]);
   const theme = useRecoilValue<Themes>(appTheme);
 
-  useLayoutEffect(() => {
-    setButtons(buttonList(type));
+  const pressButton = useCallback((index: number) => {
+    if (index === 4) {
+      //초기화
+      setValue(0);
+    } else {
+      setValue(pre => pre + buttons[index].value);
+    }
   }, []);
 
   return (
     <View style={styles.InputView}>
-      <Text style={[styles.titleFont, {color: theme}]}>
-        {title} {'\t'}
-        <Text style={styles.subtitle}>({subtitle})</Text>
-      </Text>
-      <TextInput />
-      <View style={styles.buttonsView}>
-        <Pressable>
-          <View style={styles.butt}>
-            <Text style={styles.buttoFont}>+{buttons[0].label}</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+        }}>
+        <Text style={[styles.titleFont, {color: theme}]}>
+          {title} {'\t'}
+          <Text style={styles.subtitle}>({subtitle})</Text>
+        </Text>
+        <TouchableOpacity onPress={() => pressButton(4)}>
+          <View style={styles.resetButt}>
+            <Text style={[styles.resetButtFont, {color: theme}]}>초기화</Text>
           </View>
-        </Pressable>
-        <Pressable>
-          <View style={styles.butt}>
-            <Text style={styles.buttoFont}>+{buttons[1].label}</Text>
-          </View>
-        </Pressable>
-        <Pressable>
-          <View style={styles.butt}>
-            <Text style={styles.buttoFont}>+{buttons[2].label}</Text>
-          </View>
-        </Pressable>
-        <Pressable>
-          <View style={styles.butt}>
-            <Text style={styles.buttoFont}>+{buttons[3].label}</Text>
-          </View>
-        </Pressable>
+        </TouchableOpacity>
       </View>
+
+      {type === 'cost' && (
+        <>
+          <TextInput value={changeMoney(String(value))} />
+
+          <View style={styles.buttonsView}>
+            {buttons.map((butt: liTypeCheck, index: number) => (
+              <TouchableOpacity key={index} onPress={() => pressButton(index)}>
+                <View style={styles.butt}>
+                  <Text style={styles.buttoFont}>{butt.label}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -77,14 +106,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   butt: {
-    height: 40,
+    height: 36,
+    width: 72,
+    borderWidth: 1,
+    borderColor: grayColor,
     backgroundColor: lightGrayColor,
     paddingHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
   },
+  resetButt: {},
+  resetButtFont: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
   buttoFont: {
-    marginHorizontal: 8,
+    marginHorizontal: 3,
+    fontSize: 12,
   },
 });

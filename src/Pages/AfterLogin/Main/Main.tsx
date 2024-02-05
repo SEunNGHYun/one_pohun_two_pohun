@@ -26,6 +26,7 @@ import {
   todayTimeStampFirst,
   todayTimeStampLast,
   getDayTimeStampEnd,
+  changeMoney,
 } from '../../../utils/utils';
 import type {Themes, UserData, UserSpendCost} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
@@ -43,8 +44,8 @@ export default function Main({navigation}: Props): React.ReactElement {
     UserSpendCost[]
   >([]);
   const [before6MonthSpendData, setBefore6MonthSpendData] = useState([]);
-  const [todaySpendCost, setSpendTodayCost] = useState<number>(0);
-  const [monthSpendCost, setMonthSpendCost] = useState<number>(0);
+  const [todaySpendCost, setSpendTodayCost] = useState<string>('0');
+  const [monthSpendCost, setMonthSpendCost] = useState<string>('0');
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -109,6 +110,7 @@ export default function Main({navigation}: Props): React.ReactElement {
       let dataToList: Array<UserSpendCost> = [];
       for (let key in data) {
         if (
+          //오늘 사용 비용만 불러오기
           todayTimeStampFirst <= data[key].timestamp &&
           data[key].timestamp <= todayTimeStampLast
         ) {
@@ -120,8 +122,8 @@ export default function Main({navigation}: Props): React.ReactElement {
       dataToList.sort(
         (a, b) => a.category.localeCompare(b.category) || a.cost - b.cost,
       ); // 1순위. 분류 기준으로 정렬  2순위. 비용기준으로 정렬
-      setMonthSpendCost(monthTotalCost);
-      setSpendTodayCost(todayTotalCost);
+      setMonthSpendCost('' + monthTotalCost);
+      setSpendTodayCost('' + todayTotalCost);
       setSpendCostData(dataToList);
     }
     getUserData();
@@ -151,7 +153,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                   오늘 총 지출액
                 </Text>
                 <Text style={[styles.dayTotalCostText, {color: theme}]}>
-                  {todaySpendCost}원
+                  {changeMoney(todaySpendCost)}원
                 </Text>
               </View>
               <Pressable onPress={() => navigation.navigate('AddCost')}>
@@ -190,7 +192,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                 disableMonthChange={true}
               />
               <Text style={[styles.totalCostFont, {color: theme}]}>
-                {months}월 총 {monthSpendCost}원 사용
+                {months}월 총 {changeMoney(monthSpendCost)}원 사용
               </Text>
               <LineChart
                 data={{

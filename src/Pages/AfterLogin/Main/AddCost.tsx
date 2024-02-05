@@ -14,13 +14,13 @@ import {
   date,
   months,
   nowTimeStamp,
+  changeMoney,
 } from '../../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 
 export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
-  const [viewCost, setViewCost] = useState<string>('0');
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
   const [open, setOpen] = useState<boolean>(false);
@@ -31,17 +31,6 @@ export default function AddCost({navigation}: Props) {
   const onChangeCate = useCallback(() => {}, []);
   const onChangeCost = useCallback((text: string) => {
     setCost(text);
-    let reversedStr = text.replace(/\D/g, '').split('').reverse().join('');
-
-    // 3자리 단위로 쉼표 추가
-    let formattedStr = reversedStr.replace(/(\d{3})/g, '$1,');
-
-    // 다시 역순으로 변환하여 최종 결과 얻기12
-    let result = formattedStr.split('').reverse();
-    if (result[0] === ',') {
-      result = result.slice(1);
-    }
-    setViewCost(result.join(''));
   }, []);
 
   const saveCostAndMovePage = useCallback(async () => {
@@ -78,7 +67,7 @@ export default function AddCost({navigation}: Props) {
         <View>
           <Text style={[styles.desc, {color: theme}]}>지출액</Text>
           <TextInput
-            value={viewCost}
+            value={changeMoney(cost)}
             style={styles.textInput}
             onChangeText={onChangeCost}
             keyboardType="number-pad"

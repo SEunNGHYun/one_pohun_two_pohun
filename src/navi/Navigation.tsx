@@ -188,6 +188,7 @@ export default function RootNavigation() {
       }
     } catch (err) {
     } finally {
+      console.log('splash end');
       LottieSplashScreen.hide();
     }
   }, [setUserData, setAppTheme]);

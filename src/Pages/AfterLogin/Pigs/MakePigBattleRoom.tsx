@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   TextInput,
   ScrollView,
   Pressable,
-  Image,
 } from 'react-native';
 import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,31 +14,35 @@ import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
 import {grayColor, title4, defaultFont, descColor} from '../../../utils/styles';
-import InputButtons from '../../../Components/InputButts';
+import TextAreaAndButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
 
 export default function MakePigBattleRoom() {
   const navigation = useNavigation<PigUseNaviProps>();
   const theme = useRecoilValue<Themes>(appTheme);
+  const userData = useRecoilValue<UserData>(userState);
+  const [groupGoalCost, setGroupGoalCost] = useState<number>(0);
 
   const movePage = useCallback(() => {
     navigation.navigate('MatchingRoom');
-  }, []);
+  }, [navigation]);
 
   return (
     <View style={styles.view}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <UserDataHeader headerRange={3.5} imgSize={150} />
+        <UserDataHeader
+          headerRange={3.5}
+          imgSize={150}
+          theme={theme}
+          userData={userData}
+        />
         <View style={styles.body}>
-          <InputButtons
+          <TextAreaAndButtons
             title={'총 목표 금액'}
-            subtitle="최대 50만원"
-            type="total"
-          />
-          <InputButtons
-            title={'하루 사용 목표액'}
-            subtitle="만3천원 추천"
-            type="day"
+            subtitle="최대 80만원"
+            type="cost"
+            setGroupGoalCost={setGroupGoalCost}
+            groupGoalCost={groupGoalCost}
           />
           <Text style={[styles.titleFont, {color: theme}]}>
             목표 {'\t'}

@@ -8,13 +8,15 @@ import type {UserData, Themes} from '../types/types';
 export default function UserDataHeader({
   headerRange,
   imgSize,
+  theme,
+  userData,
 }: {
   headerRange: number;
   imgSize: number;
+  theme: Themes;
+  userData: UserData;
 }) {
   const {height} = Dimensions.get('window');
-  const userData = useRecoilValue<UserData>(userState);
-  const theme = useRecoilValue<Themes>(appTheme);
 
   return (
     <View
@@ -60,7 +62,7 @@ export default function UserDataHeader({
           />
         </View>
       </View>
-      <Text style={styles.nickname}>닉네임</Text>
+      <Text style={styles.nickname}>{userData.nickname}</Text>
     </View>
   );
 }
