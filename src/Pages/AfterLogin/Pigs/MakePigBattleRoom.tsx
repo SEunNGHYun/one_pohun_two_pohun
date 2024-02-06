@@ -44,6 +44,12 @@ export default function MakePigBattleRoom() {
             setGroupGoalCost={setGroupGoalCost}
             groupGoalCost={groupGoalCost}
           />
+          <TextAreaAndButtons
+            title={'기간'}
+            type="date"
+            setGroupGoalCost={setGroupGoalCost}
+            groupGoalCost={groupGoalCost}
+          />
           <Text style={[styles.titleFont, {color: theme}]}>
             목표 {'\t'}
             <Text style={styles.subtitle}>(15자 이내로)</Text>

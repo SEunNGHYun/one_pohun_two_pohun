@@ -14,10 +14,12 @@ import {
   grayColor,
 } from '../utils/styles';
 import {useRecoilValue} from 'recoil';
+import {today} from '../utils/utils';
 import {Themes} from '../types/types';
 import {appTheme} from '../recoils/states';
 import {liType, liTypeCheck} from '../utils/datas';
 import {changeMoney} from '../utils/utils';
+import TextInputArea from './TextInputArea';
 import React, {useCallback, useState} from 'react';
 
 export default function InputButts({
@@ -28,17 +30,23 @@ export default function InputButts({
   groupGoalCost,
 }: {
   title: string;
-  subtitle: string;
-  type: string;
+  subtitle?: string;
+  type: 'cost' | 'date';
   setGroupGoalCost: React.Dispatch<React.SetStateAction<number>>;
   groupGoalCost: number;
 }) {
   const [value, setValue] = useState<number>(0);
-  const [buttons, setButtons] = useState<liTypeCheck[]>([
+  const [costes, setButtons] = useState<liTypeCheck[]>([
     {label: '+5천원', value: 5000},
     {label: '+1만원', value: 10000},
     {label: '+5만원', value: 50000},
     {label: '+10만원', value: 100000},
+  ]);
+  const [days, setDays] = useState<{label: string; checked: boolean}[]>([
+    {label: '1주', checked: false},
+    {label: '2주', checked: false},
+    {label: '1개월', checked: false},
+    {label: '3개월', checked: false},
   ]);
   const theme = useRecoilValue<Themes>(appTheme);
 
@@ -47,41 +55,74 @@ export default function InputButts({
       //초기화
       setValue(0);
     } else {
-      setValue(pre => pre + buttons[index].value);
+      setValue(pre => pre + costes[index].value);
     }
+  }, []);
+
+  const pressDay = useCallback((index: number) => {
+    const re_day = days.map((day, i) =>
+      index === i ? {...day, checked: true} : {...day, checked: false},
+    );
+    setDays(re_day);
+  }, []);
+
+  const pressClearButt = useCallback(() => {
+    setValue(0);
   }, []);
 
   return (
     <View style={styles.InputView}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-        }}>
-        <Text style={[styles.titleFont, {color: theme}]}>
-          {title} {'\t'}
-          <Text style={styles.subtitle}>({subtitle})</Text>
-        </Text>
-        <TouchableOpacity onPress={() => pressButton(4)}>
-          <View style={styles.resetButt}>
-            <Text style={[styles.resetButtFont, {color: theme}]}>초기화</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-
+      <Text style={[styles.titleFont, {color: theme}]}>
+        {title} {'\t'}
+        {subtitle && <Text style={styles.subtitle}>({subtitle})</Text>}
+      </Text>
       {type === 'cost' && (
         <>
-          <TextInput value={changeMoney(String(value))} />
-
+          <TextInputArea
+            value={changeMoney(String(value))}
+            clearFunc={pressClearButt}
+          />
           <View style={styles.buttonsView}>
-            {buttons.map((butt: liTypeCheck, index: number) => (
+            {costes.map((butt: liTypeCheck, index: number) => (
               <TouchableOpacity key={index} onPress={() => pressButton(index)}>
                 <View style={styles.butt}>
-                  <Text style={styles.buttoFont}>{butt.label}</Text>
+                  <Text style={styles.buttFont}>{butt.label}</Text>
                 </View>
               </TouchableOpacity>
             ))}
+          </View>
+        </>
+      )}
+      {type === 'date' && (
+        <>
+          <View style={styles.dateView}>
+            <TextInputArea scale="45%" value={today} position="center" />
+            <Text>~</Text>
+            <TextInputArea
+              scale="45%"
+              value={changeMoney(String(value))}
+              position="center"
+              pressable={false}
+            />
+          </View>
+          <View style={styles.buttonsView}>
+            {days.map(
+              (butt: {label: string; checked: boolean}, index: number) => (
+                <TouchableOpacity
+                  key={index + butt.label}
+                  onPress={() => pressDay(index)}>
+                  <View
+                    style={[butt.checked ? styles.checkedButt : styles.butt]}>
+                    <Text
+                      style={[
+                        butt.checked ? styles.checkedButtFont : styles.buttFont,
+                      ]}>
+                      {butt.label}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ),
+            )}
           </View>
         </>
       )}
@@ -116,14 +157,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 20,
   },
+  checkedButt: {
+    height: 36,
+    width: 72,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    backgroundColor: grayColor,
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
   resetButt: {},
   resetButtFont: {
     fontSize: 14,
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
-  buttoFont: {
+  dateView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dateArea: {
+    width: '45%',
+  },
+  buttFont: {
     marginHorizontal: 3,
     fontSize: 12,
+  },
+  checkedButtFont: {
+    marginHorizontal: 3,
+    fontSize: 12,
+    color: 'white',
   },
 });
