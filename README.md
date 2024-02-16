@@ -34,10 +34,5 @@
 
 [카카오 오븐에서 확인하기](https://ovenapp.io/view/ODyBQ3ugDs0Iw68SvfDkk7ZVFXbo841H/)
 
-#### 배틀 로직
 
-[배틀 로직 확인하기](https://ovenapp.io/view/ODyBQ3ugDs0Iw68SvfDkk7ZVFXbo841H/)
-
-### 실제 동작 화면
----
 
