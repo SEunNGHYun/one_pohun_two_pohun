@@ -37,8 +37,8 @@ export default function UserDataHeader({
         }}>
         <View
           style={{
-            width: imgSize + 12,
-            height: imgSize + 12,
+            width: imgSize + 10,
+            height: imgSize + 10,
             borderRadius: imgSize + 12,
             padding: 6,
             backgroundColor: theme,

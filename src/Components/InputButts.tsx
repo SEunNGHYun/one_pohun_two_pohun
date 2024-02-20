@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   lightGrayColor,
   title4,
@@ -36,7 +29,8 @@ export default function InputButts({
   groupGoalCost: number;
 }) {
   const [value, setValue] = useState<number>(0);
-  const [costes, setButtons] = useState<liTypeCheck[]>([
+  const [period, setPeriod] = useState<string>(today);
+  const [cost, setButtons] = useState<liTypeCheck[]>([
     {label: '+5천원', value: 5000},
     {label: '+1만원', value: 10000},
     {label: '+5만원', value: 50000},
@@ -44,27 +38,56 @@ export default function InputButts({
   ]);
   const [days, setDays] = useState<{label: string; checked: boolean}[]>([
     {label: '1주', checked: false},
-    {label: '2주', checked: false},
+    {label: '3주', checked: false},
     {label: '1개월', checked: false},
     {label: '3개월', checked: false},
   ]);
   const theme = useRecoilValue<Themes>(appTheme);
 
-  const pressButton = useCallback((index: number) => {
-    if (index === 4) {
-      //초기화
-      setValue(0);
-    } else {
-      setValue(pre => pre + costes[index].value);
-    }
-  }, []);
+  const pressButton = useCallback(
+    (index: number) => {
+      if (value < 800000) {
+        console.log(value);
+        setValue(pre => pre + cost[index].value);
+      }
+    },
+    [value, setValue, cost],
+  );
 
-  const pressDay = useCallback((index: number) => {
-    const re_day = days.map((day, i) =>
-      index === i ? {...day, checked: true} : {...day, checked: false},
-    );
-    setDays(re_day);
-  }, []);
+  const changePeriod = useCallback(
+    (pressPeriod: string) => {
+      let date = new Date(period);
+
+      if (pressPeriod === '1주') {
+        date.setDate(date.getDate() + 7);
+      } else if (pressPeriod === '3주') {
+        date.setDate(date.getDate() + 21);
+      } else if (pressPeriod === '1개월') {
+        date.setMonth(date.getMonth() + 1);
+      } else if (pressPeriod === '3개월') {
+        date.setMonth(date.getMonth() + 3);
+      }
+
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    },
+    [period],
+  );
+
+  const pressDay = useCallback(
+    (index: number) => {
+      let periodValue = '';
+      const re_day = days.map((day, i) => {
+        if (index === i) {
+          periodValue = changePeriod(day.label);
+          return {...day, checked: true};
+        }
+        return {...day, checked: false};
+      });
+      setPeriod(periodValue);
+      setDays(re_day);
+    },
+    [setDays, days, changePeriod],
+  );
 
   const pressClearButt = useCallback(() => {
     setValue(0);
@@ -83,7 +106,7 @@ export default function InputButts({
             clearFunc={pressClearButt}
           />
           <View style={styles.buttonsView}>
-            {costes.map((butt: liTypeCheck, index: number) => (
+            {cost.map((butt: liTypeCheck, index: number) => (
               <TouchableOpacity key={index} onPress={() => pressButton(index)}>
                 <View style={styles.butt}>
                   <Text style={styles.buttFont}>{butt.label}</Text>
@@ -96,14 +119,7 @@ export default function InputButts({
       {type === 'date' && (
         <>
           <View style={styles.dateView}>
-            <TextInputArea scale="45%" value={today} position="center" />
-            <Text>~</Text>
-            <TextInputArea
-              scale="45%"
-              value={changeMoney(String(value))}
-              position="center"
-              pressable={false}
-            />
+            <TextInputArea value={period} position="center" />
           </View>
           <View style={styles.buttonsView}>
             {days.map(

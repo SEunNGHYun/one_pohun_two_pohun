@@ -4,20 +4,22 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export default function TextInputArea({
   value,
-  position = 'left',
+  position = 'space-between',
   scale = '100%',
+  pressable = true,
   clearFunc,
   pressFunc,
 }: {
   value: string;
-  position?: 'center' | 'left' | 'right';
+  position?: 'center' | 'space-between' | 'right';
   scale?: string;
+  pressable?: true | false;
   clearFunc?: () => void;
   pressFunc?: () => void;
 }) {
   return (
     <View style={[styles.area, {width: scale}]}>
-      <Pressable disabled={!pressFunc}>
+      <Pressable disabled={!pressable}>
         <View style={[styles.inputArea, {justifyContent: position}]}>
           <Text>{value}</Text>
           {value !== '0' && clearFunc && (

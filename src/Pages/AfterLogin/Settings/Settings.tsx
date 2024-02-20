@@ -83,7 +83,12 @@ export default function Settings(): React.ReactElement {
   return (
     <PaperProvider>
       <View style={styles.view}>
-        <UserDataHeader headerRange={2.5} imgSize={185} />
+        <UserDataHeader
+          headerRange={2.5}
+          imgSize={175}
+          userData={userData}
+          theme={theme}
+        />
         <View style={styles.body}>
           <Pressable onPress={pressThemeShowModal}>
             <View style={[styles.buttArea, {paddingTop: 16}]}>
