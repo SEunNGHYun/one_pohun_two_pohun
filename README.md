@@ -32,8 +32,7 @@
 ---
 #### 디자인 
 
-[카카오 오븐에서 확인하기](https://ovenapp.io/view/ODyBQ3ugDs0Iw68SvfDkk7ZVFXbo841H/vQzct)
+[카카오 오븐에서 확인하기](https://ovenapp.io/view/ODyBQ3ugDs0Iw68SvfDkk7ZVFXbo841H/)
 
-#### 배틀 로직
 
-[배틀 로직 확인하기](https://drive.google.com/file/d/1uqQeYUKWgPh3UOR9LFNylk7MgB4QC-YN/view?usp=sharing)
+
