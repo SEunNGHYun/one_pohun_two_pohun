@@ -7,30 +7,33 @@ import {
   grayColor,
 } from '../utils/styles';
 import {useRecoilValue} from 'recoil';
-import {today} from '../utils/utils';
 import {Themes} from '../types/types';
 import {appTheme} from '../recoils/states';
-import {liType, liTypeCheck} from '../utils/datas';
+import {liTypeCheck} from '../utils/datas';
 import {changeMoney} from '../utils/utils';
 import TextInputArea from './TextInputArea';
 import React, {useCallback, useState} from 'react';
 
-export default function InputButts({
-  title,
-  subtitle,
-  type,
-  setGroupGoalCost,
-  groupGoalCost,
-}: {
+type PropsNumber = {
+  type?: 'number';
   title: string;
   subtitle?: string;
-  type: 'cost' | 'date';
-  setGroupGoalCost: React.Dispatch<React.SetStateAction<number>>;
-  groupGoalCost: number;
-}) {
-  const [value, setValue] = useState<number>(0);
-  const [period, setPeriod] = useState<string>(today);
-  const [cost, setButtons] = useState<liTypeCheck[]>([
+  mode: 'cost' | 'date';
+  value: number;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+};
+type PropsString = {
+  type?: 'string';
+  title: string;
+  subtitle?: string;
+  mode: 'cost' | 'date';
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function InputButts(props: PropsNumber | PropsString) {
+  const {title, subtitle, mode, value, setValue, type} = props;
+  const [cost, _] = useState<liTypeCheck[]>([
     {label: '+5천원', value: 5000},
     {label: '+1만원', value: 10000},
     {label: '+5만원', value: 50000},
@@ -46,17 +49,16 @@ export default function InputButts({
 
   const pressButton = useCallback(
     (index: number) => {
-      if (value < 800000) {
-        console.log(value);
-        setValue(pre => pre + cost[index].value);
+      if (type === 'number' && value < 800000) {
+        setValue((pre: number) => pre + cost[index].value);
       }
     },
-    [value, setValue, cost],
+    [value, setValue, cost, type],
   );
 
   const changePeriod = useCallback(
     (pressPeriod: string) => {
-      let date = new Date(period);
+      let date = new Date(value);
 
       if (pressPeriod === '1주') {
         date.setDate(date.getDate() + 7);
@@ -70,7 +72,7 @@ export default function InputButts({
 
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
-    [period],
+    [value],
   );
 
   const pressDay = useCallback(
@@ -83,15 +85,19 @@ export default function InputButts({
         }
         return {...day, checked: false};
       });
-      setPeriod(periodValue);
+      if (type === 'string') {
+        setValue(periodValue);
+      }
       setDays(re_day);
     },
-    [setDays, days, changePeriod],
+    [setDays, days, setValue, changePeriod, type],
   );
 
   const pressClearButt = useCallback(() => {
-    setValue(0);
-  }, []);
+    if (type === 'number') {
+      setValue(0);
+    }
+  }, [setValue, type]);
 
   return (
     <View style={styles.InputView}>
@@ -99,7 +105,7 @@ export default function InputButts({
         {title} {'\t'}
         {subtitle && <Text style={styles.subtitle}>({subtitle})</Text>}
       </Text>
-      {type === 'cost' && (
+      {mode === 'cost' && (
         <>
           <TextInputArea
             value={changeMoney(String(value))}
@@ -116,10 +122,13 @@ export default function InputButts({
           </View>
         </>
       )}
-      {type === 'date' && (
+      {mode === 'date' && (
         <>
           <View style={styles.dateView}>
-            <TextInputArea value={period} position="center" />
+            <TextInputArea
+              value={typeof value === 'string' ? value : ''}
+              position="center"
+            />
           </View>
           <View style={styles.buttonsView}>
             {days.map(
@@ -149,7 +158,7 @@ export default function InputButts({
 const styles = StyleSheet.create({
   InputView: {
     marginBottom: 18,
-    marginTop: 26,
+    marginTop: 8,
   },
   titleFont: {
     ...title4,

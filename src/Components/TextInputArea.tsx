@@ -19,7 +19,7 @@ export default function TextInputArea({
 }) {
   return (
     <View style={[styles.area, {width: scale}]}>
-      <Pressable disabled={!pressable}>
+      <Pressable disabled={!pressable} onPress={pressFunc}>
         <View style={[styles.inputArea, {justifyContent: position}]}>
           <Text>{value}</Text>
           {value !== '0' && clearFunc && (

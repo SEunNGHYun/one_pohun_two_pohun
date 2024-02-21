@@ -13,14 +13,17 @@ import {useNavigation} from '@react-navigation/native';
 import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
-import {grayColor, title4, defaultFont, descColor} from '../../../utils/styles';
+import {title4, defaultFont, descColor} from '../../../utils/styles';
 import TextAreaAndButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
+import {today} from '../../../utils/utils';
 
 export default function MakePigBattleRoom() {
   const navigation = useNavigation<PigUseNaviProps>();
   const theme = useRecoilValue<Themes>(appTheme);
   const userData = useRecoilValue<UserData>(userState);
+  const [cost, setCost] = useState<number>(0);
+  const [period, setPeriod] = useState<string>(today);
   const [groupGoalCost, setGroupGoalCost] = useState<number>(0);
 
   const movePage = useCallback(() => {
@@ -40,21 +43,24 @@ export default function MakePigBattleRoom() {
           <TextAreaAndButtons
             title={'총 목표 금액'}
             subtitle="최대 80만원"
-            type="cost"
-            setGroupGoalCost={setGroupGoalCost}
-            groupGoalCost={groupGoalCost}
+            value={cost}
+            setValue={setCost}
+            mode="cost"
           />
           <TextAreaAndButtons
             title={'기간'}
-            type="date"
-            setGroupGoalCost={setGroupGoalCost}
-            groupGoalCost={groupGoalCost}
+            mode="date"
+            value={period}
+            setValue={setPeriod}
           />
           <Text style={[styles.titleFont, {color: theme}]}>
             목표 {'\t'}
             <Text style={styles.subtitle}>(15자 이내로)</Text>
           </Text>
-          <TextInput placeholder="예시) 11월 일본여행?" />
+          <TextInput
+            style={styles.textinput}
+            placeholder="예시) 11월 일본여행?"
+          />
           <Pressable onPress={movePage}>
             <View style={styles.bottom}>
               <Text style={[styles.buttFont, {color: theme}]}>초대하기</Text>
@@ -77,12 +83,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   body: {
+    paddingTop: 8,
     paddingHorizontal: 18,
   },
 
   titleFont: {
     ...title4,
-    marginTop: 26,
+    marginTop: 8,
   },
   subtitle: {
     ...defaultFont,
@@ -95,4 +102,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   buttFont: {fontSize: 22, fontWeight: 'bold'},
+  textinput: {
+    marginVertical: 18,
+    borderWidth: 0.8,
+    borderRadius: 8,
+    padding: 10,
+    borderColor: 'lightgray',
+  },
 });
