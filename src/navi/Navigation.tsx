@@ -46,7 +46,9 @@ export type MainStackParamList = {
 export type PigStackParamList = {
   Pig: undefined;
   MakePigBattleRoom: undefined;
-  MatchingRoom: undefined;
+  MatchingRoom: {
+    roomKey: string;
+  };
   PigBattleRoom: undefined;
 };
 

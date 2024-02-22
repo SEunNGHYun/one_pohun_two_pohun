@@ -7,10 +7,15 @@ import {grayColor} from '../../../utils/styles';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
-export default function MatchingRoom() {
+export default function MatchingRoom({route}) {
+  const {roomKey} = route.params;
   const theme = useRecoilValue<Themes>(appTheme);
 
-  const movePage = useCallback(() => {}, []);
+  const movePage = useCallback(() => {
+    // 공유 하기
+    console.log('공유하기');
+  }, []);
+
   return (
     <PaperProvider>
       <View style={{flex: 1, backgroundColor: 'white'}} />
@@ -21,11 +26,13 @@ export default function MatchingRoom() {
             style={styles.codeFont}
             editable={false}
             selectTextOnFocus
-            value={'Dsdsfsfghgewwscxzc235sfds'}
+            value={roomKey}
           />
           <Pressable onPress={movePage}>
             <View style={styles.modalBottom}>
-              <Text style={styles.modalButtFont}>공유하기</Text>
+              <Text style={[styles.modalButtFont, {color: theme}]}>
+                공유하기
+              </Text>
               <MaterialCommunityIcons
                 name="chevron-right"
                 color={theme}

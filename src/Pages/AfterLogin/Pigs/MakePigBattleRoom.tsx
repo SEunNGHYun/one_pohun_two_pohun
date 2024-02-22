@@ -10,10 +10,11 @@ import {
 import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
+import database from '@react-native-firebase/database';
 import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
-import {title4, defaultFont, descColor} from '../../../utils/styles';
+import {title4, defaultFont, descColor, grayColor} from '../../../utils/styles';
 import TextAreaAndButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
 import {today} from '../../../utils/utils';
@@ -24,11 +25,29 @@ export default function MakePigBattleRoom() {
   const userData = useRecoilValue<UserData>(userState);
   const [cost, setCost] = useState<number>(0);
   const [period, setPeriod] = useState<string>(today);
-  const [groupGoalCost, setGroupGoalCost] = useState<number>(0);
+  const [goal, setGoal] = useState<string>('');
 
-  const movePage = useCallback(() => {
-    navigation.navigate('MatchingRoom');
-  }, [navigation]);
+  const pressInviteButt = useCallback(async () => {
+    const createRoom = {
+      user1: userData.nickname,
+      user2: null,
+      cost,
+      period,
+      goal,
+    };
+    try {
+      const {key} = await database().ref('/battles').push(createRoom);
+      if (typeof key === 'string') {
+        navigation.navigate('MatchingRoom', {
+          roomKey: key,
+        });
+      }
+    } catch (err) {}
+  }, [navigation, goal, period, cost, userData]);
+
+  const changeGoalInput = useCallback((input: string) => {
+    setGoal(input);
+  }, []);
 
   return (
     <View style={styles.view}>
@@ -41,6 +60,7 @@ export default function MakePigBattleRoom() {
         />
         <View style={styles.body}>
           <TextAreaAndButtons
+            type="number"
             title={'총 목표 금액'}
             subtitle="최대 80만원"
             value={cost}
@@ -48,7 +68,8 @@ export default function MakePigBattleRoom() {
             mode="cost"
           />
           <TextAreaAndButtons
-            title={'기간'}
+            type="string"
+            title={'목표 기간'}
             mode="date"
             value={period}
             setValue={setPeriod}
@@ -60,13 +81,25 @@ export default function MakePigBattleRoom() {
           <TextInput
             style={styles.textinput}
             placeholder="예시) 11월 일본여행?"
+            onChangeText={changeGoalInput}
           />
-          <Pressable onPress={movePage}>
+          <Pressable
+            disabled={!cost || !goal || period === today}
+            onPress={pressInviteButt}>
             <View style={styles.bottom}>
-              <Text style={[styles.buttFont, {color: theme}]}>초대하기</Text>
+              <Text
+                style={[
+                  styles.buttFont,
+                  {
+                    color:
+                      !cost || !goal || period === today ? descColor : theme,
+                  },
+                ]}>
+                초대하기
+              </Text>
               <MaterialCommunityIcons
                 name="chevron-right"
-                color={theme}
+                color={!cost || !goal || period === today ? descColor : theme}
                 size={44}
               />
             </View>

@@ -15,7 +15,7 @@ import TextInputArea from './TextInputArea';
 import React, {useCallback, useState} from 'react';
 
 type PropsNumber = {
-  type?: 'number';
+  type: 'number';
   title: string;
   subtitle?: string;
   mode: 'cost' | 'date';
@@ -23,7 +23,7 @@ type PropsNumber = {
   setValue: React.Dispatch<React.SetStateAction<number>>;
 };
 type PropsString = {
-  type?: 'string';
+  type: 'string';
   title: string;
   subtitle?: string;
   mode: 'cost' | 'date';
@@ -49,6 +49,7 @@ export default function InputButts(props: PropsNumber | PropsString) {
 
   const pressButton = useCallback(
     (index: number) => {
+      console.log(type);
       if (type === 'number' && value < 800000) {
         setValue((pre: number) => pre + cost[index].value);
       }
