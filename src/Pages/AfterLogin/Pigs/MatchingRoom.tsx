@@ -1,20 +1,46 @@
-import React, {useCallback} from 'react';
-import {View, Text, StyleSheet, Pressable, TextInput} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TextInput,
+  Share,
+} from 'react-native';
 import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import database from '@react-native-firebase/database';
 import {grayColor} from '../../../utils/styles';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
-export default function MatchingRoom({route}) {
+export default function MatchingRoom({route, navigation}) {
   const {roomKey} = route.params;
   const theme = useRecoilValue<Themes>(appTheme);
 
-  const movePage = useCallback(() => {
+  const movePage = useCallback(async () => {
     // 공유 하기
-    console.log('공유하기');
-  }, []);
+    try {
+      await Share.share({
+        message: roomKey,
+      });
+    } catch (err) {}
+  }, [roomKey]);
+
+  useEffect(() => {
+    const onValueChange = database()
+      .ref(`/battles/${roomKey}`)
+      .on('value', snapshot => {
+        let {user2} = snapshot.val();
+        if (user2 !== '') {
+          navigation.replace('PigBattleRoom');
+        }
+      });
+
+    return () =>
+      database().ref(`/battles/${roomKey}`).off('value', onValueChange);
+  }, [roomKey, navigation]);
 
   return (
     <PaperProvider>

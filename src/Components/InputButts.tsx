@@ -10,7 +10,7 @@ import {useRecoilValue} from 'recoil';
 import {Themes} from '../types/types';
 import {appTheme} from '../recoils/states';
 import {liTypeCheck} from '../utils/datas';
-import {changeMoney} from '../utils/utils';
+import {changeMoney, today} from '../utils/utils';
 import TextInputArea from './TextInputArea';
 import React, {useCallback, useState} from 'react';
 
@@ -57,24 +57,21 @@ export default function InputButts(props: PropsNumber | PropsString) {
     [value, setValue, cost, type],
   );
 
-  const changePeriod = useCallback(
-    (pressPeriod: string) => {
-      let date = new Date(value);
+  const changePeriod = useCallback((pressPeriod: string) => {
+    let date = new Date(today);
 
-      if (pressPeriod === '1주') {
-        date.setDate(date.getDate() + 7);
-      } else if (pressPeriod === '3주') {
-        date.setDate(date.getDate() + 21);
-      } else if (pressPeriod === '1개월') {
-        date.setMonth(date.getMonth() + 1);
-      } else if (pressPeriod === '3개월') {
-        date.setMonth(date.getMonth() + 3);
-      }
+    if (pressPeriod === '1주') {
+      date.setDate(date.getDate() + 7);
+    } else if (pressPeriod === '3주') {
+      date.setDate(date.getDate() + 21);
+    } else if (pressPeriod === '1개월') {
+      date.setMonth(date.getMonth() + 1);
+    } else if (pressPeriod === '3개월') {
+      date.setMonth(date.getMonth() + 3);
+    }
 
-      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-    },
-    [value],
-  );
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }, []);
 
   const pressDay = useCallback(
     (index: number) => {
@@ -135,6 +132,7 @@ export default function InputButts(props: PropsNumber | PropsString) {
             {days.map(
               (butt: {label: string; checked: boolean}, index: number) => (
                 <TouchableOpacity
+                  disabled={butt.checked}
                   key={index + butt.label}
                   onPress={() => pressDay(index)}>
                   <View

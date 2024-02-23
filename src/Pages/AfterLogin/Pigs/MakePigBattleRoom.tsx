@@ -30,7 +30,7 @@ export default function MakePigBattleRoom() {
   const pressInviteButt = useCallback(async () => {
     const createRoom = {
       user1: userData.nickname,
-      user2: null,
+      user2: '',
       cost,
       period,
       goal,
