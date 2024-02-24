@@ -14,7 +14,7 @@ import database from '@react-native-firebase/database';
 import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
-import {title4, defaultFont, descColor, grayColor} from '../../../utils/styles';
+import {title4, defaultFont, descColor} from '../../../utils/styles';
 import TextAreaAndButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
 import {today} from '../../../utils/utils';
@@ -134,11 +134,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  buttFont: {fontSize: 22, fontWeight: 'bold'},
+  buttFont: {fontSize: 22, fontWeight: 'bold', color: 'black'},
   textinput: {
     marginVertical: 18,
     borderWidth: 0.8,
     borderRadius: 8,
+    color: 'black',
     padding: 10,
     borderColor: 'lightgray',
   },

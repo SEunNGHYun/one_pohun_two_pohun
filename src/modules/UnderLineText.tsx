@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   },
   txt: {
     fontSize: 40,
+    color: 'black',
     fontWeight: '900',
   },
   underline: {

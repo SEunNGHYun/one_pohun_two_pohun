@@ -51,9 +51,8 @@ export default function Targetcost2More({route}: Props) {
       img,
       day_cost: userCost,
       day_goal_cost: cost,
-      spend_cost: {},
+      push_notification: false,
     };
-    console.log(userData);
     try {
       await database().ref(`/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
@@ -71,7 +70,7 @@ export default function Targetcost2More({route}: Props) {
         <UnderLineText txt="더 많이" color={primaryColor} />
         <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
-      <View style={[styles.body, {alignItems: 'flex-start'}]}>
+      <View style={[styles.body]}>
         <Text style={styles.requestFont}>" 절약 " 해보실래요?</Text>
         <View style={styles.discountButtonView}>
           <TouchableWithoutFeedback onPress={() => pressChoiceButt('yes')}>
@@ -106,7 +105,7 @@ export default function Targetcost2More({route}: Props) {
           </TouchableWithoutFeedback>
         </View>
         <Text style={styles.descFont}>
-          * 하루절약 목표를 3000원으로 자동 설정됩니다. {'\n'}* 나중에
+          * 현재 사용금액 - 3000원으로 목표 자동 설정됩니다. {'\n'}* 나중에
           변경가능합니다.
         </Text>
       </View>
@@ -124,7 +123,7 @@ export default function Targetcost2More({route}: Props) {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 36,
     paddingVertical: 70,
     backgroundColor: 'white',
   },
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   discountButton: {
-    width: 150,
+    width: 126,
     height: 48,
     backgroundColor: lightGrayColor,
     borderRadius: 10,
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
     color: descColor,
   },
   ablePress: {
-    width: 150,
+    width: 126,
     height: 48,
     backgroundColor: primaryColor,
     borderRadius: 10,

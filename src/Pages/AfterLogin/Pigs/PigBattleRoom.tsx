@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
 import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,13 +7,16 @@ import {primaryColor, title2} from '../../../utils/styles';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
-export default function PigBattleRoom() {
+export default function PigBattleRoom({route, navigation}) {
+  const {roomKey} = route.params;
   let {width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
 
   return (
     <View style={styles.view}>
-      <Text style={styles.totalCost}>남은 목표금액{'\t'}30,000원</Text>
+      <Text style={[styles.totalCost, {color: theme}]}>
+        남은 목표금액{'\t'}30,000원
+      </Text>
       <View style={{flexDirection: 'row'}}>
         <BattleUserData position="left" />
         <MaterialCommunityIcons
@@ -38,7 +41,6 @@ const styles = StyleSheet.create({
   },
   totalCost: {
     ...title2,
-    color: primaryColor,
   },
   pigIcon: {
     zIndex: 2,

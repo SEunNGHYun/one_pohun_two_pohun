@@ -6,13 +6,13 @@ export default function EachDayCost({route, navigation}) {
   return (
     <View style={styles.view}>
       <View style={styles.header}>
-        <Text>{pressDay}</Text>
+        <Text style={{color: 'black'}}>{pressDay}</Text>
       </View>
       <View style={styles.body}>
         {!!data &&
           data.map((d, index: number) => {
             <View key={d + index}>
-              <Text>{d}</Text>
+              <Text style={{color: 'black'}}>{d}</Text>
             </View>;
           })}
       </View>

@@ -43,7 +43,6 @@ export default function Main({navigation}: Props): React.ReactElement {
   const [selectedDaySpendData, setSelectedDaySpendData] = useState<
     UserSpendCost[]
   >([]);
-  const [before6MonthSpendData, setBefore6MonthSpendData] = useState([]);
   const [todaySpendCost, setSpendTodayCost] = useState<string>('0');
   const [monthSpendCost, setMonthSpendCost] = useState<string>('0');
   const [bottomSheetToggle, setBottomSheetToggle] = useState<boolean>(false);
@@ -89,11 +88,6 @@ export default function Main({navigation}: Props): React.ReactElement {
     [handleSnapPress, spendCostData],
   );
 
-  const getNotificationPermissionStatus = useCallback(async () => {
-    const status = await getPushNotification();
-    console.log('Status', status);
-  }, []);
-
   useEffect(() => {
     //일단 AddCost에서 소비금액 추가될 때마다 데이터 가져올 수 있게 살정
     async function getUserData() {
@@ -131,7 +125,11 @@ export default function Main({navigation}: Props): React.ReactElement {
   }, [userData]);
 
   useEffect(() => {
-    // getNotificationPermissionStatus(); // 핸드폰으로 테스트 실행 _ 권한 설정 함수
+    const getNotificationPermissionStatus = async () => {
+      const status = await getPushNotification();
+      console.log('Status', status);
+    };
+    getNotificationPermissionStatus(); // 핸드폰으로 테스트 실행 _ 권한 설정 함수
   }, []);
 
   useEffect(() => {

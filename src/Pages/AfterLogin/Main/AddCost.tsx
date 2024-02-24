@@ -21,7 +21,7 @@ type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
 
 export default function AddCost({navigation}: Props) {
   const [cost, setCost] = useState<string>('0');
-  const [userData, setUserData] = useRecoilState<UserData>(userState);
+  const [userData, __] = useRecoilState<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
   const [open, setOpen] = useState<boolean>(false);
   const [categories, _] =
@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   todayText: {
+    color: 'black',
     ...title2,
   },
   desc: {
@@ -135,6 +136,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 4,
     marginBottom: 36,
+    color: 'black',
   },
   dropdown: {},
   okButtActive: {

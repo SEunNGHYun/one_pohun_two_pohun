@@ -21,7 +21,7 @@ export default function TextInputArea({
     <View style={[styles.area, {width: scale}]}>
       <Pressable disabled={!pressable} onPress={pressFunc}>
         <View style={[styles.inputArea, {justifyContent: position}]}>
-          <Text>{value}</Text>
+          <Text style={{color: 'black'}}>{value}</Text>
           {value !== '0' && clearFunc && (
             <Pressable onPress={clearFunc}>
               <MaterialCommunityIcons name="close-circle" size={22} />

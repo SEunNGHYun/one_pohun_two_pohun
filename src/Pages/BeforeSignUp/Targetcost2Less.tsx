@@ -15,7 +15,7 @@ import {
   descColor,
   defaultFont,
 } from '../../utils/styles';
-import {day, date, month, today} from '../../utils/utils';
+import type {UserData} from '../../types/types';
 
 type Props = NativeStackScreenProps<
   BeforeLoginStackParamList,
@@ -27,7 +27,7 @@ export default function Targetcost2Less({route}: Props) {
   const [cost, setCost] = useState(0);
   const [disable, setDisable] = useState<boolean>(true);
 
-  const setUserData = useSetRecoilState(userState);
+  const setUserData = useSetRecoilState<UserData>(userState);
 
   const pressChoiceButt = useCallback(
     (t: 'yes' | 'no'): void => {
@@ -55,7 +55,7 @@ export default function Targetcost2Less({route}: Props) {
       img,
       day_cost: userCost,
       day_goal_cost: cost,
-      spend_cost: {},
+      push_notification: false,
     };
     try {
       await database().ref(`/users/${nickname}`).set(userData);
@@ -109,7 +109,7 @@ export default function Targetcost2Less({route}: Props) {
           </TouchableWithoutFeedback>
         </View>
         <Text style={styles.descFont}>
-          * 하루절약 목표를 3000원으로 자동 설정됩니다.
+          * 하루 사용금액기준 -3000원으로 자동 됩니다.
           {'\n'}* 나중에 변경가능합니다.
         </Text>
       </View>

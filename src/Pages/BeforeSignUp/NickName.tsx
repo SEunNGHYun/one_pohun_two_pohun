@@ -146,6 +146,7 @@ export default function NickName({navigation}): React.ReactElement {
                 }>
                 <MaterialCommunityIcons
                   name="camera-plus-outline"
+                  color={'#777777'}
                   size={keyboardStatus ? 50 : 70}
                 />
               </View>
@@ -285,6 +286,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1.3,
+    color: 'black',
     borderColor: '#3d3d3d',
     paddingHorizontal: 10,
     borderRadius: 10,

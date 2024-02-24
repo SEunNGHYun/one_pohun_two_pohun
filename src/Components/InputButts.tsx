@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
   },
   titleFont: {
     ...title4,
+    color: 'black',
   },
   subtitle: {
     ...defaultFont,
@@ -208,6 +209,7 @@ const styles = StyleSheet.create({
   buttFont: {
     marginHorizontal: 3,
     fontSize: 12,
+    color: 'black',
   },
   checkedButtFont: {
     marginHorizontal: 3,

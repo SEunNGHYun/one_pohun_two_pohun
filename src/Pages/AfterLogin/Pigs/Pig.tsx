@@ -17,7 +17,7 @@ import type {PigNaviProps} from '../../../navi/Navigation';
 
 export default function Pig({navigation}: PigNaviProps) {
   const [toggleEnterModal, setToggleEnterModal] = useState(false);
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState<string>('');
   const userData = useRecoilValue<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
   const showModal = useCallback(() => setToggleEnterModal(true), []);
@@ -25,8 +25,13 @@ export default function Pig({navigation}: PigNaviProps) {
 
   const codeInput = useCallback((t: string) => setCode(t), []);
   const movePage = useCallback(() => {
-    navigation.replace('PigBattleRoom');
-  }, []);
+    if (code !== '') {
+      // db user2에 해당 user 아이디 적음
+      navigation.replace('PigBattleRoom', {
+        roomKey: code,
+      });
+    }
+  }, [code, navigation]);
 
   useEffect(() => {
     //방이 들어가 있는 상태인지 확인
@@ -125,6 +130,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   codeInput: {
+    color: 'black',
     marginTop: 18,
     margin: 8,
   },

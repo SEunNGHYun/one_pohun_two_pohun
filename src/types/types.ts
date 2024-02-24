@@ -5,8 +5,8 @@
 export interface UserData {
   nickname: string;
   img: string | null;
-  current_cost: number;
-  goal_cost: number;
+  day_cost: number;
+  day_goal_cost: number;
   push_notification: boolean;
 }
 

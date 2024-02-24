@@ -34,7 +34,7 @@ export default function BattleUserData({position}: {position: string}) {
               {d}
             </Text>
           ))}
-          <Text style={{fontSize: 12, fontWeight: 'bold'}}>
+          <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
             .{'\n'}.{'\n'}.
           </Text>
         </View>
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   nickname: {
     ...title3,
     width: '100%',
+    color: 'black',
     position: 'absolute',
     paddingTop: 100,
   },
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
   costLi: {alignItems: 'center', marginTop: 18},
   costFont: {
     ...sub,
+    color: 'black',
     fontWeight: '700',
     marginVertical: 4,
   },

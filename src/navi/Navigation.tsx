@@ -49,7 +49,9 @@ export type PigStackParamList = {
   MatchingRoom: {
     roomKey: string;
   };
-  PigBattleRoom: undefined;
+  PigBattleRoom: {
+    roomKey: string;
+  };
 };
 
 export type BeforeLoginStackParamList = {

@@ -34,7 +34,9 @@ export default function MatchingRoom({route, navigation}) {
       .on('value', snapshot => {
         let {user2} = snapshot.val();
         if (user2 !== '') {
-          navigation.replace('PigBattleRoom');
+          navigation.replace('PigBattleRoom', {
+            roomKey,
+          });
         }
       });
 
@@ -86,13 +88,14 @@ const styles = StyleSheet.create({
   },
   codeFont: {
     fontSize: 18,
+    color: 'black',
     fontWeight: 'bold',
     borderWidth: 0.6,
     borderColor: grayColor,
     padding: 10,
     marginBottom: 18,
   },
-  modalButtFont: {fontSize: 22, fontWeight: 'bold'},
+  modalButtFont: {fontSize: 22, fontWeight: 'bold', color: 'black'},
   modalBottom: {
     flexDirection: 'row',
     alignItems: 'center',

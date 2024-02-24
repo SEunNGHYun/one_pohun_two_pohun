@@ -33,7 +33,7 @@ export default function BottomSheetView({
         </>
       ) : (
         <View style={styles.emptyView}>
-          <Text>지출 내역이 없습니다.</Text>
+          <Text style={{color: 'black'}}>지출 내역이 없습니다.</Text>
         </View>
       )}
     </BottomSheetScrollView>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     paddingHorizontal: 8,
     fontSize: 24,
+    color: 'black',
     fontWeight: 'bold',
   },
   costItemForm: {
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  costCateFont: {fontSize: 24, fontWeight: 'bold'},
+  costCateFont: {fontSize: 24, fontWeight: 'bold', color: 'black'},
   line: {
     width: '100%',
     height: 1,
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
   },
   costItemFont: {
     fontSize: 16,
+    color: 'black',
     fontWeight: 'bold',
   },
   constItemBlank: {
