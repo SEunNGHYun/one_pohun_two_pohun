@@ -10,6 +10,7 @@ import {
 import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import database from '@react-native-firebase/database';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
 import {grayColor} from '../../../utils/styles';
@@ -24,14 +25,19 @@ export default function Pig({navigation}: PigNaviProps) {
   const hideModal = useCallback(() => setToggleEnterModal(false), []);
 
   const codeInput = useCallback((t: string) => setCode(t), []);
-  const movePage = useCallback(() => {
+  const movePage = useCallback(async () => {
     if (code !== '') {
+      try {
+        await database().ref(`/battles/${code}`).update({
+          user2: userData.nickname,
+        });
+        navigation.replace('PigBattleRoom', {
+          roomKey: code,
+        });
+      } catch (err) {}
       // db user2에 해당 user 아이디 적음
-      navigation.replace('PigBattleRoom', {
-        roomKey: code,
-      });
     }
-  }, [code, navigation]);
+  }, [code, navigation, userData]);
 
   useEffect(() => {
     //방이 들어가 있는 상태인지 확인

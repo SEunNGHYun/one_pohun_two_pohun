@@ -33,6 +33,7 @@ export default function MatchingRoom({route, navigation}) {
       .ref(`/battles/${roomKey}`)
       .on('value', snapshot => {
         let {user2} = snapshot.val();
+        console.log('user2', user2);
         if (user2 !== '') {
           navigation.replace('PigBattleRoom', {
             roomKey,

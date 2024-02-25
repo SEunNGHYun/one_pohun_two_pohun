@@ -2,7 +2,13 @@ import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
 import React from 'react';
 import {grayColor, title3, title4, sub} from '../utils/styles';
 
-export default function BattleUserData({position}: {position: string}) {
+export default function BattleUserData({
+  position,
+  userData,
+}: {
+  position: string;
+  userData: any;
+}) {
   const {height, width} = useWindowDimensions();
   const data = ['2100원', '2100원', '2100원', '2100원'];
   return (
