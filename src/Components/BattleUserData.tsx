@@ -1,5 +1,8 @@
-import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, useWindowDimensions, Image} from 'react-native';
+import React, {useMemo} from 'react';
+import {useRecoilValue} from 'recoil';
+import {appTheme} from '../recoils/states';
+import type {Themes} from '../types/types';
 import {grayColor, title3, title4, sub} from '../utils/styles';
 
 export default function BattleUserData({
@@ -10,7 +13,17 @@ export default function BattleUserData({
   userData: any;
 }) {
   const {height, width} = useWindowDimensions();
+  const theme = useRecoilValue<Themes>(appTheme);
+
   const data = ['2100원', '2100원', '2100원', '2100원'];
+
+  const userImage = useMemo(() => {
+    console.log(userData);
+    return userData
+      ? userData.img
+      : 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png';
+  }, [userData]);
+
   return (
     <View style={{width: (width - 40) / 2}}>
       <View
@@ -21,15 +34,43 @@ export default function BattleUserData({
         <View
           style={[
             styles.userImgBack,
-            {width: (width - 40) / 2.5, height: (width - 40) / 2.5},
-          ]}
-        />
+            {
+              width: (width - 40) / 2.5,
+              height: (width - 40) / 2.5,
+              backgroundColor: theme,
+            },
+          ]}>
+          <View
+            style={[
+              styles.userImgBack,
+              {
+                width: (width - 60) / 2.5,
+                height: (width - 60) / 2.5,
+                backgroundColor: 'white',
+              },
+            ]}>
+            <Image
+              source={{
+                uri: userImage,
+              }}
+              resizeMode="contain"
+              style={[
+                styles.userImgBack,
+                {
+                  width: (width - 75) / 2.5,
+                  height: (width - 75) / 2.5,
+                  backgroundColor: 'white',
+                },
+              ]}
+            />
+          </View>
+        </View>
         <Text
           style={[
             styles.nickname,
             {textAlign: position === 'left' ? 'left' : 'right'},
           ]}>
-          닉네임
+          {userData && userData.nickname}
         </Text>
       </View>
       <View style={styles.body}>
@@ -62,7 +103,8 @@ const styles = StyleSheet.create({
   userImgBack: {
     borderRadius: 300,
     marginHorizontal: 8,
-    backgroundColor: grayColor,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   nickname: {
     ...title3,

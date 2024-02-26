@@ -25,7 +25,8 @@ export default function Pig({navigation}: PigNaviProps) {
   const hideModal = useCallback(() => setToggleEnterModal(false), []);
 
   const codeInput = useCallback((t: string) => setCode(t), []);
-  const movePage = useCallback(async () => {
+  const enterBattleRoom = useCallback(async () => {
+    //입장 코드가 마감되었을 경우, 입장 가능 기간이 경우, 없는 경우 나누어서
     if (code !== '') {
       try {
         await database().ref(`/battles/${code}`).update({
@@ -77,7 +78,7 @@ export default function Pig({navigation}: PigNaviProps) {
             입장 코드를 입력하세요
           </Text>
           <TextInput style={styles.codeInput} onChangeText={codeInput} />
-          <Pressable onPress={movePage} disabled={!code}>
+          <Pressable onPress={enterBattleRoom} disabled={!code}>
             <View style={styles.modalBottom}>
               <Text
                 style={

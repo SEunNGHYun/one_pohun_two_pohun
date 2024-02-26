@@ -27,7 +27,12 @@ export const getCameraGalleryPermissions = async (
           includeBase64: false,
           includeExtra: false,
         },
-        callback,
+        res => {
+          if (res.didCancel) {
+            return;
+          }
+          callback(res);
+        },
       ); // 하지만 예제에서는 이렇게 하는걸...
     } else {
       console.log('노놉');

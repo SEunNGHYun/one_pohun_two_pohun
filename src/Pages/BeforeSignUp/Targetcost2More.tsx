@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {useSetRecoilState} from 'recoil';
 import database from '@react-native-firebase/database';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';

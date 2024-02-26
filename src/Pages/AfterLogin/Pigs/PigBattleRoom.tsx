@@ -27,9 +27,7 @@ export default function PigBattleRoom({route, navigation}) {
               .on('value', value => setUser1(value.val()));
             await database()
               .ref(`/users/${user2}`)
-              .on('value', value => {
-                setUser2(value.val());
-              });
+              .on('value', value => setUser2(value.val()));
           });
       } catch (err) {}
     };
