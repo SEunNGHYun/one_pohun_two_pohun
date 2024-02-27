@@ -32,7 +32,7 @@ import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
 import Settings from '../Pages/AfterLogin/Settings/Settings';
 
 import {descColor} from '../utils/styles';
-import type {UserData, Themes} from '../types/types';
+import type {NewAsset, UserData, Themes} from '../types/types';
 
 const options: NativeStackNavigationOptions = {
   headerShown: false,
@@ -56,17 +56,17 @@ export type PigStackParamList = {
 
 export type BeforeLoginStackParamList = {
   Targetcost2More: {
-    img: string | null;
+    img: NewAsset;
     nickname: string;
     userCost: number;
   };
   Targetcost2Less: {
-    img: string | null;
+    img: NewAsset;
     nickname: string;
     userCost: number;
   };
   Targetcost1: {
-    img: string | null;
+    img: NewAsset;
     nickname: string;
   };
   NickName: undefined;

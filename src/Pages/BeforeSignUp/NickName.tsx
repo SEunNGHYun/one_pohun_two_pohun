@@ -23,7 +23,7 @@ import database from '@react-native-firebase/database';
 
 export default function NickName({navigation}): React.ReactElement {
   const [nickname, setNickName] = useState<string>('');
-  const [userImage, setUserImage] = useState<any>(false);
+  const [userImage, setUserImage] = useState<any>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
@@ -70,26 +70,23 @@ export default function NickName({navigation}): React.ReactElement {
   const getUserImgage = useCallback(() => {
     getCameraGalleryPermissions(setUserImage);
     hideModal();
-  }, [hideModal]);
+  }, [hideModal, setUserImage]);
 
   const getDefaultImage = useCallback(() => {
     setUserImage({
-      assets: [
-        {
-          uri: 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png',
-        },
-      ],
+      uri: 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png',
+      selectType: 'defult',
     });
     hideModal();
   }, [hideModal]);
 
-  const nextPageMove = useCallback(async (): Promise<void> => {
+  const nextPageMove = useCallback(async () => {
     //db user에서 닉네임 중복 페크
     const snapshot = await database().ref(`/users/${nickname}`).once('value');
     try {
       if (!snapshot.val()) {
         navigation.navigate('Targetcost1', {
-          img: userImage.assets[0].uri,
+          img: userImage,
           nickname,
         });
       } else {
@@ -129,14 +126,14 @@ export default function NickName({navigation}): React.ReactElement {
                   : styles.user_img_backgroundBox
               }>
               <View style={keyboardStatus ? styles.re_circle : styles.circle}>
-                {userImage?.assets && (
+                {userImage?.uri && (
                   <Image
                     resizeMode="contain"
                     resizeMethod="scale"
                     style={
                       keyboardStatus ? styles.re_userImage : styles.userImage
                     }
-                    source={{uri: userImage.assets[0].uri}}
+                    source={{uri: userImage.uri}}
                   />
                 )}
               </View>

@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSetRecoilState} from 'recoil';
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {BeforeLoginStackParamList} from '../../navi/Navigation';
 import UnderLineText from '../../modules/UnderLineText';
@@ -25,6 +26,7 @@ type Props = NativeStackScreenProps<
 export default function Targetcost2Less({route}: Props) {
   const [choice, setChoice] = useState<string>('');
   const [cost, setCost] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState<boolean>(true);
 
   const setUserData = useSetRecoilState<UserData>(userState);
@@ -48,24 +50,43 @@ export default function Targetcost2Less({route}: Props) {
     [route],
   );
 
-  const successSignUp = useCallback(async () => {
-    const {img, nickname, userCost} = route.params;
-    let userData = {
-      nickname,
-      img,
-      day_cost: userCost,
-      day_goal_cost: cost,
-      push_notification: false,
-    };
+  const saveUserImageInStorage = useCallback(async () => {
+    const {nickname, img} = route.params;
+    const {uri, fileName, selectType} = img;
+    const saveStorage = storage().ref(`profils/${nickname}/${fileName}`);
+    if (selectType === 'defult') {
+      return uri;
+    }
     try {
+      if (uri) {
+        await saveStorage.putFile(uri);
+      }
+    } catch (err) {}
+
+    return await saveStorage.getDownloadURL();
+  }, [route.params]);
+
+  const pressSignUp = useCallback(async () => {
+    const {nickname, userCost} = route.params;
+    let userData = {};
+    setLoading(true);
+    try {
+      userData = {
+        nickname,
+        img: await saveUserImageInStorage(), //storage에 저장된 뒤에 나온 링크리턴
+        day_cost: userCost,
+        day_goal_cost: cost,
+        push_notification: false,
+      };
       await database().ref(`/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);
     } finally {
       setUserData(userData);
+      setLoading(false);
     }
-  }, [setUserData, route, cost]);
+  }, [route, cost, setUserData, saveUserImageInStorage]);
 
   return (
     <View style={styles.view}>
@@ -114,7 +135,7 @@ export default function Targetcost2Less({route}: Props) {
         </Text>
       </View>
       <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={disable} onPress={successSignUp}>
+        <TouchableWithoutFeedback disabled={disable} onPress={pressSignUp}>
           <Text style={disable ? styles.disabledpress : styles.nextpress}>
             다음
           </Text>

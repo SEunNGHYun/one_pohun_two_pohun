@@ -16,6 +16,7 @@ import {
   descColor,
   defaultFont,
 } from '../../utils/styles';
+import type {UserData} from '../../types/types';
 
 type Props = NativeStackScreenProps<
   BeforeLoginStackParamList,
@@ -25,9 +26,10 @@ type Props = NativeStackScreenProps<
 export default function Targetcost2More({route}: Props) {
   const [choice, setChoice] = useState<string>('');
   const [cost, setCost] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false);
   const [disable, setDisable] = useState<boolean>(true);
 
-  const setUserData = useSetRecoilState(userState);
+  const setUserData = useSetRecoilState<UserData>(userState);
 
   const pressChoiceButt = useCallback(
     (t: 'yes' | 'no'): void => {
@@ -45,24 +47,43 @@ export default function Targetcost2More({route}: Props) {
     [route],
   );
 
-  const successSignUp = useCallback(async () => {
-    const {img, nickname, userCost} = route.params;
-    const userData = {
-      nickname,
-      img,
-      day_cost: userCost,
-      day_goal_cost: cost,
-      push_notification: false,
-    };
+  const saveUserImageInStorage = useCallback(async () => {
+    const {nickname, img} = route.params;
+    const {uri, fileName, selectType} = img;
+    const saveStorage = storage().ref(`profils/${nickname}/${fileName}`);
+    if (selectType === 'defult') {
+      return uri;
+    }
     try {
+      if (uri) {
+        await saveStorage.putFile(uri);
+      }
+    } catch (err) {}
+
+    return await saveStorage.getDownloadURL();
+  }, [route.params]);
+
+  const pressSignUp = useCallback(async () => {
+    const {nickname, userCost} = route.params;
+    let userData = {};
+    setLoading(true);
+    try {
+      userData = {
+        nickname,
+        img: await saveUserImageInStorage(), //storage에 저장된 뒤에 나온 링크리턴
+        day_cost: userCost,
+        day_goal_cost: cost,
+        push_notification: false,
+      };
       await database().ref(`/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));
     } catch (err) {
       console.log(err);
     } finally {
       setUserData(userData);
+      setLoading(false);
     }
-  }, [route, cost, setUserData]);
+  }, [route, cost, setUserData, saveUserImageInStorage]);
 
   return (
     <View style={styles.view}>
@@ -111,7 +132,7 @@ export default function Targetcost2More({route}: Props) {
         </Text>
       </View>
       <View style={styles.foot}>
-        <TouchableWithoutFeedback disabled={disable} onPress={successSignUp}>
+        <TouchableWithoutFeedback disabled={disable} onPress={pressSignUp}>
           <Text style={disable ? styles.disabledpress : styles.nextpress}>
             다음
           </Text>

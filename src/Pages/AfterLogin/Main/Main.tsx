@@ -75,7 +75,7 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
-      const {dateString, timestamp, year, month, day} = dateData;
+      const {timestamp, year, month, day} = dateData;
       const endTimeStamp = getDayTimeStampEnd(year, month, day);
       setSelectedDay(`${month}월 ${day}일 지출내역`);
       let pressDateSpendData = spendCostData.filter(

@@ -29,18 +29,22 @@ export default function UserDataHeader({
       ]}>
       <View
         style={{
-          width: imgSize + 18,
-          height: imgSize + 18,
-          borderRadius: imgSize + 18,
+          width: imgSize + 20,
+          height: imgSize + 20,
+          borderRadius: imgSize + 20,
           padding: 3,
+          alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: 'white',
         }}>
         <View
           style={{
             width: imgSize + 10,
             height: imgSize + 10,
-            borderRadius: imgSize + 12,
-            padding: 6,
+            borderRadius: imgSize + 10,
+            padding: 3,
+            alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: theme,
           }}>
           <Image

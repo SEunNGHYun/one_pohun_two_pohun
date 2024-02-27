@@ -1,10 +1,7 @@
 import React from 'react';
 import {PermissionsAndroid} from 'react-native';
-import {
-  ImagePickerResponse,
-  launchImageLibrary,
-} from 'react-native-image-picker';
-import {request, RESULTS, PERMISSIONS, check} from 'react-native-permissions';
+import {launchImageLibrary} from 'react-native-image-picker';
+import type {NewAsset} from '../types/types';
 
 export const getCameraGalleryPermissions = async (
   callback: React.Dispatch<React.SetStateAction<undefined>>,
@@ -22,8 +19,9 @@ export const getCameraGalleryPermissions = async (
     ) {
       launchImageLibrary(
         {
-          selectionLimit: 0,
+          selectionLimit: 1,
           mediaType: 'photo',
+          quality: 1,
           includeBase64: false,
           includeExtra: false,
         },
@@ -31,7 +29,15 @@ export const getCameraGalleryPermissions = async (
           if (res.didCancel) {
             return;
           }
-          callback(res);
+          if (res) {
+            if (res.assets) {
+              let newRes: NewAsset = {
+                ...res.assets[0],
+                selectType: 'select',
+              };
+              callback(newRes);
+            }
+          }
         },
       ); // 하지만 예제에서는 이렇게 하는걸...
     } else {
