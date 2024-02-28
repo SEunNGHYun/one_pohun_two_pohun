@@ -14,7 +14,8 @@ export default function BattleUserData({
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
-  const [spendCostList, setSpendCostList] = useState<any[]>([]);
+  const [spendCostList, setSpendCostList] = useState<number[]>([]);
+  const [saveMoney, setSaveMoney] = useState<number>(0);
 
   const data = ['2100원', '2100원', '2100원', '2100원'];
 
@@ -25,14 +26,18 @@ export default function BattleUserData({
   }, [userData]);
 
   const changeSpendCostForm = useCallback(() => {
-    if (userData && userData.hasOwnProperty('spendCost')) {
+    if (userData && userData.hasOwnProperty('spend_cost')) {
       let totalSpendCost = 0;
-      let dataToList = [];
-      let reversedSpendCostObj = Object.entries(userData.spendCost).reverse();
-      reversedSpendCostObj.splice(5).forEach(([key, value]) => {
-        console.log(key + ': ' + value);
+      let spendCost: [number] | [] = [];
+      let reversedSpendCostObj = Object.entries(userData.spend_cost).reverse();
+      reversedSpendCostObj.forEach(([_, obj], index) => {
+        const {cost} = obj;
+        if (index < 5) {
+          spendCost.push(cost);
+        }
+        totalSpendCost += cost;
       });
-      console.log('total in room', totalSpendCost);
+      setSpendCostList(spendCost);
     }
   }, [userData]);
 
@@ -90,13 +95,12 @@ export default function BattleUserData({
         </Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.totalFont}>현재 지출내역</Text>
+        <Text style={styles.totalFont}>실시간 지출현황</Text>
         <View style={styles.costLi}>
-          {userData &&
-            userData.hasOwnProperty('spendCost') &&
-            userData.spendCost.map((d, i) => (
+          {spendCostList &&
+            spendCostList.reverse().map((d, i) => (
               <Text key={i} style={styles.costFont}>
-                {d}
+                {d}원
               </Text>
             ))}
           <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
@@ -104,7 +108,6 @@ export default function BattleUserData({
           </Text>
         </View>
         <View style={styles.totalCostView}>
-          <Text style={styles.totalCostFont}>총 10000원</Text>
           <Text style={styles.totalCostFont}>2천7백원 절약</Text>
         </View>
       </View>
@@ -138,7 +141,7 @@ const styles = StyleSheet.create({
     ...title4,
     color: 'black',
   },
-  costLi: {alignItems: 'center', marginTop: 18},
+  costLi: {alignItems: 'center', marginTop: 18, width: 'auto'},
   costFont: {
     ...sub,
     color: 'black',

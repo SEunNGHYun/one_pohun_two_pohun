@@ -33,10 +33,12 @@ export const nowTimeStamp = (): number => {
 export const thisMonthFirst = getDayTimeStampStart(year, months, 1);
 
 export const thisMonthLast = getDayTimeStampEnd(year, months, 31);
+//이번 달 기준 00~12시 까지 타임스탬프
 
 export const todayTimeStampFirst = getDayTimeStampStart(year, months, date);
 
 export const todayTimeStampLast = getDayTimeStampEnd(year, months, date);
+//오늘 날짜 기준 00~12시 까지 타임스탬프
 
 export const currentDate2: Date = new Date();
 currentDate2.setMonth(currentDate2.getMonth() - 6);

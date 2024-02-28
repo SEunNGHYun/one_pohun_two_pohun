@@ -15,6 +15,8 @@ import {
   months,
   nowTimeStamp,
   changeMoney,
+  thisMonthFirst,
+  todayTimeStampFirst,
 } from '../../../utils/utils';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'Main'>;
@@ -39,10 +41,10 @@ export default function AddCost({navigation}: Props) {
 
     try {
       await database()
-        .ref(`/users/${userData.nickname}/spend_cost`)
-        .push()
+        .ref(
+          `/users/${userData.nickname}/spend_cost/${thisMonthFirst}/${todayTimeStampFirst}/${timestamp}`,
+        )
         .set({
-          timestamp,
           category: checkCate,
           cost: spendCost,
         });

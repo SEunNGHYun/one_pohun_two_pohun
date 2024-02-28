@@ -30,6 +30,7 @@ import {
 } from '../../../utils/utils';
 import type {Themes, UserData, UserSpendCost} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
+import {registerShareableMapping} from 'react-native-reanimated/lib/typescript/reanimated2/shareables';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 const {width, height} = Dimensions.get('window');
@@ -39,7 +40,9 @@ export default function Main({navigation}: Props): React.ReactElement {
   const userData = useRecoilValue<UserData>(userState);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [spendCostData, setSpendCostData] = useState<UserSpendCost[]>([]);
+  const [thisMonthSpendCost, setThisMonthSpendCost] = useState<UserSpendCost[]>(
+    [],
+  );
   const [selectedDaySpendData, setSelectedDaySpendData] = useState<
     UserSpendCost[]
   >([]);
@@ -75,53 +78,50 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
-      const {timestamp, year, month, day} = dateData;
-      const endTimeStamp = getDayTimeStampEnd(year, month, day);
+      let {timestamp, month, day} = dateData;
       setSelectedDay(`${month}월 ${day}일 지출내역`);
-      let pressDateSpendData = spendCostData.filter(
-        data => data.timestamp >= timestamp && data.timestamp <= endTimeStamp,
-      );
-      setSelectedDaySpendData(pressDateSpendData);
+      if (thisMonthSpendCost && thisMonthSpendCost.hasOwnProperty(timestamp)) {
+        let pressDateSpendData: UserSpendCost[] = Object.entries(
+          thisMonthSpendCost[timestamp],
+        ).map(([_, obj]: [string, UserSpendCost]) => obj);
+        pressDateSpendData.sort(
+          (a, b) => a.category.localeCompare(b.category) || a.cost - b.cost,
+        ); // 1순위. 분류 기준으로 정렬  2순위. 비용기준으로 정렬
+        console.log('after ', pressDateSpendData);
+        setSelectedDaySpendData(pressDateSpendData);
+      }
       setBottomSheetToggle(true);
       handleSnapPress(1);
     },
-    [handleSnapPress, spendCostData],
+    [handleSnapPress, thisMonthSpendCost],
   );
 
   useEffect(() => {
     //일단 AddCost에서 소비금액 추가될 때마다 데이터 가져올 수 있게 살정
     async function getUserData() {
-      let getData = await database()
-        .ref(`/users/${userData.nickname}`)
-        .child('spend_cost')
-        .orderByChild('timestamp')
-        .startAt(thisMonthFirst)
-        .endAt(thisMonthLast)
+      let res = await database()
+        .ref(`/users/${userData.nickname}/spend_cost`)
+        .limitToLast(6)
         .once('value');
-      let data = getData.val();
+
+      let data = res.val();
       let todayTotalCost = 0;
       let monthTotalCost = 0;
-      let dataToList: Array<UserSpendCost> = [];
-      for (let key in data) {
-        if (
-          //오늘 사용 비용만 불러오기
-          todayTimeStampFirst <= data[key].timestamp &&
-          data[key].timestamp <= todayTimeStampLast
-        ) {
-          todayTotalCost += data[key].cost;
+      if (data && data.hasOwnProperty(thisMonthFirst)) {
+        if (data[thisMonthFirst].hasOwnProperty(todayTimeStampFirst)) {
+          Object.entries(data[thisMonthFirst][todayTimeStampFirst]).forEach(
+            ([_, obj]: [string, any]) => {
+              todayTotalCost += obj.cost;
+              monthTotalCost += obj.cost;
+            },
+          );
         }
-        monthTotalCost += data[key].cost;
-        dataToList.push(data[key]);
+        setMonthSpendCost('' + monthTotalCost);
+        setSpendTodayCost('' + todayTotalCost);
+        setThisMonthSpendCost(data[thisMonthFirst]);
       }
-      dataToList.sort(
-        (a, b) => a.category.localeCompare(b.category) || a.cost - b.cost,
-      ); // 1순위. 분류 기준으로 정렬  2순위. 비용기준으로 정렬
-      setMonthSpendCost('' + monthTotalCost);
-      setSpendTodayCost('' + todayTotalCost);
-      setSpendCostData(dataToList);
     }
     getUserData();
-    return () => {};
   }, [userData]);
 
   useEffect(() => {
