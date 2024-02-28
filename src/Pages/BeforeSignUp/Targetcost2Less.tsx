@@ -96,7 +96,7 @@ export default function Targetcost2Less({route}: Props) {
         <Text style={styles.headerTitle}>사용중이에요.</Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
-        <Text style={styles.requestFont}>그대로 유지하실래요?</Text>
+        <Text style={styles.requestFont}>그대로 " 절약 " 하실래요?</Text>
         <View style={styles.discountButtonView}>
           <TouchableWithoutFeedback onPress={() => pressChoiceButt('yes')}>
             <View
@@ -109,7 +109,7 @@ export default function Targetcost2Less({route}: Props) {
                     ? {...styles.buttonFont, color: 'white'}
                     : styles.buttonFont
                 }>
-                더 절약할래요!
+                네!
               </Text>
             </View>
           </TouchableWithoutFeedback>
@@ -124,14 +124,14 @@ export default function Targetcost2Less({route}: Props) {
                     ? {...styles.buttonFont, color: 'white'}
                     : styles.buttonFont
                 }>
-                그대로 갈게요
+                유지할게요!
               </Text>
             </View>
           </TouchableWithoutFeedback>
         </View>
         <Text style={styles.descFont}>
-          * 하루 사용금액기준 -3000원으로 자동 됩니다.
-          {'\n'}* 나중에 변경가능합니다.
+          * 현재 사용금액 - 3000원으로 목표 자동 설정됩니다. {'\n'}* 나중에
+          변경가능합니다.
         </Text>
       </View>
       <View style={styles.foot}>
@@ -148,7 +148,7 @@ export default function Targetcost2Less({route}: Props) {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 36,
     paddingVertical: 70,
     backgroundColor: 'white',
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   discountButton: {
-    width: 150,
+    width: 126,
     height: 48,
     backgroundColor: lightGrayColor,
     borderRadius: 10,
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     color: descColor,
   },
   ablePress: {
-    width: 150,
+    width: 126,
     height: 48,
     backgroundColor: primaryColor,
     borderRadius: 10,

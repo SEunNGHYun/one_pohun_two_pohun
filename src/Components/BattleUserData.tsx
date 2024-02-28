@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, useWindowDimensions, Image} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import {appTheme} from '../recoils/states';
 import type {Themes} from '../types/types';
@@ -14,15 +14,31 @@ export default function BattleUserData({
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
+  const [spendCostList, setSpendCostList] = useState<any[]>([]);
 
   const data = ['2100원', '2100원', '2100원', '2100원'];
 
   const userImage = useMemo(() => {
-    console.log(userData);
     return userData
       ? userData.img
       : 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png';
   }, [userData]);
+
+  const changeSpendCostForm = useCallback(() => {
+    if (userData && userData.hasOwnProperty('spendCost')) {
+      let totalSpendCost = 0;
+      let dataToList = [];
+      let reversedSpendCostObj = Object.entries(userData.spendCost).reverse();
+      reversedSpendCostObj.splice(5).forEach(([key, value]) => {
+        console.log(key + ': ' + value);
+      });
+      console.log('total in room', totalSpendCost);
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    changeSpendCostForm();
+  }, [changeSpendCostForm]);
 
   return (
     <View style={{width: (width - 40) / 2}}>
@@ -76,11 +92,13 @@ export default function BattleUserData({
       <View style={styles.body}>
         <Text style={styles.totalFont}>현재 지출내역</Text>
         <View style={styles.costLi}>
-          {data.map((d, i) => (
-            <Text key={i} style={styles.costFont}>
-              {d}
-            </Text>
-          ))}
+          {userData &&
+            userData.hasOwnProperty('spendCost') &&
+            userData.spendCost.map((d, i) => (
+              <Text key={i} style={styles.costFont}>
+                {d}
+              </Text>
+            ))}
           <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
             .{'\n'}.{'\n'}.
           </Text>

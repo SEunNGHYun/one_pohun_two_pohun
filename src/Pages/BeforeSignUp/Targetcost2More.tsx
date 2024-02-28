@@ -49,11 +49,8 @@ export default function Targetcost2More({route}: Props) {
 
   const saveUserImageInStorage = useCallback(async () => {
     const {nickname, img} = route.params;
-    const {uri, fileName, selectType} = img;
+    const {uri, fileName} = img;
     const saveStorage = storage().ref(`profils/${nickname}/${fileName}`);
-    if (selectType === 'defult') {
-      return uri;
-    }
     try {
       if (uri) {
         await saveStorage.putFile(uri);
@@ -64,13 +61,16 @@ export default function Targetcost2More({route}: Props) {
   }, [route.params]);
 
   const pressSignUp = useCallback(async () => {
-    const {nickname, userCost} = route.params;
+    const {nickname, userCost, img} = route.params;
     let userData = {};
     setLoading(true);
     try {
       userData = {
         nickname,
-        img: await saveUserImageInStorage(), //storage에 저장된 뒤에 나온 링크리턴
+        img:
+          img.selectType === 'default'
+            ? await saveUserImageInStorage()
+            : img.uri, //storage에 저장된 뒤에 나온 링크리턴
         day_cost: userCost,
         day_goal_cost: cost,
         push_notification: false,

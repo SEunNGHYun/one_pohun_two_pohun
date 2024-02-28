@@ -18,7 +18,7 @@ export default function PigBattleRoom({route, navigation}) {
   useEffect(() => {
     const getRoomInformation = async () => {
       try {
-        await database()
+        return await database()
           .ref(`/battles/${roomKey}`)
           .on('value', async snap => {
             const {user1, user2} = snap.val();
@@ -31,7 +31,6 @@ export default function PigBattleRoom({route, navigation}) {
           });
       } catch (err) {}
     };
-
     getRoomInformation();
 
     return () =>
