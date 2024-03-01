@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import {appTheme} from '../recoils/states';
 import type {Themes} from '../types/types';
+import {thisMonthFirst} from '../utils/utils';
 import {grayColor, title3, title4, sub} from '../utils/styles';
 
 export default function BattleUserData({
@@ -14,7 +15,9 @@ export default function BattleUserData({
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
-  const [spendCostList, setSpendCostList] = useState<number[]>([]);
+  const [spendCostList, setSpendCostList] = useState<
+    {cost: number; category: string}[]
+  >([]);
   const [saveMoney, setSaveMoney] = useState<number>(0);
 
   const data = ['2100원', '2100원', '2100원', '2100원'];
@@ -27,15 +30,16 @@ export default function BattleUserData({
 
   const changeSpendCostForm = useCallback(() => {
     if (userData && userData.hasOwnProperty('spend_cost')) {
-      let totalSpendCost = 0;
-      let spendCost: [number] | [] = [];
-      let reversedSpendCostObj = Object.entries(userData.spend_cost).reverse();
-      reversedSpendCostObj.forEach(([_, obj], index) => {
-        const {cost} = obj;
-        if (index < 5) {
-          spendCost.push(cost);
+      let spendCost: {cost: number; category: string}[] = [];
+      Object.entries(userData.spend_cost).forEach(([_, val]: [_: any]) => {
+        for (let key1 in val) {
+          for (let key2 in val[key1]) {
+            spendCost.push(val[key1][key2]);
+            if (spendCost.length === 5) {
+              return;
+            }
+          }
         }
-        totalSpendCost += cost;
       });
       setSpendCostList(spendCost);
     }
@@ -98,9 +102,9 @@ export default function BattleUserData({
         <Text style={styles.totalFont}>실시간 지출현황</Text>
         <View style={styles.costLi}>
           {spendCostList &&
-            spendCostList.reverse().map((d, i) => (
+            spendCostList.map((d, i) => (
               <Text key={i} style={styles.costFont}>
-                {d}원
+                {d.cost}원
               </Text>
             ))}
           <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
