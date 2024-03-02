@@ -18,7 +18,7 @@ export default function BattleUserData({
   const [spendCostList, setSpendCostList] = useState<
     {cost: number; category: string}[]
   >([]);
-  const [saveMoney, setSaveMoney] = useState<number>(0);
+  const [totalSaveMoney, setTotalSaveMoney] = useState<number>(0);
 
   const data = ['2100원', '2100원', '2100원', '2100원'];
 
@@ -34,9 +34,8 @@ export default function BattleUserData({
       Object.entries(userData.spend_cost).forEach(([_, val]: [_: any]) => {
         for (let key1 in val) {
           for (let key2 in val[key1]) {
-            spendCost.push(val[key1][key2]);
-            if (spendCost.length === 5) {
-              return;
+            if (spendCost.length < 5) {
+              spendCost.push(val[key1][key2]);
             }
           }
         }
@@ -50,11 +49,14 @@ export default function BattleUserData({
   }, [changeSpendCostForm]);
 
   return (
-    <View style={{width: (width - 40) / 2}}>
+    <View
+      style={{
+        width: (width - 40) / 2,
+      }}>
       <View
         style={[
           styles.header,
-          {alignItems: position === 'left' ? 'flex-end' : 'flex-start'},
+          {alignItems: position === 'left' ? 'flex-start' : 'flex-end'},
         ]}>
         <View
           style={[
@@ -91,15 +93,21 @@ export default function BattleUserData({
           </View>
         </View>
         <Text
+          numberOfLines={2}
           style={[
             styles.nickname,
-            {textAlign: position === 'left' ? 'left' : 'right'},
+            {
+              textAlign: position === 'left' ? 'left' : 'right',
+            },
           ]}>
           {userData && userData.nickname}
         </Text>
       </View>
       <View style={styles.body}>
         <Text style={styles.totalFont}>실시간 지출현황</Text>
+        <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
+          .{'\n'}.{'\n'}.
+        </Text>
         <View style={styles.costLi}>
           {spendCostList &&
             spendCostList.map((d, i) => (
@@ -132,20 +140,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nickname: {
-    ...title3,
-    width: '100%',
+    fontSize: 26,
+    fontWeight: 'bold',
+    width: '80%',
     color: 'black',
     position: 'absolute',
-    paddingTop: 100,
+    bottom: 0,
   },
   body: {
     alignItems: 'center',
   },
   totalFont: {
-    ...title4,
     color: 'black',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 8,
   },
-  costLi: {alignItems: 'center', marginTop: 18, width: 'auto'},
+  costLi: {alignItems: 'center', width: 'auto'},
   costFont: {
     ...sub,
     color: 'black',
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   totalCostView: {
-    marginTop: 36,
+    marginTop: 8,
     alignItems: 'center',
   },
   totalCostFont: {
