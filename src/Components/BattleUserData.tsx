@@ -9,9 +9,11 @@ import {grayColor, title3, title4, sub} from '../utils/styles';
 export default function BattleUserData({
   position,
   userData,
+  setUserSaveCost,
 }: {
   position: string;
   userData: any;
+  setUserSaveCost: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
@@ -19,9 +21,6 @@ export default function BattleUserData({
     {cost: number; category: string}[]
   >([]);
   const [totalSaveMoney, setTotalSaveMoney] = useState<number>(0);
-
-  const data = ['2100원', '2100원', '2100원', '2100원'];
-
   const userImage = useMemo(() => {
     return userData
       ? userData.img
@@ -29,20 +28,32 @@ export default function BattleUserData({
   }, [userData]);
 
   const changeSpendCostForm = useCallback(() => {
+    let {roomGoalCost, day_cost}: {roomGoalCost: number; day_cost: number} =
+      userData;
+    day_cost = day_cost * 1000;
     if (userData && userData.hasOwnProperty('spend_cost')) {
       let spendCost: {cost: number; category: string}[] = [];
-      Object.entries(userData.spend_cost).forEach(([_, val]: [_: any]) => {
-        for (let key1 in val) {
-          for (let key2 in val[key1]) {
+      Object.entries(userData.spend_cost).forEach(([_, val]: [_, any]) => {
+        for (let startDayTimeStamp in val) {
+          let saveDayMoney = 0,
+            totalSpendDayMoney = 0;
+          for (let dayTimeStamp in val[startDayTimeStamp]) {
+            totalSpendDayMoney += val[startDayTimeStamp][dayTimeStamp].cost; // 하루 총 사용 금액
             if (spendCost.length < 5) {
-              spendCost.push(val[key1][key2]);
+              spendCost.push(val[startDayTimeStamp][dayTimeStamp]);
+            }
+            saveDayMoney = day_cost - totalSpendDayMoney; // 하루 목표 금액에서 얼마 절약했는지 파악
+            if (saveDayMoney > 0) {
+              // 목표 금액 - 사용 금액
+              setUserSaveCost(saveDayMoney);
+            } else {
             }
           }
         }
       });
       setSpendCostList(spendCost);
     }
-  }, [userData]);
+  }, [userData, setUserSaveCost]);
 
   useEffect(() => {
     changeSpendCostForm();
