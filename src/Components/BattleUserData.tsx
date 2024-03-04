@@ -3,17 +3,20 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import {appTheme} from '../recoils/states';
 import type {Themes} from '../types/types';
-import {thisMonthFirst} from '../utils/utils';
+import {changeMoney} from '../utils/utils';
 import {grayColor, title3, title4, sub} from '../utils/styles';
+import {ViewBase} from 'react-native';
 
 export default function BattleUserData({
   position,
   userData,
   setUserSaveCost,
+  setUserFinish,
 }: {
   position: string;
   userData: any;
   setUserSaveCost: React.Dispatch<React.SetStateAction<number>>;
+  setUserFinish: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
@@ -42,10 +45,13 @@ export default function BattleUserData({
             if (spendCost.length < 5) {
               spendCost.push(val[startDayTimeStamp][dayTimeStamp]);
             }
-            saveDayMoney = day_cost - totalSpendDayMoney; // 하루 목표 금액에서 얼마 절약했는지 파악
+            saveDayMoney = day_cost - totalSpendDayMoney; // 하루 목표 금액보다 많이 사용했는지 체크
             if (saveDayMoney > 0) {
-              // 목표 금액 - 사용 금액
               setUserSaveCost(saveDayMoney);
+              roomGoalCost -= saveDayMoney; // 사용자가 절약해서 모은 돈이 현재 방의 목푯 금액의 절반에 해당하는지 학인
+              if (roomGoalCost <= 0) {
+                setUserFinish(true); // 사용자는 다 모음
+              }
             } else {
             }
           }
@@ -53,7 +59,7 @@ export default function BattleUserData({
       });
       setSpendCostList(spendCost);
     }
-  }, [userData, setUserSaveCost]);
+  }, [userData, setUserSaveCost, setUserFinish]);
 
   useEffect(() => {
     changeSpendCostForm();
@@ -115,18 +121,24 @@ export default function BattleUserData({
         </Text>
       </View>
       <View style={styles.body}>
+        <Text style={styles.userGoalCostFont}>
+          목표 금액 : {changeMoney(userData.day_cost * 1000 + '')}원
+        </Text>
         <Text style={styles.totalFont}>실시간 지출현황</Text>
-        <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
+        <Text style={{fontSize: 4, fontWeight: 'bold', color: 'black'}}>
           .{'\n'}.{'\n'}.
         </Text>
         <View style={styles.costLi}>
           {spendCostList &&
             spendCostList.map((d, i) => (
-              <Text key={i} style={styles.costFont}>
-                {d.cost}원
-              </Text>
+              <View style={styles.costLi} key={i}>
+                <Text style={styles.costFont}>
+                  {changeMoney(d.cost + '')} 원{' '}
+                </Text>
+                <Text style={styles.costCategoryFont}>({d.category})</Text>
+              </View>
             ))}
-          <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
+          <Text style={{fontSize: 4, fontWeight: 'bold', color: 'black'}}>
             .{'\n'}.{'\n'}.
           </Text>
         </View>
@@ -142,7 +154,8 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     justifyContent: 'center',
-    marginVertical: 36,
+    marginTop: 18,
+    marginBottom: 32,
   },
   userImgBack: {
     borderRadius: 300,
@@ -151,35 +164,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nickname: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     width: '80%',
     color: 'black',
     position: 'absolute',
-    bottom: 0,
+    bottom: -10,
   },
   body: {
     alignItems: 'center',
   },
-  totalFont: {
+  userGoalCostFont: {
     color: 'black',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  costLi: {alignItems: 'center', width: 'auto'},
+  totalFont: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  costLi: {alignItems: 'center', width: 'auto', marginVertical: 1},
   costFont: {
-    ...sub,
+    fontSize: 20,
     color: 'black',
     fontWeight: '700',
     marginVertical: 4,
   },
+  costCategoryFont: {
+    fontSize: 12,
+    color: 'lightGray',
+  },
   totalCostView: {
-    marginTop: 8,
+    marginTop: 4,
     alignItems: 'center',
   },
   totalCostFont: {
-    ...sub,
+    fontSize: 20,
     fontWeight: '900',
     marginVertical: 4,
     color: 'black',

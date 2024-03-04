@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import database from '@react-native-firebase/database';
 import BattleUserData from '../../../Components/BattleUserData';
 import {primaryColor, title2} from '../../../utils/styles';
+import {changeMoney} from '../../../utils/utils';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
@@ -13,6 +14,8 @@ export default function PigBattleRoom({route, navigation}) {
   let {width} = useWindowDimensions();
   const [user1Data, setUser1] = useState<object>({});
   const [user2Data, setUser2] = useState<object>({});
+  const [user1Finish, setUser1Finish] = useState<boolean>(false);
+  const [user2Finish, setUser2Finish] = useState<boolean>(false);
   const [user1SaveCost, setUser1SaveCost] = useState<number>(0);
   const [user2SaveCost, setUser2SaveCost] = useState<number>(0);
   const [currentSaveRoomCost, setCurrentSaveRoomCost] = useState<number>(0);
@@ -51,27 +54,32 @@ export default function PigBattleRoom({route, navigation}) {
     <View style={styles.view}>
       <Text style={[styles.totalCost, {color: theme}]}>
         남은 목표금액{'\t'}
-        {currentSaveRoomCost - (user2SaveCost + user1SaveCost)}원
+        {changeMoney(
+          currentSaveRoomCost - (user2SaveCost + user1SaveCost) + '',
+        )}
+        원
       </Text>
       <View style={{flexDirection: 'row'}}>
         <BattleUserData
           position="left"
           userData={user1Data}
           setUserSaveCost={setUser1SaveCost}
+          setUserFinish={setUser1Finish}
         />
         <MaterialCommunityIcons
           name="piggy-bank"
           color={theme}
-          size={68}
+          size={100}
           style={[
             styles.pigIcon,
-            {marginLeft: (width - 36) / 2 - 30, marginTop: 120},
+            {left: (width - 36) / 2 - 50, top: width / 2.5 - 85},
           ]}
         />
         <BattleUserData
           position="right"
           userData={user2Data}
           setUserSaveCost={setUser2SaveCost}
+          setUserFinish={setUser2Finish}
         />
       </View>
     </View>
@@ -81,6 +89,7 @@ export default function PigBattleRoom({route, navigation}) {
 const styles = StyleSheet.create({
   view: {
     flex: 1,
+    paddingTop: 8,
     paddingHorizontal: 18,
   },
   totalCost: {
@@ -88,7 +97,6 @@ const styles = StyleSheet.create({
   },
   pigIcon: {
     zIndex: 2,
-    height: 150,
     position: 'absolute',
   },
 });
