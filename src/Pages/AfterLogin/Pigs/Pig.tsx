@@ -11,6 +11,7 @@ import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
 import {grayColor} from '../../../utils/styles';
