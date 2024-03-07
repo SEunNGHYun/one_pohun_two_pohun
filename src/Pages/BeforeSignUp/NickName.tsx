@@ -98,7 +98,7 @@ export default function NickName({navigation}): React.ReactElement {
   }, [navigation, nickname, userImage]);
 
   useEffect(() => {
-    //키보드 활성 상태인지 체크
+    //키보드 활성 상태인지 체크해서 선택 이미지 사이즈 줄임
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
     });
@@ -159,8 +159,12 @@ export default function NickName({navigation}): React.ReactElement {
               maxLength={10}
             />
             <Text
-              style={!error && visible ? {color: '#ff4f4f'} : styles.desctext}>
-              2~10자이내 특수문자,공백제외 (\~@#$%^&*)
+              style={
+                !error && visible
+                  ? {...styles.desctext, color: '#ff4f4f'}
+                  : styles.desctext
+              }>
+              * 2~10자이내 특수문자,공백제외 (\~@#$%^&*)
             </Text>
           </View>
         </View>
@@ -188,9 +192,7 @@ export default function NickName({navigation}): React.ReactElement {
               <Text style={styles.modalButtonText}>이미지 불러오기</Text>
             </View>
           </Pressable>
-          <View
-            style={{width: '100%', height: 0.5, backgroundColor: grayColor}}
-          />
+          <View style={styles.imageSelectModal} />
           <Pressable onPress={getDefaultImage}>
             <View style={styles.modalButton}>
               <Text style={styles.modalButtonText}>기본 이미지 선택하기</Text>
@@ -276,6 +278,7 @@ const styles = StyleSheet.create({
     left: 100,
     top: 100,
   },
+  imageSelectModal: {width: '100%', height: 0.5, backgroundColor: grayColor},
   nickname: {
     color: primaryColor,
     marginBottom: 12,
@@ -293,6 +296,7 @@ const styles = StyleSheet.create({
   },
   desctext: {
     color: descColor,
+    fontFamily: 'beabea',
   },
   nextpress: {
     ...subtitle,

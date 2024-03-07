@@ -11,35 +11,36 @@ export const lightGrayColor: string = '#E6E6E6';
 export const descColor: string = '#9e9e9e';
 
 export const title: TextStyle = {
-  fontWeight: '800',
+  fontFamily: 'beabea',
   fontSize: 55,
 };
 
 export const title2: TextStyle = {
-  fontWeight: 'bold',
+  fontFamily: 'beabea',
   fontSize: 48,
 };
 
 export const title3: TextStyle = {
-  fontWeight: 'bold',
+  fontFamily: 'beabea',
   fontSize: 38,
 };
 
 export const title4: TextStyle = {
-  fontWeight: 'bold',
+  fontFamily: 'beabea',
   fontSize: 28,
 };
 
 export const subtitle: TextStyle = {
+  fontFamily: 'beabea',
   fontSize: 28,
-  fontWeight: '900',
 };
 
 export const sub: TextStyle = {
+  fontFamily: 'beabea',
   fontSize: 22,
 };
 
 export const defaultFont: TextStyle = {
+  fontFamily: 'beabea',
   fontSize: 18,
-  fontWeight: '900',
 };
