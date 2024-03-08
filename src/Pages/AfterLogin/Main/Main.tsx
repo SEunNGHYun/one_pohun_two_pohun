@@ -22,15 +22,12 @@ import type {MainStackParamList} from '../../../navi/Navigation';
 import {
   months,
   thisMonthFirst,
-  thisMonthLast,
   todayTimeStampFirst,
-  todayTimeStampLast,
-  getDayTimeStampEnd,
   changeMoney,
+  today,
 } from '../../../utils/utils';
 import type {Themes, UserData, UserSpendCost} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
-import {registerShareableMapping} from 'react-native-reanimated/lib/typescript/reanimated2/shareables';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'AddCost', 'CostList'>;
 const {width, height} = Dimensions.get('window');
@@ -38,7 +35,8 @@ const {width, height} = Dimensions.get('window');
 export default function Main({navigation}: Props): React.ReactElement {
   const theme = useRecoilValue<Themes>(appTheme);
   const userData = useRecoilValue<UserData>(userState);
-  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [selectedDayInModal, setSelectedDayInModal] = useState<string>(today);
+  const [selectedDay, setSelectedDay] = useState<string>(today);
   const [loading, setLoading] = useState<boolean>(false);
   const [thisMonthSpendCost, setThisMonthSpendCost] = useState<UserSpendCost[]>(
     [],
@@ -78,8 +76,10 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
-      let {timestamp, month, day} = dateData;
-      setSelectedDay(`${month}월 ${day}일 지출내역`);
+      let {timestamp, month, day, dateString} = dateData;
+      console.log(dateData);
+      setSelectedDay(dateString);
+      setSelectedDayInModal(`${month}월 ${day}일 지출내역`);
       if (thisMonthSpendCost && thisMonthSpendCost.hasOwnProperty(timestamp)) {
         let pressDateSpendData: UserSpendCost[] = Object.entries(
           thisMonthSpendCost[timestamp],
@@ -140,14 +140,17 @@ export default function Main({navigation}: Props): React.ReactElement {
     <GestureHandlerRootView style={{flex: 1}}>
       <Pressable onPress={bottomSheetDismiss}>
         <PaperProvider>
-          <SafeAreaView
+          <View
             style={[
               styles.view,
               bottomSheetToggle && {backgroundColor: grayColor},
             ]}>
             <View style={styles.dayTotalCostView}>
               <View style={styles.fontArea}>
-                <Text style={[styles.dayTotalCostTextDesc, {color: theme}]}>
+                <Text
+                  adjustsFontSizeToFit={true}
+                  numberOfLines={1}
+                  style={[styles.dayTotalCostTextDesc, {color: theme}]}>
                   오늘 총 지출액
                 </Text>
                 <Text style={[styles.dayTotalCostText, {color: theme}]}>
@@ -162,16 +165,25 @@ export default function Main({navigation}: Props): React.ReactElement {
             </View>
             <View>
               <Calendar
-                key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
+                key={theme + bottomSheetToggle + 1} // 테마 색 변경시 리렌더링을 위하여
                 onDayPress={dateData => pressCalendarDay(dateData)}
                 theme={{
                   calendarBackground: bottomSheetToggle ? grayColor : 'white',
                   selectedDayBackgroundColor: theme,
                   todayTextColor: theme,
                   textSectionTitleColor: theme,
-                  textMonthFontWeight: '600',
-                  textDayFontWeight: '600',
-                  textDayHeaderFontWeight: '600',
+                  'stylesheet.day.basic': {
+                    base: {
+                      height: 30,
+                      width: 30,
+                      alignItems: 'center',
+                    },
+                  },
+                  'stylesheet.day.period': {
+                    base: {
+                      width: 30,
+                    },
+                  }, // 모듈 폰트의 크기가 고정되있어서 강제로 수정
                   dayTextColor: '#2d4150',
                 }}
                 style={{
@@ -180,8 +192,15 @@ export default function Main({navigation}: Props): React.ReactElement {
                 markedDates={{
                   [selectedDay]: {
                     selected: true,
-                    disableTouchEvent: true,
+                    disableTouchEvent: false,
+                    customContainerStyle: {
+                      margin: 0,
+                      padding: 0,
+                      width: 3,
+                      height: 3,
+                    },
                   },
+                  customTextStyle: {},
                 }}
                 onDayLongPress={day => {}}
                 hideExtraDays={true}
@@ -189,47 +208,12 @@ export default function Main({navigation}: Props): React.ReactElement {
                 enableSwipeMonths={false}
                 disableMonthChange={true}
               />
-              <Text style={[styles.totalCostFont, {color: theme}]}>
+              <Text
+                adjustsFontSizeToFit={true}
+                numberOfLines={1}
+                style={[styles.totalCostFont, {color: theme}]}>
                 {months}월 총 {changeMoney(monthSpendCost)}원 사용
               </Text>
-              <LineChart
-                data={{
-                  labels: ['1월', '2월', '3월', '4월', '5월', `${months}월`],
-                  datasets: [
-                    {
-                      data: [
-                        Math.random() * 1000,
-                        Math.random() * 1000,
-                        Math.random() * 1000,
-                        Math.random() * 1000,
-                        Math.random() * 1000,
-                        monthSpendCost,
-                      ],
-                    },
-                  ],
-                }}
-                width={width} // from react-native
-                height={200}
-                yAxisSuffix="원"
-                yAxisInterval={1} // optional, defaults to 1
-                chartConfig={{
-                  backgroundGradientFrom: 'white',
-                  backgroundGradientTo: 'white',
-                  decimalPlaces: 0, // optional, defaults to 2dp
-                  color: _ => theme,
-                  labelColor: _ => 'rgba(80, 97, 109, 1)',
-                  style: {
-                    borderRadius: 1,
-                  },
-                  propsForDots: {
-                    r: '0',
-                    strokeWidth: '2',
-                    stroke: theme,
-                  },
-                }}
-                withHorizontalLines={false}
-                bezier
-              />
             </View>
             {bottomSheetToggle && (
               <BottomSheet
@@ -239,11 +223,11 @@ export default function Main({navigation}: Props): React.ReactElement {
                 onChange={handleSheetChanges}>
                 <BottomSheetView
                   selectedDaySpendData={selectedDaySpendData}
-                  selectDate={selectedDay}
+                  selectDate={selectedDayInModal}
                 />
               </BottomSheet>
             )}
-          </SafeAreaView>
+          </View>
         </PaperProvider>
       </Pressable>
     </GestureHandlerRootView>
@@ -253,15 +237,16 @@ export default function Main({navigation}: Props): React.ReactElement {
 const styles = StyleSheet.create({
   view: {
     backgroundColor: 'white',
-    width: width,
+    width: 'auto',
     height: height,
-    paddingHorizontal: 18,
+    paddingVertical: 7,
   },
   dayTotalCostView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     paddingVertical: 7.5,
+    paddingHorizontal: 18,
   },
   fontArea: {},
   dayTotalCostText: {
@@ -283,10 +268,11 @@ const styles = StyleSheet.create({
   addButtText: {
     fontSize: 22,
     color: 'white',
-    fontWeight: 'bold',
+    fontFamily: 'monospace',
   },
   totalCostFont: {
-    ...title4,
-    marginVertical: 18,
+    paddingHorizontal: 18,
+    fontFamily: 'beabea',
+    fontSize: 22,
   },
 });

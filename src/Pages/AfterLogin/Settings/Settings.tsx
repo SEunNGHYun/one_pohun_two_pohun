@@ -205,11 +205,6 @@ const styles = StyleSheet.create({
     borderRadius: 190,
     marginBottom: 36,
   },
-  userNickname: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: 'white',
-  },
   body: {flex: 5.5},
   buttArea: {
     paddingVertical: 8,
@@ -220,10 +215,11 @@ const styles = StyleSheet.create({
   },
   defaultFont: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'beabea',
   },
   modalView: {
-    marginHorizontal: 30,
+    marginHorizontal: 40,
+    borderRadius: 10,
     backgroundColor: 'white',
   },
   modalTop: {
@@ -233,7 +229,6 @@ const styles = StyleSheet.create({
   },
   modalBottom: {
     alignItems: 'flex-end',
-    justifyContent: 'center',
     height: 80,
   },
   modalPressView: {
@@ -245,16 +240,18 @@ const styles = StyleSheet.create({
   modalButtText: {
     fontSize: 18,
     color: 'black',
-    fontWeight: 'bold',
+    fontFamily: 'beabea',
   },
   modalText: {
     color: 'black',
     fontSize: 22,
   },
   themesModalHeader: {
-    paddingVertical: 35,
+    paddingTop: 30,
+    paddingBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+    paddingHorizontal: 25,
   },
   themesColorPoint: {
     width: 50,

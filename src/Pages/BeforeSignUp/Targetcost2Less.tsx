@@ -129,9 +129,12 @@ export default function Targetcost2Less({route}: Props) {
             </View>
           </TouchableWithoutFeedback>
         </View>
-        <Text style={styles.descFont}>
-          * 현재 사용금액 - 3000원으로 목표 자동 설정됩니다. {'\n'}* 나중에
-          변경가능합니다.
+        <Text
+          adjustsFontSizeToFit={true}
+          numberOfLines={2}
+          style={styles.descFont}>
+          * 현재 사용금액에서 3000원 적은 금액으로 목표금액이 설정됩니다. {'\n'}
+          * 나중에 변경가능합니다.
         </Text>
       </View>
       <View style={styles.foot}>
@@ -189,7 +192,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  descFont: {color: descColor, textAlign: 'right', width: '100%'},
+  descFont: {
+    color: descColor,
+    fontSize: 12,
+    textAlign: 'right',
+    width: '100%',
+    fontFamily: 'beabea',
+  },
   buttonFont: {
     ...defaultFont,
   },

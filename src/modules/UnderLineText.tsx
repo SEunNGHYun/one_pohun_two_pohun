@@ -22,16 +22,16 @@ const styles = StyleSheet.create({
   txtView: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 8,
-    marginBottom: 14,
+    marginTop: 18,
+    marginBottom: 18,
   },
   txt: {
-    fontSize: 40,
+    fontSize: 54,
     color: 'black',
-    fontWeight: '900',
+    fontFamily: 'beabea',
   },
   underline: {
     width: '100%',
-    height: 3,
+    height: 2,
   },
 });

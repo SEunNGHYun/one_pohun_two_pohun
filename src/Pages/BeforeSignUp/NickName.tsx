@@ -115,7 +115,12 @@ export default function NickName({navigation}): React.ReactElement {
     <PaperProvider>
       <View style={styles.view}>
         <View style={styles.header}>
-          <Text style={styles.headertitle}>처음이신가요?</Text>
+          <Text
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}
+            style={styles.headertitle}>
+            처음이신가요?
+          </Text>
         </View>
         <View style={styles.body}>
           <Pressable onPress={showModal}>
@@ -159,6 +164,8 @@ export default function NickName({navigation}): React.ReactElement {
               maxLength={10}
             />
             <Text
+              adjustsFontSizeToFit={true}
+              numberOfLines={1}
               style={
                 !error && visible
                   ? {...styles.desctext, color: '#ff4f4f'}
