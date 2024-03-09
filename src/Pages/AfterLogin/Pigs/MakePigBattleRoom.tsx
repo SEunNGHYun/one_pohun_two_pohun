@@ -11,6 +11,7 @@ import {useRecoilValue} from 'recoil';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useNavigation} from '@react-navigation/native';
 import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserDataHeader from '../../../Components/UserDataHeader';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
@@ -38,6 +39,9 @@ export default function MakePigBattleRoom() {
     try {
       const {key} = await database().ref('/battles').push(createRoom);
       if (typeof key === 'string') {
+        const statePair: [string, string] = ['playingState', 'waiting'];
+        const roomIdPair: [string, string] = ['playingRoomId', key];
+        await AsyncStorage.multiSet([statePair, roomIdPair]);
         navigation.navigate('MatchingRoom', {
           roomKey: key,
         });

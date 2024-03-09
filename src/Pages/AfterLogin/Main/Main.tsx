@@ -183,7 +183,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                     base: {
                       width: 30,
                     },
-                  }, // 모듈 폰트의 크기가 고정되있어서 강제로 수정
+                  }, // 모듈 view의 크기가 고정되있어서 강제로 수정
                   dayTextColor: '#2d4150',
                 }}
                 style={{

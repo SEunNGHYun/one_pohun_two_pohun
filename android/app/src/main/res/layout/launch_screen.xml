@@ -8,22 +8,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-  >
-      <com.airbnb.lottie.LottieAnimationView
-          android:id="@+id/lottie"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          app:lottie_rawRes="@raw/loading"
-          app:lottie_autoPlay="true"
-          app:lottie_loop="false"
-          />
-      <TextView
-          android:id="@+id/text_view_id"
-          android:layout_width="wrap_content"
-          android:layout_height="80dp"
-          android:text="친구들과 함께 모으는 한푼두푼"
-          android:gravity="center"
-          android:textSize="18dp"
-          android:textStyle="bold"
-          android:textColor="#d54183"/> 
+>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:lottie_rawRes="@raw/loading"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        />
+    <TextView
+        android:id="@+id/text_view_id"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:text="친구들과 함께 모으는 한푼두푼"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="#d54183"
+        android:fontFamily="@font/FontAwesome"
+/> 
 </LinearLayout>

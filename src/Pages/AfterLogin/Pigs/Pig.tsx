@@ -19,6 +19,7 @@ import type {PigNaviProps} from '../../../navi/Navigation';
 
 export default function Pig({navigation}: PigNaviProps) {
   const [toggleEnterModal, setToggleEnterModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [code, setCode] = useState<string>('');
   const userData = useRecoilValue<UserData>(userState);
   const theme = useRecoilValue<Themes>(appTheme);
@@ -29,10 +30,13 @@ export default function Pig({navigation}: PigNaviProps) {
   const enterBattleRoom = useCallback(async () => {
     //입장 코드가 마감되었을 경우, 입장 가능 기간이 경우, 없는 경우 나누어서
     if (code !== '') {
+      const statePair: [string, string] = ['playingState', 'playing'];
+      const roomIdPair: [string, string] = ['playingRoomId', code];
       try {
         await database().ref(`/battles/${code}`).update({
           user2: userData.nickname,
         });
+        AsyncStorage.multiSet([statePair, roomIdPair]);
         navigation.replace('PigBattleRoom', {
           roomKey: code,
         });
@@ -42,9 +46,38 @@ export default function Pig({navigation}: PigNaviProps) {
   }, [code, navigation, userData]);
 
   useEffect(() => {
+    const getEnterRoomStateAndId = async () => {
+      try {
+        const roomData = await AsyncStorage.multiGet([
+          'playingState',
+          'playingRoomId',
+        ]);
+        const playingState = roomData[0][1],
+          playingRoomId = roomData[1][1];
+        console.log('in pig playing', playingState, playingRoomId);
+        if (playingState === 'playing' || playingState === 'waiting') {
+          if (playingRoomId !== null) {
+            if (playingState === 'playing') {
+              // 게임 진행 중
+              navigation.replace('PigBattleRoom', {
+                roomKey: playingRoomId,
+              });
+            } else {
+              // 게임 매칭 대기 중
+              navigation.replace('MatchingRoom', {
+                roomKey: playingRoomId,
+              });
+            }
+          }
+        }
+      } catch (err) {
+      } finally {
+      }
+    };
+    getEnterRoomStateAndId();
     //방이 들어가 있는 상태인지 확인
     //이미 방에 들어가 있으면 PigBattleRoom으로 이동
-  }, []);
+  }, [navigation]);
 
   return (
     <PaperProvider>

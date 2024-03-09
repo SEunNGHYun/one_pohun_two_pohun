@@ -84,8 +84,9 @@ const styles = StyleSheet.create({
   },
   modalFont: {
     fontSize: 32,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 18,
+    fontFamily: 'FontAwesome',
   },
   codeFont: {
     fontSize: 18,
