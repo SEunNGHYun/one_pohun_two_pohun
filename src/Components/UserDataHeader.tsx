@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
   userImage: {},
   nickname: {
     ...title4,
+    fontFamily: 'GangyonTunTun',
     color: 'white',
   },
 });

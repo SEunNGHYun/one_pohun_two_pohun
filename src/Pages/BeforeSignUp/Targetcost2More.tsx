@@ -95,7 +95,12 @@ export default function Targetcost2More({route}: Props) {
           다른 사용자보다
         </Text>
         <UnderLineText txt="더 많이" color={primaryColor} />
-        <Text style={styles.headerTitle}>사용중이에요.</Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          style={styles.headerTitle}>
+          사용중이에요.
+        </Text>
       </View>
       <View style={[styles.body]}>
         <Text style={styles.requestFont}>" 절약 " 해보실래요?</Text>
@@ -199,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'right',
     width: '100%',
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonModu-Light',
   },
   buttonFont: {
     ...defaultFont,

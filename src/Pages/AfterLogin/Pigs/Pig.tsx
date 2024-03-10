@@ -108,8 +108,11 @@ export default function Pig({navigation}: PigNaviProps) {
           visible={toggleEnterModal}
           onDismiss={hideModal}
           contentContainerStyle={styles.modalView}>
-          <Text style={[styles.modalFont, {color: theme}]}>
-            입장 코드를 입력하세요
+          <Text
+            adjustsFontSizeToFit={true}
+            numberOfLines={1}
+            style={[styles.modalFont, {color: theme}]}>
+            입장 코드를 입력하세요.
           </Text>
           <TextInput style={styles.codeInput} onChangeText={codeInput} />
           <Pressable onPress={enterBattleRoom} disabled={!code}>
@@ -125,7 +128,7 @@ export default function Pig({navigation}: PigNaviProps) {
               <MaterialCommunityIcons
                 name="chevron-right"
                 color={!code ? grayColor : theme}
-                size={44}
+                size={33}
               />
             </View>
           </Pressable>
@@ -157,11 +160,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-    marginBottom: 36,
+    marginBottom: 24,
   },
   buttText: {
     fontSize: 20,
     color: 'white',
+    fontFamily: 'GangyonModu-Bold',
   },
   modalView: {
     backgroundColor: 'white',
@@ -172,12 +176,14 @@ const styles = StyleSheet.create({
   },
   codeInput: {
     color: 'black',
+    padding: 0,
+    fontFamily: 'GangyonModu-Bold',
     marginTop: 18,
     margin: 8,
   },
   modalFont: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: 'GangyonTunTun',
   },
   modalBottom: {
     flexDirection: 'row',
@@ -186,11 +192,11 @@ const styles = StyleSheet.create({
   },
   modalButtFont: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'GangyonModu-Bold',
   },
   disableModalButtFont: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'GangyonModu-Bold',
     color: grayColor,
   },
 });

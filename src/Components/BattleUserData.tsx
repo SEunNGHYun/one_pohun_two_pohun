@@ -110,7 +110,8 @@ export default function BattleUserData({
           </View>
         </View>
         <Text
-          numberOfLines={2}
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
           style={[
             styles.nickname,
             {
@@ -121,29 +122,44 @@ export default function BattleUserData({
         </Text>
       </View>
       <View style={styles.body}>
-        <Text style={styles.userGoalCostFont}>
-          목표 금액 : {changeMoney(userData.day_cost * 1000 + '')}원
+        <Text
+          numberOfLines={2}
+          adjustsFontSizeToFit={true}
+          style={styles.userGoalCostFont}>
+          | 목표 금액 |{'\n'}
+          {changeMoney(userData.day_cost * 1000 + '')}원<Text />
         </Text>
-        <Text style={styles.totalFont}>실시간 지출현황</Text>
-        <Text style={{fontSize: 4, fontWeight: 'bold', color: 'black'}}>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          style={styles.totalFont}>
+          실시간 지출현황
+        </Text>
+        <Text
+          style={{fontSize: 6, fontFamily: 'GangyonModu-Bold', color: 'black'}}>
           .{'\n'}.{'\n'}.
         </Text>
         <View style={styles.costLi}>
           {spendCostList &&
             spendCostList.map((d, i) => (
               <View style={styles.costLi} key={i}>
-                <Text style={styles.costFont}>
+                <Text
+                  numberOfLines={2}
+                  adjustsFontSizeToFit={true}
+                  style={styles.costFont}>
                   {changeMoney(d.cost + '')} 원{' '}
                 </Text>
                 <Text style={styles.costCategoryFont}>({d.category})</Text>
               </View>
             ))}
-          <Text style={{fontSize: 4, fontWeight: 'bold', color: 'black'}}>
-            .{'\n'}.{'\n'}.
-          </Text>
         </View>
         <View style={styles.totalCostView}>
-          <Text style={styles.totalCostFont}>2천7백원 절약</Text>
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+            style={styles.totalCostFont}>
+            2천7백원 절약
+          </Text>
         </View>
       </View>
     </View>
@@ -164,8 +180,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nickname: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    fontSize: 36,
+    fontFamily: 'GangyonTunTun',
     width: '80%',
     color: 'black',
     position: 'absolute',
@@ -177,33 +193,36 @@ const styles = StyleSheet.create({
   userGoalCostFont: {
     color: 'black',
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontFamily: 'GangyonTunTun',
+    textAlign: 'center',
+    marginBottom: 18,
   },
   totalFont: {
     color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'GangyonTunTun',
     marginBottom: 4,
   },
   costLi: {alignItems: 'center', width: 'auto', marginVertical: 1},
   costFont: {
     fontSize: 20,
     color: 'black',
-    fontWeight: '700',
+    textAlign: 'center',
+    fontFamily: 'GangyonModu-Bold',
     marginVertical: 4,
   },
   costCategoryFont: {
     fontSize: 12,
-    color: 'lightGray',
+    fontFamily: 'GangyonModu-Light',
+    color: 'gray',
   },
   totalCostView: {
     marginTop: 4,
     alignItems: 'center',
   },
   totalCostFont: {
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 18,
+    fontFamily: 'GangyonTunTun',
     marginVertical: 4,
     color: 'black',
   },

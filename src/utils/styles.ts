@@ -11,36 +11,36 @@ export const lightGrayColor: string = '#E6E6E6';
 export const descColor: string = '#9e9e9e';
 
 export const title: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonTunTun',
   fontSize: 55,
 };
 
 export const title2: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonTunTun',
   fontSize: 48,
 };
 
 export const title3: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonModu-Bold',
   fontSize: 38,
 };
 
 export const title4: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonModu-Bold',
   fontSize: 28,
 };
 
 export const subtitle: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonModu-Light',
   fontSize: 28,
 };
 
 export const sub: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonModu-Light',
   fontSize: 22,
 };
 
 export const defaultFont: TextStyle = {
-  fontFamily: 'beabea',
+  fontFamily: 'GangyonModu-Light',
   fontSize: 18,
 };

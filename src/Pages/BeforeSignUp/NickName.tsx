@@ -81,6 +81,7 @@ export default function NickName({navigation}): React.ReactElement {
   }, [hideModal]);
 
   const nextPageMove = useCallback(async () => {
+    console.log('next');
     //db user에서 닉네임 중복 페크
     const snapshot = await database().ref(`/users/${nickname}`).once('value');
     try {
@@ -175,6 +176,7 @@ export default function NickName({navigation}): React.ReactElement {
             </Text>
           </View>
         </View>
+        {console.log(!error || !userImage)}
         <View style={keyboardStatus ? styles.re_foot : styles.foot}>
           <TouchableWithoutFeedback
             //닉네임 제외사항 없고 이미지 없으때 disable 하나라도 없거나 제외사항이면 true가 된다.
@@ -222,11 +224,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    flex: 3,
+    flex: 2,
     justifyContent: 'center',
   },
   body: {
-    flex: 7,
+    flex: 6,
     alignItems: 'center',
   },
   foot: {
@@ -303,7 +305,7 @@ const styles = StyleSheet.create({
   },
   desctext: {
     color: descColor,
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonModu-Light',
   },
   nextpress: {
     ...subtitle,

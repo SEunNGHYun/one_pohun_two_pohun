@@ -77,7 +77,7 @@ export default function Settings(): React.ReactElement {
       push_notification: false,
     });
     await database().ref(`/phoun/users/${userData.nickname}`).remove();
-    await AsyncStorage.removeItem('user_data');
+    await AsyncStorage.clear();
   }, [setUserData, userData]);
 
   return (
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   },
   defaultFont: {
     fontSize: 26,
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonModu-Bold',
   },
   modalView: {
     marginHorizontal: 40,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   modalButtText: {
     fontSize: 18,
     color: 'black',
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonModu-Bold',
   },
   modalText: {
     color: 'black',

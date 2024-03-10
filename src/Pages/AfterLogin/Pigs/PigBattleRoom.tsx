@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  useWindowDimensions,
+  Pressable,
+} from 'react-native';
 import {useRecoilValue} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,7 +59,10 @@ export default function PigBattleRoom({route, navigation}) {
 
   return (
     <View style={styles.view}>
-      <Text style={[styles.totalCost, {color: theme}]}>
+      <Text
+        numberOfLines={2}
+        adjustsFontSizeToFit={true}
+        style={[styles.totalCost, {color: theme}]}>
         남은 목표금액{'\t'}
         {changeMoney(
           currentSaveRoomCost - (user2SaveCost + user1SaveCost) + '',
@@ -83,6 +92,11 @@ export default function PigBattleRoom({route, navigation}) {
           setUserFinish={setUser2Finish}
         />
       </View>
+      <Pressable>
+        <View>
+          <Text>나가기</Text>
+        </View>
+      </Pressable>
     </View>
   );
 }
@@ -94,7 +108,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   totalCost: {
-    ...title2,
+    marginTop: 18,
+    fontFamily: 'GangyonTunTun',
+    fontSize: 40,
   },
   pigIcon: {
     zIndex: 2,

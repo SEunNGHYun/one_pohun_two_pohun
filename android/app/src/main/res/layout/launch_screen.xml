@@ -9,23 +9,34 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
 >
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_rawRes="@raw/loading"
+        android:layout_width="411dp"
+        android:layout_height="288dp"
         app:lottie_autoPlay="true"
         app:lottie_loop="false"
-        />
+        app:lottie_rawRes="@raw/loading" />
+
     <TextView
         android:id="@+id/text_view_id"
-        android:layout_width="wrap_content"
+        android:layout_width="294dp"
         android:layout_height="80dp"
-        android:text="친구들과 함께 모으는 한푼두푼"
-        android:gravity="center"
-        android:textSize="18dp"
-        android:textStyle="bold"
+        android:fontFamily="@font/gangyontuntun"
+        android:gravity="bottom|center_horizontal"
+        android:text="친구들과 함께하는 절약"
         android:textColor="#d54183"
-        android:fontFamily="@font/FontAwesome"
-/> 
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text_view_id2"
+        android:layout_width="356dp"
+        android:layout_height="90dp"
+        android:fontFamily="@font/gangyontuntun"
+        android:gravity="center"
+        android:text='"한푼두푼"'
+        android:textColor="#d54183"
+        android:textSize="60sp"
+        android:textStyle="bold" />
 </LinearLayout>

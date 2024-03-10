@@ -165,13 +165,16 @@ export default function Main({navigation}: Props): React.ReactElement {
             </View>
             <View>
               <Calendar
-                key={theme + bottomSheetToggle + 1} // 테마 색 변경시 리렌더링을 위하여
+                key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
                 onDayPress={dateData => pressCalendarDay(dateData)}
                 theme={{
                   calendarBackground: bottomSheetToggle ? grayColor : 'white',
                   selectedDayBackgroundColor: theme,
                   todayTextColor: theme,
                   textSectionTitleColor: theme,
+                  textMonthFontFamily: 'GangyonModu-Bold',
+                  textDayFontFamily: 'GangyonModu-Light',
+                  textDayHeaderFontFamily: 'GangyonModu-Light',
                   'stylesheet.day.basic': {
                     base: {
                       height: 30,
@@ -256,6 +259,7 @@ const styles = StyleSheet.create({
   dayTotalCostTextDesc: {
     ...title4,
     fontSize: 26,
+    fontFamily: 'GangyonTunTun',
   },
   addButt: {
     backgroundColor: grayColor,
@@ -266,13 +270,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addButtText: {
-    fontSize: 22,
+    fontSize: 11.25,
     color: 'white',
-    fontFamily: 'monospace',
+    fontFamily: 'GangyonTunTun',
   },
   totalCostFont: {
     paddingHorizontal: 18,
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonTunTun',
     fontSize: 22,
   },
 });

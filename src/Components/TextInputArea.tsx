@@ -1,6 +1,7 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {grayColor} from '../utils/styles';
 
 export default function TextInputArea({
   value,
@@ -21,10 +22,16 @@ export default function TextInputArea({
     <View style={[styles.area, {width: scale}]}>
       <Pressable disabled={!pressable} onPress={pressFunc}>
         <View style={[styles.inputArea, {justifyContent: position}]}>
-          <Text style={{color: 'black'}}>{value}</Text>
+          <Text style={{color: 'black', fontFamily: 'GangyonModu-Light'}}>
+            {value}
+          </Text>
           {value !== '0' && clearFunc && (
             <Pressable onPress={clearFunc}>
-              <MaterialCommunityIcons name="close-circle" size={22} />
+              <MaterialCommunityIcons
+                name="close-circle"
+                size={22}
+                color={grayColor}
+              />
             </Pressable>
           )}
         </View>
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 0.2,
     paddingVertical: 12,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     borderRadius: 4,
   },
 });

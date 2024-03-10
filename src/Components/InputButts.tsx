@@ -49,8 +49,11 @@ export default function InputButts(props: PropsNumber | PropsString) {
 
   const pressButton = useCallback(
     (index: number) => {
-      console.log(type);
       if (type === 'number' && value < 800000) {
+        if (value + cost[index].value > 800000) {
+          setValue(800000);
+          return;
+        }
         setValue((pre: number) => pre + cost[index].value);
       }
     },
@@ -210,10 +213,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
     fontSize: 12,
     color: 'black',
+    fontFamily: 'GangyonModu-Bold',
   },
   checkedButtFont: {
     marginHorizontal: 3,
     fontSize: 12,
+    fontFamily: 'GangyonModu-Bold',
     color: 'white',
   },
 });

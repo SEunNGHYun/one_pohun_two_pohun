@@ -50,7 +50,12 @@ export default function Targetcost1({route, navigation}: Props) {
   return (
     <View style={styles.view}>
       <View style={styles.header}>
-        <Text style={styles.headertitle}>하루 지출액을 알려주세요</Text>
+        <Text
+          numberOfLines={2}
+          adjustsFontSizeToFit={true}
+          style={styles.headertitle}>
+          하루 지출액을 알려주세요
+        </Text>
       </View>
       <View style={styles.body}>
         <View style={styles.costView}>

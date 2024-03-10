@@ -65,7 +65,7 @@ export default function MakePigBattleRoom() {
         <View style={styles.body}>
           <TextAreaAndButtons
             type="number"
-            title={'총 목표 금액'}
+            title={'목표 금액'}
             subtitle="최대 80만원"
             value={cost}
             setValue={setCost}
@@ -104,7 +104,7 @@ export default function MakePigBattleRoom() {
               <MaterialCommunityIcons
                 name="chevron-right"
                 color={!cost || !goal || period === today ? descColor : theme}
-                size={44}
+                size={33}
               />
             </View>
           </Pressable>
@@ -138,11 +138,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
-  buttFont: {fontSize: 22, fontWeight: 'bold', color: 'black'},
+  buttFont: {
+    fontSize: 22,
+    color: 'black',
+    fontFamily: 'GangyonModu-Bold',
+  },
   textinput: {
     marginVertical: 18,
     borderWidth: 0.8,
     borderRadius: 8,
+    fontFamily: 'GangyonModu-Light',
     color: 'black',
     padding: 10,
     borderColor: 'lightgray',

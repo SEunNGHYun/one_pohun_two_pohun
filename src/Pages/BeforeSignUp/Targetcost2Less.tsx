@@ -91,9 +91,19 @@ export default function Targetcost2Less({route}: Props) {
   return (
     <View style={styles.view}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>다른 사용자보다</Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          style={styles.headerTitle}>
+          다른 사용자보다
+        </Text>
         <UnderLineText txt="더 적게" color={primaryColor} />
-        <Text style={styles.headerTitle}>사용중이에요.</Text>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          style={styles.headerTitle}>
+          사용중이에요.
+        </Text>
       </View>
       <View style={[styles.body, {alignItems: 'flex-start'}]}>
         <Text style={styles.requestFont}>그대로 " 절약 " 하실래요?</Text>
@@ -197,7 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'right',
     width: '100%',
-    fontFamily: 'beabea',
+    fontFamily: 'GangyonModu-Light',
   },
   buttonFont: {
     ...defaultFont,

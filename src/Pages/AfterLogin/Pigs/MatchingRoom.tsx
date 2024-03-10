@@ -65,7 +65,7 @@ export default function MatchingRoom({route, navigation}) {
               <MaterialCommunityIcons
                 name="chevron-right"
                 color={theme}
-                size={44}
+                size={33}
               />
             </View>
           </Pressable>
@@ -84,20 +84,24 @@ const styles = StyleSheet.create({
   },
   modalFont: {
     fontSize: 32,
-    // fontWeight: 'bold',
-    marginBottom: 18,
-    fontFamily: 'FontAwesome',
+    fontFamily: 'GangyonTunTun',
+    marginBottom: 16,
   },
   codeFont: {
-    fontSize: 18,
+    fontSize: 22,
     color: 'black',
-    fontWeight: 'bold',
+    borderRadius: 8,
     borderWidth: 0.6,
     borderColor: grayColor,
+    fontFamily: 'GangyonModu-Bold',
     padding: 10,
-    marginBottom: 18,
+    marginBottom: 16,
   },
-  modalButtFont: {fontSize: 22, fontWeight: 'bold', color: 'black'},
+  modalButtFont: {
+    fontSize: 22,
+    color: 'black',
+    fontFamily: 'GangyonTunTun',
+  },
   modalBottom: {
     flexDirection: 'row',
     alignItems: 'center',
