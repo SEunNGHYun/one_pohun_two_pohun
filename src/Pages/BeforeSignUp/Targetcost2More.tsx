@@ -73,7 +73,6 @@ export default function Targetcost2More({route}: Props) {
             : img.uri, //storage에 저장된 뒤에 나온 링크리턴
         day_cost: userCost,
         day_goal_cost: cost,
-        push_notification: false,
       };
       await database().ref(`/users/${nickname}`).set(userData);
       await AsyncStorage.setItem('user_data', JSON.stringify(userData));

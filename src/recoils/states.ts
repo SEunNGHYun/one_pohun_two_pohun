@@ -5,10 +5,10 @@ export const userState = atom<UserData>({
   key: 'userNickNameState',
   default: {
     nickname: '',
-    img: null,
-    current_cost: 0,
-    goal_cost: 0,
-    push_notification: false,
+    img: '',
+    day_cost: 0,
+    day_goal_cost: 0,
+    push_notification: undefined,
   },
 });
 

@@ -47,9 +47,9 @@
 - [ ] 전체적인 UI 구현 (회원가입, 배틀, 메인, 설정)
 - [x] codepush 세팅 (테스트 필요)
 - [x] firebase RealtimeDatabase 세팅
-- [x] firebase push notification 세팅
+- [ ] firebase push notification 세팅
 - [x] firebase storage 세팅
-- [ ] 폰트 추가
+- [x] 폰트 추가
 - [ ] 에러 분기 모달 추가
 - [ ] lottie를 이용한 로딩 구현
 - [x] splash screen 구현

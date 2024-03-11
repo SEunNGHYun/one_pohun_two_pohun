@@ -3,17 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
+  Alert,
   Pressable,
   Dimensions,
+  ScrollView,
+  Image,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar, DateData} from 'react-native-calendars';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import {PaperProvider} from 'react-native-paper';
 import database from '@react-native-firebase/database';
 import {LineChart} from 'react-native-chart-kit';
+import messaging from '@react-native-firebase/messaging';
 import BottomSheet from '@gorhom/bottom-sheet';
 import BottomSheetView from './BottomSheetView';
 import {getPushNotification} from '../../../utils/PermissionsFuncs';
@@ -34,7 +37,7 @@ const {width, height} = Dimensions.get('window');
 
 export default function Main({navigation}: Props): React.ReactElement {
   const theme = useRecoilValue<Themes>(appTheme);
-  const userData = useRecoilValue<UserData>(userState);
+  const [userData, setUserData] = useRecoilState<UserData>(userState);
   const [selectedDayInModal, setSelectedDayInModal] = useState<string>(today);
   const [selectedDay, setSelectedDay] = useState<string>(today);
   const [loading, setLoading] = useState<boolean>(false);
@@ -69,6 +72,7 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   const bottomSheetDismiss = useCallback(async () => {
     handleClosePress();
+    console.log('is pressed?');
     setBottomSheetToggle(false);
   }, [handleClosePress, setBottomSheetToggle]);
 
@@ -77,7 +81,6 @@ export default function Main({navigation}: Props): React.ReactElement {
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
       let {timestamp, month, day, dateString} = dateData;
-      console.log(dateData);
       setSelectedDay(dateString);
       setSelectedDayInModal(`${month}월 ${day}일 지출내역`);
       if (thisMonthSpendCost && thisMonthSpendCost.hasOwnProperty(timestamp)) {
@@ -124,13 +127,43 @@ export default function Main({navigation}: Props): React.ReactElement {
     getUserData();
   }, [userData]);
 
+  const getFCMtoken = useCallback(async () => {
+    const token = await messaging().getToken();
+    console.log('fcm token ', token);
+    return token;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
   useEffect(() => {
     const getNotificationPermissionStatus = async () => {
       const status = await getPushNotification();
       console.log('Status', status);
+      if (!userData.push_notification) {
+        if (status === 'granted') {
+          const userFCMtoken = await getFCMtoken();
+          await database().ref(`/users/${userData.nickname}`).update({
+            token: userFCMtoken,
+          });
+          setUserData((pre: UserData) => {
+            const data = {
+              ...pre,
+              push_notification: userFCMtoken,
+            };
+            return data;
+          });
+        }
+      }
     };
-    getNotificationPermissionStatus(); // 핸드폰으로 테스트 실행 _ 권한 설정 함수
-  }, []);
+    getNotificationPermissionStatus();
+    // 핸드폰으로 테스트 실행 _ 권한 설정 함수
+  }, [setUserData, getFCMtoken, userData]);
 
   useEffect(() => {
     //평균겂 6개월 간의 데이터 가져오기
@@ -138,32 +171,32 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <Pressable onPress={bottomSheetDismiss}>
-        <PaperProvider>
-          <View
-            style={[
-              styles.view,
-              bottomSheetToggle && {backgroundColor: grayColor},
-            ]}>
-            <View style={styles.dayTotalCostView}>
-              <View style={styles.fontArea}>
-                <Text
-                  adjustsFontSizeToFit={true}
-                  numberOfLines={1}
-                  style={[styles.dayTotalCostTextDesc, {color: theme}]}>
-                  오늘 총 지출액
-                </Text>
-                <Text style={[styles.dayTotalCostText, {color: theme}]}>
-                  {changeMoney(todaySpendCost)}원
-                </Text>
-              </View>
-              <Pressable onPress={() => navigation.navigate('AddCost')}>
-                <View style={[styles.addButt, {backgroundColor: theme}]}>
-                  <Text style={styles.addButtText}>+</Text>
-                </View>
-              </Pressable>
+      <PaperProvider>
+        <View
+          style={[
+            styles.view,
+            bottomSheetToggle && {backgroundColor: grayColor},
+          ]}>
+          <View style={styles.dayTotalCostView}>
+            <View style={styles.fontArea}>
+              <Text
+                adjustsFontSizeToFit={true}
+                numberOfLines={1}
+                style={[styles.dayTotalCostTextDesc, {color: theme}]}>
+                오늘 총 지출액
+              </Text>
+              <Text style={[styles.dayTotalCostText, {color: theme}]}>
+                {changeMoney(todaySpendCost)}원
+              </Text>
             </View>
-            <View>
+            <Pressable onPress={() => navigation.navigate('AddCost')}>
+              <View style={[styles.addButt, {backgroundColor: theme}]}>
+                <Text style={styles.addButtText}>+</Text>
+              </View>
+            </Pressable>
+          </View>
+          <View>
+            <Pressable onPress={bottomSheetDismiss}>
               <Calendar
                 key={theme + bottomSheetToggle} // 테마 색 변경시 리렌더링을 위하여
                 onDayPress={dateData => pressCalendarDay(dateData)}
@@ -211,28 +244,45 @@ export default function Main({navigation}: Props): React.ReactElement {
                 enableSwipeMonths={false}
                 disableMonthChange={true}
               />
-              <Text
-                adjustsFontSizeToFit={true}
-                numberOfLines={1}
-                style={[styles.totalCostFont, {color: theme}]}>
-                {months}월 총 {changeMoney(monthSpendCost)}원 사용
-              </Text>
-            </View>
-            {bottomSheetToggle && (
-              <BottomSheet
-                ref={sheetRef}
-                index={1}
-                snapPoints={snapPoints}
-                onChange={handleSheetChanges}>
-                <BottomSheetView
-                  selectedDaySpendData={selectedDaySpendData}
-                  selectDate={selectedDayInModal}
-                />
-              </BottomSheet>
-            )}
+            </Pressable>
+
+            <Text
+              adjustsFontSizeToFit={true}
+              numberOfLines={1}
+              style={[styles.totalCostFont, {color: theme}]}>
+              {months}월 총 {changeMoney(monthSpendCost)}원 사용
+            </Text>
+            <ScrollView horizontal={true} style={styles.sideBox}>
+              <View style={styles.box}>
+                <View>
+                  <Image
+                    resizeMode="contain"
+                    style={styles.image}
+                    source={require('../../../assets/circle-graph.png')}
+                  />
+                  <Text style={styles.boxFont}>그래프로 확인하기</Text>
+                </View>
+              </View>
+              <View style={styles.box}>
+                <View />
+              </View>
+            </ScrollView>
           </View>
-        </PaperProvider>
-      </Pressable>
+
+          {bottomSheetToggle && (
+            <BottomSheet
+              ref={sheetRef}
+              index={1}
+              snapPoints={snapPoints}
+              onChange={handleSheetChanges}>
+              <BottomSheetView
+                selectedDaySpendData={selectedDaySpendData}
+                selectDate={selectedDayInModal}
+              />
+            </BottomSheet>
+          )}
+        </View>
+      </PaperProvider>
     </GestureHandlerRootView>
   );
 }
@@ -278,5 +328,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     fontFamily: 'GangyonTunTun',
     fontSize: 22,
+  },
+  sideBox: {
+    margin: 18,
+  },
+  box: {
+    marginRight: 10,
+    width: width * 0.6,
+    height: width * 0.6,
+    borderWidth: 0.5,
+    borderRadius: 10,
+  },
+  image: {width: '90%', height: '90%', margin: 10},
+  boxFont: {
+    fontFamily: 'GangyonTunTun',
+    fontSize: 22,
+    zIndex: 3,
+    bottom: 0,
+    position: 'absolute',
+    color: 'black',
   },
 });

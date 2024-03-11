@@ -9,7 +9,7 @@ export interface UserData {
   img?: string;
   day_cost?: number;
   day_goal_cost?: number;
-  push_notification?: boolean;
+  push_notification?: string;
 }
 
 export interface UserSpendCost {

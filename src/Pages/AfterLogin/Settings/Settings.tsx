@@ -1,8 +1,10 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useRecoilState} from 'recoil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import database from '@react-native-firebase/database';
+import messaging from '@react-native-firebase/messaging';
+import {openSettings, checkNotifications} from 'react-native-permissions';
 
 import UserDataHeader from '../../../Components/UserDataHeader';
 import Icon from 'react-native-vector-icons/FontAwesome6';
@@ -23,12 +25,37 @@ export default function Settings(): React.ReactElement {
     {color: '#59b54f', checked: false},
     {color: '#2121ba', checked: false},
   ]);
-  const togglePushNotification = useCallback(
-    (changeVal: boolean) => {
-      setUserData(pre => {
+
+  const getFCMtoken = useCallback(async () => {
+    const token = await messaging().getToken();
+    console.log('fcm token ', token);
+    return token;
+  }, []);
+
+  const changeUserDataPushNotificationToken = useCallback(
+    async (token?: string) => {
+      await database()
+        .ref(`/users/${userData.nickname}`)
+        .update({
+          token: token ? token : '',
+        });
+      setUserData((pre: UserData) => {
         return {
           ...pre,
-          push_notification: changeVal,
+          push_notification: token ? token : undefined,
+        };
+      });
+    },
+    [],
+  );
+
+  const togglePushNotification = useCallback(
+    async (token?: string) => {
+      await openSettings();
+      setUserData((pre: UserData) => {
+        return {
+          ...pre,
+          push_notification: token ? undefined : token,
         };
       });
     },
@@ -56,6 +83,19 @@ export default function Settings(): React.ReactElement {
     [themeList],
   );
 
+  useEffect(() => {
+    const getNotificationState = async () => {
+      const {status} = await checkNotifications();
+      if (status === 'granted') {
+        const token: string = await getFCMtoken();
+        changeUserDataPushNotificationToken(token);
+      } else {
+        changeUserDataPushNotificationToken();
+      }
+    };
+    getNotificationState();
+  }, [getFCMtoken, changeUserDataPushNotificationToken]);
+
   const pressThemeOkButt = useCallback(() => {
     themeList.forEach(async t => {
       if (t.checked) {
@@ -71,10 +111,10 @@ export default function Settings(): React.ReactElement {
   const pressExitButt = useCallback(async () => {
     setUserData({
       nickname: '',
-      img: null,
-      current_cost: 0,
-      goal_cost: 0,
-      push_notification: false,
+      img: '',
+      day_cost: 0,
+      day_goal_cost: 0,
+      push_notification: undefined,
     });
     await database().ref(`/phoun/users/${userData.nickname}`).remove();
     await AsyncStorage.clear();
@@ -105,7 +145,7 @@ export default function Settings(): React.ReactElement {
             </View>
           </Pressable>
           <Pressable
-            onPress={() => togglePushNotification(!userData.push_notification)}>
+            onPress={() => togglePushNotification(userData.push_notification)}>
             <View style={styles.buttArea}>
               <Text style={[styles.defaultFont, {color: theme}]}>
                 푸시알림 설정
@@ -113,7 +153,8 @@ export default function Settings(): React.ReactElement {
               {userData.push_notification ? (
                 <Icon name="toggle-on" size={36} color={theme} />
               ) : (
-                <Icon name="toggle-off" size={36} color={theme} />
+                (console.log('off'),
+                (<Icon name="toggle-off" size={36} color={theme} />))
               )}
             </View>
           </Pressable>
