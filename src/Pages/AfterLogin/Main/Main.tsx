@@ -7,7 +7,6 @@ import {
   Pressable,
   Dimensions,
   ScrollView,
-  Image,
 } from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Calendar, DateData} from 'react-native-calendars';
@@ -15,7 +14,9 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {PaperProvider} from 'react-native-paper';
 import database from '@react-native-firebase/database';
-import {LineChart} from 'react-native-chart-kit';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+
 import messaging from '@react-native-firebase/messaging';
 import BottomSheet from '@gorhom/bottom-sheet';
 import BottomSheetView from './BottomSheetView';
@@ -165,10 +166,6 @@ export default function Main({navigation}: Props): React.ReactElement {
     // 핸드폰으로 테스트 실행 _ 권한 설정 함수
   }, [setUserData, getFCMtoken, userData]);
 
-  useEffect(() => {
-    //평균겂 6개월 간의 데이터 가져오기
-  });
-
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <PaperProvider>
@@ -253,16 +250,24 @@ export default function Main({navigation}: Props): React.ReactElement {
               {months}월 총 {changeMoney(monthSpendCost)}원 사용
             </Text>
             <ScrollView horizontal={true} style={styles.sideBox}>
-              <View style={styles.box}>
-                <View>
-                  <Image
-                    resizeMode="contain"
-                    style={styles.image}
-                    source={require('../../../assets/circle-graph.png')}
+              <Pressable onPress={() => navigation.push('EventPage_G')}>
+                <View style={[styles.box, {borderColor: theme}]}>
+                  <Ionicons
+                    name="bar-chart"
+                    size={width / 2.25}
+                    color={'#9cbb78'}
                   />
-                  <Text style={styles.boxFont}>그래프로 확인하기</Text>
+                  <View style={styles.iconBack}>
+                    <FontAwesome6
+                      name="money-bill-1-wave"
+                      size={width / 6.6}
+                      color={'#9cbb78'}
+                    />
+                  </View>
                 </View>
-              </View>
+
+                <Text style={styles.boxFont}>지출 유형{'\n'}그래프로 보기</Text>
+              </Pressable>
               <View style={styles.box}>
                 <View />
               </View>
@@ -333,11 +338,13 @@ const styles = StyleSheet.create({
     margin: 18,
   },
   box: {
+    alignItems: 'center',
+    paddingTop: width * 0.02,
     marginRight: 10,
     width: width * 0.6,
-    height: width * 0.6,
-    borderWidth: 0.5,
-    borderRadius: 10,
+    height: height * 0.25,
+    borderWidth: 3,
+    borderRadius: 5,
   },
   image: {width: '90%', height: '90%', margin: 10},
   boxFont: {
@@ -347,5 +354,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: 'absolute',
     color: 'black',
+    marginLeft: 18,
+  },
+  iconBack: {
+    width: width / 4.5,
+    height: width / 4.5,
+    borderRadius: 40,
+    borderColor: 'black',
+    borderWidth: 2,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    bottom: 28,
+    right: 5.5,
   },
 });

@@ -23,6 +23,7 @@ import Targetcost2Less from '../Pages/BeforeSignUp/Targetcost2Less';
 import Main from '../Pages/AfterLogin/Main/Main';
 import AddCost from '../Pages/AfterLogin/Main/AddCost';
 import EachDayCost from '../Pages/AfterLogin/Main/EachDayCost';
+import EventPage_Graph from '../Pages/AfterLogin/Main/EventPage_Graph';
 //배틀
 import Pig from '../Pages/AfterLogin/Pigs/Pig';
 import MakePigBattleRoom from '../Pages/AfterLogin/Pigs/MakePigBattleRoom';
@@ -41,6 +42,7 @@ const options: NativeStackNavigationOptions = {
 export type MainStackParamList = {
   Main: undefined;
   AddCost: undefined;
+  EventPage_G: undefined;
 };
 
 export type PigStackParamList = {
@@ -113,6 +115,7 @@ function MainNavigation() {
     <Navigator screenOptions={options}>
       <Screen name="Main" component={Main} />
       <Screen name="AddCost" component={AddCost} />
+      <Screen name="EventPage_G" component={EventPage_Graph} />
     </Navigator>
   );
 }
