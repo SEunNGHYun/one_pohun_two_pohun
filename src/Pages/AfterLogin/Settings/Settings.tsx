@@ -13,7 +13,11 @@ import {userState, appTheme} from '../../../recoils/states';
 import {UserData, Themes} from '../../../types/types';
 import {grayColor} from '../../../utils/styles';
 
-export default function Settings(): React.ReactElement {
+export default function Settings({
+  navigation,
+}: {
+  navigation: any;
+}): React.ReactElement {
   const [userData, setUserData] = useRecoilState<UserData>(userState);
   const [visible, setVisible] = useState<boolean>(false);
   const [themesModalVisible, setThemesVisibleModal] = useState<boolean>(false);
@@ -28,7 +32,6 @@ export default function Settings(): React.ReactElement {
 
   const getFCMtoken = useCallback(async () => {
     const token = await messaging().getToken();
-    console.log('fcm token ', token);
     return token;
   }, []);
 
@@ -46,7 +49,7 @@ export default function Settings(): React.ReactElement {
         };
       });
     },
-    [],
+    [userData, setUserData],
   );
 
   const togglePushNotification = useCallback(
@@ -69,7 +72,9 @@ export default function Settings(): React.ReactElement {
     setThemesVisibleModal(false);
   }, []);
 
-  const pressEditSetting = useCallback(() => {}, []);
+  const pressEditSetting = useCallback(() => {
+    console.log('>>');
+  }, []);
   const pressThemeColor = useCallback(
     (i: number) => {
       const newThemeList = themeList.map((t, idx) => {
@@ -153,11 +158,14 @@ export default function Settings(): React.ReactElement {
               {userData.push_notification ? (
                 <Icon name="toggle-on" size={36} color={theme} />
               ) : (
-                (console.log('off'),
-                (<Icon name="toggle-off" size={36} color={theme} />))
+                <Icon name="toggle-off" size={36} color={theme} />
               )}
             </View>
           </Pressable>
+          <View style={styles.buttArea}>
+            <Text style={[styles.defaultFont, {color: theme}]}>현재 버전</Text>
+            <Text style={[styles.defaultFont, {color: theme}]}>1.0.0</Text>
+          </View>
           <Pressable onPress={showExitModal}>
             <View style={[styles.buttArea, {paddingBottom: 16}]}>
               <Text style={[styles.defaultFont, {color: theme}]}>회원탈퇴</Text>

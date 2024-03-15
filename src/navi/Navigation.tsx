@@ -32,7 +32,7 @@ import MatchingRoom from '../Pages/AfterLogin/Pigs/MatchingRoom';
 //세팅
 import Settings from '../Pages/AfterLogin/Settings/Settings';
 
-import {descColor} from '../utils/styles';
+import {grayColor} from '../utils/styles';
 import type {NewAsset, UserData, Themes} from '../types/types';
 
 const options: NativeStackNavigationOptions = {
@@ -135,15 +135,19 @@ function PigNavigation() {
 
 function TabNavigation() {
   const {Navigator, Screen} = MainTab;
-  const getAppTheme = useRecoilValue<Themes>(appTheme);
+  const theme = useRecoilValue<Themes>(appTheme);
 
   return (
-    <Navigator activeColor={getAppTheme} inactiveColor={descColor}>
+    <Navigator
+      activeColor={theme}
+      inactiveColor={'#8c8c8c'}
+      barStyle={{backgroundColor: '#f2f2f2'}}>
       <Screen
         name="MainStack"
         component={MainNavigation}
         options={{
           title: '홈',
+          tabBarColor: theme,
           tabBarIcon: ({_, color}) => (
             <MaterialCommunityIcons name="home" color={color} size={26} />
           ),

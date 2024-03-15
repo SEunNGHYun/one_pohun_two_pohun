@@ -14,9 +14,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import {PaperProvider} from 'react-native-paper';
 import database from '@react-native-firebase/database';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import messaging from '@react-native-firebase/messaging';
 import BottomSheet from '@gorhom/bottom-sheet';
 import BottomSheetView from './BottomSheetView';
@@ -30,6 +28,7 @@ import {
   changeMoney,
   today,
 } from '../../../utils/utils';
+import {descColor} from '../../../utils/styles';
 import type {Themes, UserData, UserSpendCost} from '../../../types/types';
 import {appTheme, userState} from '../../../recoils/states';
 
@@ -91,11 +90,16 @@ export default function Main({navigation}: Props): React.ReactElement {
         pressDateSpendData.sort(
           (a, b) => a.category.localeCompare(b.category) || a.cost - b.cost,
         ); // 1순위. 분류 기준으로 정렬  2순위. 비용기준으로 정렬
-        console.log('after ', pressDateSpendData);
+
         setSelectedDaySpendData(pressDateSpendData);
+        setBottomSheetToggle(true);
+        handleSnapPress(1);
+        return;
+      } else {
+        setSelectedDaySpendData([]);
+        setBottomSheetToggle(true);
+        handleSnapPress(1);
       }
-      setBottomSheetToggle(true);
-      handleSnapPress(1);
     },
     [handleSnapPress, thisMonthSpendCost],
   );
@@ -130,16 +134,7 @@ export default function Main({navigation}: Props): React.ReactElement {
 
   const getFCMtoken = useCallback(async () => {
     const token = await messaging().getToken();
-    console.log('fcm token ', token);
     return token;
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-
-    return unsubscribe;
   }, []);
 
   useEffect(() => {
@@ -251,26 +246,23 @@ export default function Main({navigation}: Props): React.ReactElement {
             </Text>
             <ScrollView horizontal={true} style={styles.sideBox}>
               <Pressable onPress={() => navigation.push('EventPage_G')}>
-                <View style={[styles.box, {borderColor: theme}]}>
-                  <Ionicons
-                    name="bar-chart"
-                    size={width / 2.25}
-                    color={'#9cbb78'}
-                  />
+                <View style={styles.box}>
+                  <Icon name="chart-pie" size={width / 1.8} color={'#383838'} />
                   <View style={styles.iconBack}>
-                    <FontAwesome6
-                      name="money-bill-1-wave"
-                      size={width / 6.6}
-                      color={'#9cbb78'}
+                    <Icon
+                      name="account-cash-outline"
+                      size={width / 7}
+                      color={'#383838'}
                     />
                   </View>
                 </View>
-
-                <Text style={styles.boxFont}>지출 유형{'\n'}그래프로 보기</Text>
+                <Text
+                  adjustsFontSizeToFit={true}
+                  numberOfLines={2}
+                  style={[styles.boxFont, {color: theme}]}>
+                  지출 유형{'\n'}그래프
+                </Text>
               </Pressable>
-              <View style={styles.box}>
-                <View />
-              </View>
             </ScrollView>
           </View>
 
@@ -339,34 +331,32 @@ const styles = StyleSheet.create({
   },
   box: {
     alignItems: 'center',
-    paddingTop: width * 0.02,
     marginRight: 10,
     width: width * 0.6,
     height: height * 0.25,
-    borderWidth: 3,
+    borderWidth: 0.5,
     borderRadius: 5,
+    borderColor: descColor,
   },
   image: {width: '90%', height: '90%', margin: 10},
   boxFont: {
     fontFamily: 'GangyonTunTun',
-    fontSize: 22,
+    fontSize: 26,
     zIndex: 3,
-    bottom: 0,
+    bottom: 4,
     position: 'absolute',
-    color: 'black',
+    color: '#383838',
     marginLeft: 18,
   },
   iconBack: {
-    width: width / 4.5,
-    height: width / 4.5,
+    width: width / 6.5,
+    height: width / 6.5,
     borderRadius: 40,
-    borderColor: 'black',
-    borderWidth: 2,
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white',
-    bottom: 28,
-    right: 5.5,
+    bottom: 18,
+    right: 22,
   },
 });

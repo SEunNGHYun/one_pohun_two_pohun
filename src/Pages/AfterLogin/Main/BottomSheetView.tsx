@@ -7,7 +7,7 @@ export default function BottomSheetView({
   selectedDaySpendData,
   selectDate,
 }: {
-  selectedDaySpendData: UserSpendCost[];
+  selectedDaySpendData: UserSpendCost[] | [];
   selectDate: string;
 }): React.ReactElement {
   return (
@@ -33,7 +33,9 @@ export default function BottomSheetView({
         </>
       ) : (
         <View style={styles.emptyView}>
-          <Text style={{color: 'black'}}>지출 내역이 없습니다.</Text>
+          <Text style={{color: 'black', fontFamily: 'GangyonModu-Bold'}}>
+            지출 내역이 없습니다.
+          </Text>
         </View>
       )}
     </BottomSheetScrollView>
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 24,
     color: 'black',
-    fontWeight: 'bold',
+    fontFamily: 'GangyonModu-Bold',
   },
   costItemForm: {
     width: '100%',
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  costCateFont: {fontSize: 24, fontWeight: 'bold', color: 'black'},
+  costCateFont: {fontSize: 24, fontFamily: 'GangyonModu-Bold', color: 'black'},
   line: {
     width: '100%',
     height: 1,
@@ -68,8 +70,8 @@ const styles = StyleSheet.create({
   },
   costItemFont: {
     fontSize: 16,
+    fontFamily: 'GangyonModu-Light',
     color: 'black',
-    fontWeight: 'bold',
   },
   constItemBlank: {
     marginVertical: 4,
