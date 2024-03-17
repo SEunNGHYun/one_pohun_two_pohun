@@ -35,7 +35,7 @@
         android:layout_height="90dp"
         android:fontFamily="@font/gangyontuntun"
         android:gravity="center"
-        android:text='"한푼두푼"'
+        android:text='한푼두푼'
         android:textColor="#d54183"
         android:textSize="60sp"
         android:textStyle="bold" />

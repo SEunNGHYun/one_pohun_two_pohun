@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {useRecoilValue} from 'recoil';
 import {Modal, Portal, PaperProvider} from 'react-native-paper';
+import LottieView from 'lottie-react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,6 +47,7 @@ export default function Pig({navigation}: PigNaviProps) {
   }, [code, navigation, userData]);
 
   useEffect(() => {
+    setLoading(true);
     const getEnterRoomStateAndId = async () => {
       try {
         const roomData = await AsyncStorage.multiGet([
@@ -72,6 +74,7 @@ export default function Pig({navigation}: PigNaviProps) {
         }
       } catch (err) {
       } finally {
+        setLoading(false);
       }
     };
     getEnterRoomStateAndId();
@@ -81,28 +84,45 @@ export default function Pig({navigation}: PigNaviProps) {
 
   return (
     <PaperProvider>
-      <View style={styles.view}>
-        <Image
-          source={{
-            uri:
-              userData.img === null
-                ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
-                : userData.img,
-          }}
-          resizeMode="contain"
-          style={[styles.userImgBack, {borderColor: theme}]}
-        />
-        <Pressable onPress={() => navigation.navigate('MakePigBattleRoom')}>
-          <View style={[styles.butt, {backgroundColor: theme}]}>
-            <Text style={styles.buttText}>만들기</Text>
-          </View>
-        </Pressable>
-        <Pressable onPress={showModal}>
-          <View style={[styles.butt, {backgroundColor: theme}]}>
-            <Text style={styles.buttText}>입장하기</Text>
-          </View>
-        </Pressable>
-      </View>
+      {loading ? (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: grayColor,
+          }}>
+          <LottieView
+            source={require('../../../assets/loading.json')}
+            style={{width: '30%', height: '100%'}}
+            autoPlay
+            loop
+          />
+        </View>
+      ) : (
+        <View style={styles.view}>
+          <Image
+            source={{
+              uri:
+                userData.img === null
+                  ? 'https://cdn.pixabay.com/photo/2023/09/07/14/26/cat-8239223_1280.png'
+                  : userData.img,
+            }}
+            resizeMode="contain"
+            style={[styles.userImgBack, {borderColor: theme}]}
+          />
+          <Pressable onPress={() => navigation.navigate('MakePigBattleRoom')}>
+            <View style={[styles.butt, {backgroundColor: theme}]}>
+              <Text style={styles.buttText}>만들기</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={showModal}>
+            <View style={[styles.butt, {backgroundColor: theme}]}>
+              <Text style={styles.buttText}>입장하기</Text>
+            </View>
+          </Pressable>
+        </View>
+      )}
       <Portal>
         <Modal
           visible={toggleEnterModal}

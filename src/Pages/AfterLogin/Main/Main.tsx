@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   Pressable,
   Dimensions,
   ScrollView,
@@ -25,6 +24,7 @@ import {
   months,
   thisMonthFirst,
   todayTimeStampFirst,
+  todayTimeStampLast,
   changeMoney,
   today,
 } from '../../../utils/utils';
@@ -116,14 +116,23 @@ export default function Main({navigation}: Props): React.ReactElement {
       let todayTotalCost = 0;
       let monthTotalCost = 0;
       if (data && data.hasOwnProperty(thisMonthFirst)) {
-        if (data[thisMonthFirst].hasOwnProperty(todayTimeStampFirst)) {
-          Object.entries(data[thisMonthFirst][todayTimeStampFirst]).forEach(
-            ([_, obj]: [string, any]) => {
-              todayTotalCost += obj.cost;
-              monthTotalCost += obj.cost;
-            },
-          );
-        }
+        // 해당 달에 입력된게 있는 지 확인
+        Object.entries(data[thisMonthFirst]).forEach(
+          ([_, obj]: [string, any]) => {
+            const costDataInDay = Object.entries(obj);
+            if (costDataInDay.length > 0) {
+              costDataInDay.forEach(([day2, obj2]: [string, any]) => {
+                let ts: number = Number(day2);
+                // 오늘 소비 금액만 더하기
+                monthTotalCost += obj2.cost;
+                if (todayTimeStampFirst <= ts && ts <= todayTimeStampLast) {
+                  todayTotalCost += obj2.cost;
+                }
+              });
+            }
+            //이번달 소비 슴액 더하기
+          },
+        );
         setMonthSpendCost('' + monthTotalCost);
         setSpendTodayCost('' + todayTotalCost);
         setThisMonthSpendCost(data[thisMonthFirst]);
@@ -247,21 +256,21 @@ export default function Main({navigation}: Props): React.ReactElement {
             <ScrollView horizontal={true} style={styles.sideBox}>
               <Pressable onPress={() => navigation.push('EventPage_G')}>
                 <View style={styles.box}>
-                  <Icon name="chart-pie" size={width / 1.8} color={'#383838'} />
+                  <Icon name="chart-pie" size={width / 1.8} color={'#6d6d6d'} />
                   <View style={styles.iconBack}>
                     <Icon
                       name="account-cash-outline"
                       size={width / 7}
-                      color={'#383838'}
+                      color={'#7c9360'}
                     />
                   </View>
+                  <Text
+                    adjustsFontSizeToFit={true}
+                    numberOfLines={2}
+                    style={[styles.boxFont, {color: theme}]}>
+                    지출 유형{'\n'}그래프
+                  </Text>
                 </View>
-                <Text
-                  adjustsFontSizeToFit={true}
-                  numberOfLines={2}
-                  style={[styles.boxFont, {color: theme}]}>
-                  지출 유형{'\n'}그래프
-                </Text>
               </Pressable>
             </ScrollView>
           </View>
@@ -334,9 +343,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: width * 0.6,
     height: height * 0.25,
-    borderWidth: 0.5,
     borderRadius: 5,
     borderColor: descColor,
+    borderWidth: 0.45,
   },
   image: {width: '90%', height: '90%', margin: 10},
   boxFont: {
@@ -344,6 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     zIndex: 3,
     bottom: 4,
+    width: width * 0.5,
     position: 'absolute',
     color: '#383838',
     marginLeft: 18,
