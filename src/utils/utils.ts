@@ -13,7 +13,7 @@ export const getDayTimeStampStart = (
   m: number,
   d: number,
 ): number => {
-  const setDate = new Date(y, m - 1, d + 1, -15, 0, 0, 0); // months-1일 0:00:00:0000기준
+  const setDate = new Date(y, m - 1, d, -15, 0, 0, 0); // months-1일 0:00:00:0000기준
 
   return setDate.getTime();
 };
@@ -25,9 +25,8 @@ export const getDayTimeStampEnd = (y: number, m: number, d: number): number => {
 };
 
 export const nowTimeStamp = (): number => {
-  const setDate = new Date();
-
-  return setDate.getTime();
+  let now = new Date();
+  return now.getTime() + now.getTimezoneOffset() * 60 * 1000;
 };
 
 export const thisMonthFirst = getDayTimeStampStart(year, months, 1);
@@ -87,6 +86,25 @@ export const changeMoney = (money: string): string => {
     result = result.slice(1);
   }
   return result.join('');
+};
+
+export const compareTimeStamp = (before, after) => {
+  let test = new Date(Number(before));
+  before = Math.floor(new Date(Number(before)).getTime() / 1000);
+  after = Math.floor(new Date(Number(after)).getTime() / 1000);
+
+  console.log(currentDate, test.getTime());
+  return Math.floor((after - before) / (1000 * 60 * 60 * 24));
+};
+
+export const changeTimeStamp = timestamp => {
+  const date = new Date(Number(timestamp));
+
+  const months: number = date.getMonth() + 1;
+
+  const day: number = date.getDate();
+
+  return `${months}-${day}`;
 };
 
 /*

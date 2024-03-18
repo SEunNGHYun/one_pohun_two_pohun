@@ -3,9 +3,8 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useRecoilValue} from 'recoil';
 import {appTheme} from '../recoils/states';
 import type {Themes} from '../types/types';
-import {changeMoney} from '../utils/utils';
+import {changeMoney, compareTimeStamp, changeTimeStamp} from '../utils/utils';
 import {grayColor, title3, title4, sub} from '../utils/styles';
-import {ViewBase} from 'react-native';
 
 export default function BattleUserData({
   position,
@@ -20,8 +19,14 @@ export default function BattleUserData({
 }) {
   const {height, width} = useWindowDimensions();
   const theme = useRecoilValue<Themes>(appTheme);
-  const [spendCostList, setSpendCostList] = useState<
-    {cost: number; category: string}[]
+  const [spendCostData, setSpendCostList] = useState<
+    {
+      type: 'date' | 'costData';
+      cost?: number;
+      category?: string;
+      date?: string;
+      timestamp?: string;
+    }[]
   >([]);
   const [totalSaveMoney, setTotalSaveMoney] = useState<number>(0);
   const userImage = useMemo(() => {
@@ -35,24 +40,56 @@ export default function BattleUserData({
       userData;
     day_cost = day_cost * 1000;
     if (userData && userData.hasOwnProperty('spend_cost')) {
-      let spendCost: {cost: number; category: string}[] = [];
+      let spendCost: {
+        type: 'date' | 'costData';
+        cost?: number;
+        category?: string;
+        date?: string;
+        timestamp?: string;
+      }[] = [];
       Object.entries(userData.spend_cost).forEach(([_, val]: [_, any]) => {
         for (let startDayTimeStamp in val) {
           let saveDayMoney = 0,
             totalSpendDayMoney = 0;
+          // console.log(val[startDayTimeStamp]);
           for (let dayTimeStamp in val[startDayTimeStamp]) {
+            // console.log('obj', val[startDayTimeStamp][dayTimeStamp]);
             totalSpendDayMoney += val[startDayTimeStamp][dayTimeStamp].cost; // 하루 총 사용 금액
-            if (spendCost.length < 5) {
-              spendCost.push(val[startDayTimeStamp][dayTimeStamp]);
+            let last = spendCost.length - 1;
+            if (last >= 0) {
+              console.log(
+                'here :',
+                spendCost[last].cost,
+                compareTimeStamp(spendCost[last].timestamp, dayTimeStamp),
+                val[startDayTimeStamp][dayTimeStamp].cost,
+              );
             }
-            saveDayMoney = day_cost - totalSpendDayMoney; // 하루 목표 금액보다 많이 사용했는지 체크
-            if (saveDayMoney > 0) {
-              setUserSaveCost(saveDayMoney);
-              roomGoalCost -= saveDayMoney; // 사용자가 절약해서 모은 돈이 현재 방의 목푯 금액의 절반에 해당하는지 학인
-              if (roomGoalCost <= 0) {
-                setUserFinish(true); // 사용자는 다 모음
+            if (spendCost.length < 5) {
+              if (
+                last >= 0 &&
+                spendCost[last].type === 'costData' &&
+                compareTimeStamp(spendCost[last].timestamp, dayTimeStamp)
+              ) {
+                // 이전 값이 이전 날의 값인지 확인 후 날짜 데이터를 추가
+                spendCost.push({
+                  type: 'date',
+                  date: changeTimeStamp(startDayTimeStamp),
+                });
               }
-            } else {
+              spendCost.push({
+                ...val[startDayTimeStamp][dayTimeStamp],
+                type: 'costData',
+                timestamp: dayTimeStamp,
+              });
+            }
+          }
+          console.log('spnedCost', spendCost);
+          saveDayMoney = day_cost - totalSpendDayMoney; // 하루 목표 금액보다 많이 사용했는지 체크
+          if (saveDayMoney > 0) {
+            setUserSaveCost(saveDayMoney);
+            roomGoalCost -= saveDayMoney; // 사용자가 절약해서 모은 돈이 현재 방의 목푯 금액의 절반에 해당하는지 학인
+            if (roomGoalCost <= 0) {
+              setUserFinish(true); // 사용자는 다 모음
             }
           }
         }
@@ -126,32 +163,45 @@ export default function BattleUserData({
           numberOfLines={2}
           adjustsFontSizeToFit={true}
           style={styles.userGoalCostFont}>
-          | 목표 금액 |{'\n'}
-          {changeMoney(userData.day_cost * 1000 + '')}원<Text />
+          | 절약 목표금액 |{'\n'}
+          <Text style={{fontFamily: 'GangyonModu-Light'}}>
+            {changeMoney(userData.day_cost * 1000 + '')}원
+          </Text>
         </Text>
         <Text
           numberOfLines={1}
           adjustsFontSizeToFit={true}
           style={styles.totalFont}>
-          실시간 지출현황
+          지출현황
         </Text>
-        <Text
-          style={{fontSize: 6, fontFamily: 'GangyonModu-Bold', color: 'black'}}>
-          .{'\n'}.{'\n'}.
-        </Text>
-        <View style={styles.costLi}>
-          {spendCostList &&
-            spendCostList.map((d, i) => (
-              <View style={styles.costLi} key={i}>
-                <Text
-                  numberOfLines={2}
-                  adjustsFontSizeToFit={true}
-                  style={styles.costFont}>
-                  {changeMoney(d.cost + '')} 원{' '}
-                </Text>
-                <Text style={styles.costCategoryFont}>({d.category})</Text>
-              </View>
-            ))}
+        <View style={styles.costLiView}>
+          {spendCostData &&
+            spendCostData.map((d, i) => {
+              if (d.type === 'costData') {
+                return (
+                  <View style={styles.costLi} key={i}>
+                    <Text
+                      numberOfLines={2}
+                      adjustsFontSizeToFit={true}
+                      style={styles.costFont}>
+                      {changeMoney(d.cost + '')}원
+                    </Text>
+                    <Text style={styles.costCategoryFont}>({d.category})</Text>
+                  </View>
+                );
+              } else {
+                return (
+                  <View style={styles.costLi}>
+                    <Text
+                      numberOfLines={1}
+                      adjustsFontSizeToFit={true}
+                      style={styles.costFont}>
+                      ======{d.date}======
+                    </Text>
+                  </View>
+                );
+              }
+            })}
         </View>
         <View style={styles.totalCostView}>
           <Text
@@ -201,9 +251,19 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 18,
     fontFamily: 'GangyonTunTun',
-    marginBottom: 4,
   },
-  costLi: {alignItems: 'center', width: 'auto', marginVertical: 1},
+  costLiView: {
+    width: '75%',
+    height: '55%',
+    justifyContent: 'center',
+  },
+  costLi: {
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 6,
+    flexDirection: 'row',
+  },
   costFont: {
     fontSize: 20,
     color: 'black',
@@ -212,7 +272,8 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   costCategoryFont: {
-    fontSize: 12,
+    marginLeft: 3,
+    fontSize: 8,
     fontFamily: 'GangyonModu-Light',
     color: 'gray',
   },

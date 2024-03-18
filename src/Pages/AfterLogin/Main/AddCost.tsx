@@ -37,12 +37,12 @@ export default function AddCost({navigation}: Props) {
 
   const saveCostAndMovePage = useCallback(async () => {
     const spendCost: number = Number(cost.replace(/\,/g, ''));
-    const timestamp: number = nowTimeStamp();
-
     try {
       await database()
         .ref(
-          `/users/${userData.nickname}/spend_cost/${thisMonthFirst}/${todayTimeStampFirst}/${timestamp}`,
+          `/users/${
+            userData.nickname
+          }/spend_cost/${thisMonthFirst}/${todayTimeStampFirst}/${nowTimeStamp()}`,
         )
         .set({
           category: checkCate,

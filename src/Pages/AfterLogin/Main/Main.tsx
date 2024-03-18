@@ -81,6 +81,7 @@ export default function Main({navigation}: Props): React.ReactElement {
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
       let {timestamp, month, day, dateString} = dateData;
+      console.log(dateString);
       setSelectedDay(dateString);
       setSelectedDayInModal(`${month}월 ${day}일 지출내역`);
       if (thisMonthSpendCost && thisMonthSpendCost.hasOwnProperty(timestamp)) {
@@ -125,6 +126,7 @@ export default function Main({navigation}: Props): React.ReactElement {
                 let ts: number = Number(day2);
                 // 오늘 소비 금액만 더하기
                 monthTotalCost += obj2.cost;
+                console.log(todayTimeStampFirst, ts, todayTimeStampLast);
                 if (todayTimeStampFirst <= ts && ts <= todayTimeStampLast) {
                   todayTotalCost += obj2.cost;
                 }
@@ -149,7 +151,6 @@ export default function Main({navigation}: Props): React.ReactElement {
   useEffect(() => {
     const getNotificationPermissionStatus = async () => {
       const status = await getPushNotification();
-      console.log('Status', status);
       if (!userData.push_notification) {
         if (status === 'granted') {
           const userFCMtoken = await getFCMtoken();
