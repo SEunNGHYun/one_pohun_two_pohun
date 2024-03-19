@@ -13,20 +13,20 @@ export const getDayTimeStampStart = (
   m: number,
   d: number,
 ): number => {
-  const setDate = new Date(y, m - 1, d, -15, 0, 0, 0); // months-1일 0:00:00:0000기준
+  const setDate = new Date(y, m - 1, d + 1, -15, 0, 0, 0); // months-1일 0:00:00:0000기준
 
   return setDate.getTime();
 };
 
 export const getDayTimeStampEnd = (y: number, m: number, d: number): number => {
-  const setDate = new Date(y, m - 1, d, 32, 59, 59, 999); // months-31일 12:59:59:9999기준
+  const setDate = new Date(y, m - 1, d + 1, 32, 59, 59, 999); // months-31일 12:59:59:9999기준
 
   return setDate.getTime();
 };
 
 export const nowTimeStamp = (): number => {
   let now = new Date();
-  return now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+  return now.getTime();
 };
 
 export const thisMonthFirst = getDayTimeStampStart(year, months, 1);
@@ -88,23 +88,23 @@ export const changeMoney = (money: string): string => {
   return result.join('');
 };
 
-export const compareTimeStamp = (before, after) => {
-  let test = new Date(Number(before));
-  before = Math.floor(new Date(Number(before)).getTime() / 1000);
-  after = Math.floor(new Date(Number(after)).getTime() / 1000);
+export const compareTimeStamp = (next: string, before: string) => {
+  let before2: Date = new Date(Number(before));
+  let next2: Date = new Date(Number(next));
 
-  console.log(currentDate, test.getTime());
-  return Math.floor((after - before) / (1000 * 60 * 60 * 24));
+  const isNextDay = Math.floor((next2 - before2) / (1000 * 60 * 60 * 24));
+
+  return isNextDay >= 1;
 };
 
-export const changeTimeStamp = timestamp => {
+export const changeTimeStamp = (timestamp: string) => {
   const date = new Date(Number(timestamp));
 
   const months: number = date.getMonth() + 1;
 
   const day: number = date.getDate();
 
-  return `${months}-${day}`;
+  return `${months}월-${day}일`;
 };
 
 /*

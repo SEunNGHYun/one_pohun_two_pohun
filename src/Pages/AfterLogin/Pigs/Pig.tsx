@@ -48,15 +48,19 @@ export default function Pig({navigation}: PigNaviProps) {
 
   useEffect(() => {
     setLoading(true);
+
     const getEnterRoomStateAndId = async () => {
+      let playingState: string | null = null,
+        playingRoomId: string | null = null;
       try {
         const roomData = await AsyncStorage.multiGet([
           'playingState',
           'playingRoomId',
         ]);
-        const playingState = roomData[0][1],
-          playingRoomId = roomData[1][1];
-        console.log('in pig playing', playingState, playingRoomId);
+        playingState = roomData[0][1];
+        playingRoomId = roomData[1][1];
+      } catch (err) {
+      } finally {
         if (playingState === 'playing' || playingState === 'waiting') {
           if (playingRoomId !== null) {
             if (playingState === 'playing') {
@@ -72,8 +76,6 @@ export default function Pig({navigation}: PigNaviProps) {
             }
           }
         }
-      } catch (err) {
-      } finally {
         setLoading(false);
       }
     };

@@ -23,6 +23,7 @@ import type {MainStackParamList} from '../../../navi/Navigation';
 import {
   months,
   thisMonthFirst,
+  changeTimeStamp,
   todayTimeStampFirst,
   todayTimeStampLast,
   changeMoney,
@@ -81,7 +82,6 @@ export default function Main({navigation}: Props): React.ReactElement {
   const pressCalendarDay = useCallback(
     (dateData: DateData) => {
       let {timestamp, month, day, dateString} = dateData;
-      console.log(dateString);
       setSelectedDay(dateString);
       setSelectedDayInModal(`${month}월 ${day}일 지출내역`);
       if (thisMonthSpendCost && thisMonthSpendCost.hasOwnProperty(timestamp)) {
@@ -119,15 +119,13 @@ export default function Main({navigation}: Props): React.ReactElement {
       if (data && data.hasOwnProperty(thisMonthFirst)) {
         // 해당 달에 입력된게 있는 지 확인
         Object.entries(data[thisMonthFirst]).forEach(
-          ([_, obj]: [string, any]) => {
+          ([today, obj]: [string, any]) => {
             const costDataInDay = Object.entries(obj);
             if (costDataInDay.length > 0) {
               costDataInDay.forEach(([day2, obj2]: [string, any]) => {
-                let ts: number = Number(day2);
                 // 오늘 소비 금액만 더하기
                 monthTotalCost += obj2.cost;
-                console.log(todayTimeStampFirst, ts, todayTimeStampLast);
-                if (todayTimeStampFirst <= ts && ts <= todayTimeStampLast) {
+                if (todayTimeStampFirst === Number(today)) {
                   todayTotalCost += obj2.cost;
                 }
               });

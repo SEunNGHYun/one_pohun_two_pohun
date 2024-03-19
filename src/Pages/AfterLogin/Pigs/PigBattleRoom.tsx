@@ -70,6 +70,7 @@ export default function PigBattleRoom({route, navigation}) {
         원
       </Text>
       <View style={{flexDirection: 'row'}}>
+        {console.log('current total save : ', user2SaveCost, user1SaveCost)}
         <BattleUserData
           position="left"
           userData={user1Data}
