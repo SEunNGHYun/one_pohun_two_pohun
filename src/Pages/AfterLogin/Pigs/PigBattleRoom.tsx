@@ -7,12 +7,13 @@ import {
   Pressable,
 } from 'react-native';
 import {useRecoilValue} from 'recoil';
+import {Modal, Portal, PaperProvider} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import database from '@react-native-firebase/database';
 import BattleUserData from '../../../Components/BattleUserData';
 import {primaryColor, title2} from '../../../utils/styles';
-import {changeMoney} from '../../../utils/utils';
+import {changeMoney, today} from '../../../utils/utils';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
@@ -21,6 +22,8 @@ export default function PigBattleRoom({route, navigation}) {
   let {width} = useWindowDimensions();
   const [user1Data, setUser1] = useState<object>({});
   const [user2Data, setUser2] = useState<object>({});
+  const [period, setPeriod] = useState<string | null>(null);
+  const [isRoomFinish, setIsRoomFinish] = useState<boolean>(false);
   const [user1Finish, setUser1Finish] = useState<boolean>(false);
   const [user2Finish, setUser2Finish] = useState<boolean>(false);
   const [user1SaveCost, setUser1SaveCost] = useState<number>(0);
@@ -35,9 +38,9 @@ export default function PigBattleRoom({route, navigation}) {
         return await database()
           .ref(`/battles/${roomKey}`)
           .on('value', async snap => {
-            const {user1, user2, cost} = snap.val();
-            console.log('this room goal cost', cost);
+            const {user1, user2, cost, period} = snap.val();
             setCurrentSaveRoomCost(cost);
+            setPeriod(period);
             await database()
               .ref(`/users/${user1}`)
               .on('value', value =>
@@ -57,6 +60,16 @@ export default function PigBattleRoom({route, navigation}) {
       database().ref(`/battles/${roomKey}`).off('value', getRoomInformation);
   }, [roomKey]);
 
+  useEffect(() => {
+    if (user1Finish && user2Finish) {
+      setIsRoomFinish(true);
+      // 둘다 모았을 때
+    } else if (period === today) {
+      setIsRoomFinish(true);
+      // 방 마감일 일 때
+    }
+  }, [period, user1Finish, user2Finish]);
+
   return (
     <View style={styles.view}>
       <Text
@@ -70,7 +83,6 @@ export default function PigBattleRoom({route, navigation}) {
         원
       </Text>
       <View style={{flexDirection: 'row'}}>
-        {console.log('current total save : ', user2SaveCost, user1SaveCost)}
         <BattleUserData
           position="left"
           userData={user1Data}

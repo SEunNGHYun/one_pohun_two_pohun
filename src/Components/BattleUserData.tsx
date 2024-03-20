@@ -8,9 +8,7 @@ import {
   compareTimeStamp,
   changeTimeStamp,
   todayTimeStampFirst,
-  todayTimeStampLast,
 } from '../utils/utils';
-import {grayColor, title3, title4, sub} from '../utils/styles';
 
 export default function BattleUserData({
   position,
@@ -34,7 +32,6 @@ export default function BattleUserData({
       timestamp?: string;
     }[]
   >([]);
-  const [totalSaveMoney, setTotalSaveMoney] = useState<number>(0);
   const [textTodaySaveMoney, setTextTodaySaveMoney] = useState<string>('');
   const userImage = useMemo(() => {
     return userData
@@ -46,7 +43,7 @@ export default function BattleUserData({
     let {roomGoalCost, day_cost}: {roomGoalCost: number; day_cost: number} =
       userData;
     day_cost = day_cost * 1000;
-    let saveMoneyArr = []; // 절약 성공한 날 모음
+    let saveMoneyArr: number[] = []; // 절약 성공한 날 모음
     if (userData && userData.hasOwnProperty('spend_cost')) {
       let spendCost: {
         type: 'date' | 'costData';
@@ -85,18 +82,14 @@ export default function BattleUserData({
             daySpendCost += val[startDayTimeStamp][dayTimeStamp].cost; //전체 소비금액
           }
           saveDayMoney = day_cost - daySpendCost; // 하루 목표 금액보다 많이 사용했는지 체크
-          console.log(roomGoalCost, saveDayMoney);
 
           if (saveDayMoney >= 0) {
             // 하루 목표 금액
-            saveMoneyArr.push(saveDayMoney);
+            saveMoneyArr.push(saveDayMoney); // 절약 성공시에만
             if (todayTimeStampFirst === Number(startDayTimeStamp)) {
+              // 오늘 소바한 금액만 걸러내기
               let t = changeMoney(saveDayMoney + '');
               setTextTodaySaveMoney(`오늘 ${t}원 절약`);
-            }
-            roomGoalCost -= saveDayMoney; // 사용자가 절약해서 모은 돈이 현재 방의 목푯 금액의 절반에 해당하는지 학인
-            if (roomGoalCost <= 0) {
-              setUserFinish(true); // 사용자는 다 모음
             }
           } else {
             if (todayTimeStampFirst === Number(startDayTimeStamp)) {
@@ -106,6 +99,15 @@ export default function BattleUserData({
           } // 현재 절약 상황을 파악하는 로작
         }
       });
+      const sumTotalSaveMoney = saveMoneyArr.reduce(
+        (acc, curr) => acc + curr,
+        0,
+      );
+      roomGoalCost -= sumTotalSaveMoney;
+      setUserSaveCost(sumTotalSaveMoney);
+      if (roomGoalCost <= 0) {
+        setUserFinish(true); // 사용자는 다 모음
+      }
       // 총 절약한 금액들saveMoneyArr. Reduce하기
       setSpendCostList(spendCost);
     }
@@ -265,7 +267,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   fontBack: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 22,
     paddingVertical: 4,
     borderRadius: 5,
     marginBottom: 2,
@@ -277,7 +279,7 @@ const styles = StyleSheet.create({
   },
   costLiView: {
     width: '65%',
-    height: '51%',
+    height: '51.5%',
     justifyContent: 'center',
   },
   costLi: {
@@ -318,5 +320,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'GangyonModu-Bold',
     marginVertical: 2,
+    color: 'black',
   },
 });
