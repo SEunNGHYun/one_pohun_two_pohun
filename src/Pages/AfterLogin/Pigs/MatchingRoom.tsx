@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {useRecoilValue} from 'recoil';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import database from '@react-native-firebase/database';
 import {grayColor} from '../../../utils/styles';
@@ -28,22 +29,38 @@ export default function MatchingRoom({route, navigation}) {
     } catch (err) {}
   }, [roomKey]);
 
-  useEffect(() => {
-    const onValueChange = database()
-      .ref(`/battles/${roomKey}`)
-      .on('value', snapshot => {
-        let {user2} = snapshot.val();
-        console.log('user2', user2);
-        if (user2 !== '') {
-          navigation.replace('PigBattleRoom', {
-            roomKey,
-          });
-        }
-      });
+  const isRoomTrueCheck = useCallback(async () => {
+    const roomCheck = await database().ref('/battles/').once('value');
+    const value = roomCheck.hasChild(`${roomKey}`);
 
-    return () =>
-      database().ref(`/battles/${roomKey}`).off('value', onValueChange);
-  }, [roomKey, navigation]);
+    console.log('roomkey is', value);
+    return !value;
+  }, [roomKey]);
+
+  useEffect(() => {
+    const roomCheck = async () => {
+      if (await isRoomTrueCheck()) {
+        const keys = ['playingState', 'playingRoomId'];
+        await AsyncStorage.multiRemove(keys);
+        return navigation.replace('Pig');
+      }
+
+      return database()
+        .ref(`/battles/${roomKey}`)
+        .on('value', snapshot => {
+          let {user2} = snapshot.val();
+          console.log('user2', user2);
+          if (user2 !== '') {
+            navigation.replace('PigBattleRoom', {
+              roomKey,
+            });
+          }
+        });
+    };
+    roomCheck();
+
+    return () => database().ref(`/battles/${roomKey}`).off('value', roomCheck);
+  }, [roomKey, navigation, isRoomTrueCheck]);
 
   return (
     <View style={styles.background}>

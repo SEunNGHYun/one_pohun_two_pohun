@@ -61,7 +61,10 @@ export default function AddCost({navigation}: Props) {
   return (
     <View style={styles.background}>
       <View style={styles.header}>
-        <Text style={[styles.todayText, {color: theme}]}>
+        <Text
+          numberOfLines={1}
+          adjustsFontSizeToFit={true}
+          style={[styles.todayText, {color: theme}]}>
           {months}월 {date}일 {korea_date}요일
         </Text>
       </View>

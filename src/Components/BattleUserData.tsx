@@ -146,7 +146,8 @@ export default function BattleUserData({
               },
             ]}>
             <Image
-              source={{
+              source={{uri: userImage}}
+              loadingIndicatorSource={{
                 uri: userImage,
               }}
               resizeMode="contain"
