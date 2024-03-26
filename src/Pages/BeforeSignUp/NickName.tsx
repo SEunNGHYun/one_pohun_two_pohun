@@ -158,6 +158,7 @@ export default function NickName({navigation}): React.ReactElement {
           <View style={{width: '100%'}}>
             <Text style={styles.nickname}>닉네임</Text>
             <TextInput
+              placeholderTextColor={descColor}
               style={styles.input}
               onChangeText={onchangeNickName}
               value={nickname}
@@ -302,6 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     width: '100%',
     height: 48,
+    fontFamily: 'GangyonModu-Light',
   },
   desctext: {
     color: descColor,

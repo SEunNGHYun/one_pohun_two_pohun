@@ -52,8 +52,11 @@ export default function BattleUserData({
         date?: string;
         timestamp?: string;
       }[] = [];
-      Object.entries(userData.spend_cost).forEach(([_, val]: [_, any]) => {
+      Object.entries(userData.spend_cost).forEach(([d, val]: [_, any]) => {
         for (let startDayTimeStamp in val) {
+          if (userData.roomStartDay > startDayTimeStamp) {
+            continue; // 방 생성일 이후의 자료만 불러오가
+          }
           let saveDayMoney = 0,
             daySpendCost = 0;
           for (let dayTimeStamp in val[startDayTimeStamp]) {
@@ -145,21 +148,23 @@ export default function BattleUserData({
                 backgroundColor: 'white',
               },
             ]}>
-            <Image
-              source={{uri: userImage}}
-              loadingIndicatorSource={{
-                uri: userImage,
-              }}
-              resizeMode="contain"
-              style={[
-                styles.userImgBack,
-                {
-                  width: (width - 75) / 2.5,
-                  height: (width - 75) / 2.5,
-                  backgroundColor: 'white',
-                },
-              ]}
-            />
+            {userImage && (
+              <Image
+                source={{uri: userImage}}
+                loadingIndicatorSource={{
+                  uri: userImage,
+                }}
+                resizeMode="contain"
+                style={[
+                  styles.userImgBack,
+                  {
+                    width: (width - 75) / 2.5,
+                    height: (width - 75) / 2.5,
+                    backgroundColor: 'white',
+                  },
+                ]}
+              />
+            )}
           </View>
         </View>
         <Text
@@ -270,7 +275,7 @@ const styles = StyleSheet.create({
   fontBack: {
     paddingHorizontal: 22,
     paddingVertical: 4,
-    borderRadius: 5,
+    borderRadius: 15,
     marginBottom: 2,
   },
   totalFont: {

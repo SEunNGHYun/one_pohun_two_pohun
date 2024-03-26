@@ -15,7 +15,7 @@ import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {userState, appTheme} from '../../../recoils/states';
 import type {UserData, Themes} from '../../../types/types';
-import {grayColor} from '../../../utils/styles';
+import {grayColor, descColor} from '../../../utils/styles';
 import type {PigNaviProps} from '../../../navi/Navigation';
 
 export default function Pig({navigation}: PigNaviProps) {
@@ -53,7 +53,7 @@ export default function Pig({navigation}: PigNaviProps) {
       } catch (err) {}
       // db user2에 해당 user 아이디 적음
     }
-  }, [code, navigation, userData]);
+  }, [code, navigation, userData, isRoomTrueCheck]);
 
   useEffect(() => {
     setLoading(true);
@@ -145,7 +145,11 @@ export default function Pig({navigation}: PigNaviProps) {
             style={[styles.modalFont, {color: theme}]}>
             입장 코드를 입력하세요.
           </Text>
-          <TextInput style={styles.codeInput} onChangeText={codeInput} />
+          <TextInput
+            placeholderTextColor={descColor}
+            style={styles.codeInput}
+            onChangeText={codeInput}
+          />
           <Pressable onPress={enterBattleRoom} disabled={!code}>
             <View style={styles.modalBottom}>
               <Text

@@ -18,7 +18,7 @@ import type {UserData, Themes} from '../../../types/types';
 import {title4, defaultFont, descColor} from '../../../utils/styles';
 import TextAreaAndButtons from '../../../Components/InputButts';
 import type {PigUseNaviProps} from '../../../navi/Navigation';
-import {today} from '../../../utils/utils';
+import {today, todayTimeStampFirst} from '../../../utils/utils';
 
 export default function MakePigBattleRoom() {
   const navigation = useNavigation<PigUseNaviProps>();
@@ -35,6 +35,7 @@ export default function MakePigBattleRoom() {
       cost,
       period,
       goal,
+      startDay: todayTimeStampFirst,
     };
     try {
       const {key} = await database().ref('/battles').push(createRoom);
@@ -84,6 +85,7 @@ export default function MakePigBattleRoom() {
           </Text>
           <TextInput
             style={styles.textinput}
+            placeholderTextColor={descColor}
             placeholder="예시) 11월 일본여행?"
             onChangeText={changeGoalInput}
           />
@@ -123,7 +125,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingHorizontal: 18,
   },
-
   titleFont: {
     ...title4,
     marginTop: 8,

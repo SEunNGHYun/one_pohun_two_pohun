@@ -6,7 +6,13 @@ import database from '@react-native-firebase/database';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import type {MainStackParamList} from '../../../navi/Navigation';
 import {userState, appTheme} from '../../../recoils/states';
-import {title2, title3, grayColor, defaultFont} from '../../../utils/styles';
+import {
+  title2,
+  title3,
+  grayColor,
+  defaultFont,
+  descColor,
+} from '../../../utils/styles';
 import type {UserData, Themes} from '../../../types/types';
 import {
   korea_date,
@@ -72,6 +78,7 @@ export default function AddCost({navigation}: Props) {
         <View>
           <Text style={[styles.desc, {color: theme}]}>지출액</Text>
           <TextInput
+            placeholderTextColor={descColor}
             value={changeMoney(cost)}
             style={styles.textInput}
             onChangeText={onChangeCost}

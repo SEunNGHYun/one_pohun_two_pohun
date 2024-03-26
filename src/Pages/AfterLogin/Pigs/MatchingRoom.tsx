@@ -12,7 +12,7 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import database from '@react-native-firebase/database';
-import {grayColor} from '../../../utils/styles';
+import {grayColor, descColor} from '../../../utils/styles';
 import type {Themes} from '../../../types/types';
 import {appTheme} from '../../../recoils/states';
 
@@ -76,6 +76,7 @@ export default function MatchingRoom({route, navigation}) {
         </View>
         <TextInput
           style={styles.codeFont}
+          placeholderTextColor={descColor}
           editable={false}
           selectTextOnFocus
           value={roomKey}

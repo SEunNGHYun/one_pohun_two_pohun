@@ -22,7 +22,7 @@ export default function PigBattleRoom({route, navigation}) {
   let {width} = useWindowDimensions();
   const [user1Data, setUser1] = useState<object>({});
   const [user2Data, setUser2] = useState<object>({});
-  const [period, setPeriod] = useState<string | null>(null);
+  const [roomEndDay, setRoomEndDay] = useState<string | null>(null);
   const [isRoomFinish, setIsRoomFinish] = useState<boolean>(false);
   const [isOutRoomModal, setIsOutRoomModal] = useState<boolean>(false);
   const [user1Finish, setUser1Finish] = useState<boolean>(false);
@@ -36,7 +36,6 @@ export default function PigBattleRoom({route, navigation}) {
     const roomCheck = await database().ref('/battles/').once('value');
     const value = roomCheck.hasChild(`${roomKey}`);
 
-    console.log('roomkey is', value);
     return !value;
   }, [roomKey]);
 
@@ -49,18 +48,26 @@ export default function PigBattleRoom({route, navigation}) {
         return await database()
           .ref(`/battles/${roomKey}`)
           .on('value', async snap => {
-            const {user1, user2, cost, period} = snap.val();
+            const {startDay, user1, user2, cost, endDay} = snap.val();
             setCurrentSaveRoomCost(cost);
-            setPeriod(period);
+            setRoomEndDay(endDay);
             await database()
               .ref(`/users/${user1}`)
               .on('value', value =>
-                setUser1({...value.val(), roomGoalCost: cost / 2}),
+                setUser1({
+                  ...value.val(),
+                  roomGoalCost: cost / 2,
+                  roomStartDay: startDay,
+                }),
               );
             await database()
               .ref(`/users/${user2}`)
               .on('value', value =>
-                setUser2({...value.val(), roomGoalCost: cost / 2}),
+                setUser2({
+                  ...value.val(),
+                  roomGoalCost: cost / 2,
+                  roomStartDay: startDay,
+                }),
               );
           });
       } catch (err) {}
@@ -75,11 +82,11 @@ export default function PigBattleRoom({route, navigation}) {
     if (user1Finish && user2Finish) {
       setIsRoomFinish(true);
       // 둘다 모았을 때
-    } else if (period === today) {
+    } else if (roomEndDay === today) {
       setIsRoomFinish(true);
       // 방 마감일 일 때
     }
-  }, [period, user1Finish, user2Finish]);
+  }, [roomEndDay, user1Finish, user2Finish]);
 
   const pressOutModalYesButton = useCallback(async () => {
     try {
